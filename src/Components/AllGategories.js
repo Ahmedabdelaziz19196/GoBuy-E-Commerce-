@@ -3,8 +3,6 @@ import "./AllGategories.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function AllGategories({ showCategories, setShowCategories }) {
-    // const [show, setShow] = useState(false);
-
     const handleClose = () => setShowCategories(false);
 
     return (

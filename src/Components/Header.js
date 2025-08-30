@@ -6,7 +6,8 @@ import SortIcon from "@mui/icons-material/Sort";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
 import AllGategories from "./AllGategories";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import LanguagesSelection from "./LanguagesSelection";
 
 export default function Header() {
     const [showCategories, setShowCategories] = useState(false);
@@ -31,13 +32,27 @@ export default function Header() {
         setIconAccountClick(true);
         setTimeout(() => setIconAccountClick(false), 250);
     }
+
+    // Close language selection when clicking outside
+    useEffect(() => {
+        function handleWindowClick() {
+            setLangClick(false);
+        }
+        if (langClick) {
+            window.addEventListener("click", handleWindowClick);
+        }
+        return () => {
+            window.removeEventListener("click", handleWindowClick);
+        };
+    }, [langClick]);
+
     return (
-        <div className="bg-white w-100 align-items-center">
+        <div className="bg-white w-100 sticky-top header">
             <Container
                 maxWidth="xl"
-                className="bg-white w-100 d-flex justify-content-between align-items-center pl-4 pt-2 pb-2  gap-4"
+                className="bg-white w-100 d-flex justify-content-between align-items-center pl-4 pt-2 pb-2 gap-4 position-relative "
             >
-                <div className="ps-5 d-flex align-items-center gap-lg-5 gap-4">
+                <div className="ps-5 d-flex align-items-center gap-lg-5 gap-4 ">
                     <div>
                         <p
                             style={{
@@ -110,7 +125,8 @@ export default function Header() {
                     <div
                         className="d-flex align-items-center justify-content-center gap-1 lang"
                         style={{ cursor: "pointer" }}
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.stopPropagation();
                             setLangClick(!langClick);
                         }}
                     >
@@ -127,6 +143,7 @@ export default function Header() {
                         >{`>`}</span>
                     </div>
                 </div>
+                <LanguagesSelection langClick={langClick} />
             </Container>
             <AllGategories
                 showCategories={showCategories}
