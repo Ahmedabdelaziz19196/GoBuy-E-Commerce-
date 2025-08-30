@@ -1,0 +1,24 @@
+.closeButton:hover {
+    color: var(--main-color);
+}
+.laptop,
+.monitor {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    img {
+        width: 150px;
+        border-radius: 10px;
+    }
+    p {
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+}
+.laptop:hover,
+.monitor:hover {
+    background-color: #e7e7e7;
+}

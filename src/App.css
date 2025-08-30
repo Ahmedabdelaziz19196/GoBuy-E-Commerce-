@@ -1,38 +1,94 @@
 .App {
-  text-align: center;
+    text-align: center;
+}
+:root {
+    --main-color: #0b5394;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+    font-family: "Roboto", sans-serif !important;
+    background-color: red !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+p {
+    margin: 0 !important;
 }
 
-.App-link {
-  color: #61dafb;
+/* Roboto font */
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-Thin.ttf") format("truetype");
+    font-weight: 200;
+    font-style: normal;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-Light.ttf")
+        format("truetype");
+    font-weight: 300;
+    font-style: normal;
 }
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-Regular.ttf")
+        format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-Medium.ttf")
+        format("truetype");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-SemiBold.ttf")
+        format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-ExtraBold.ttf")
+        format("truetype");
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../public/Fonts/Roboto/static/Roboto-Black.ttf")
+        format("truetype");
+    font-weight: 900;
+    font-style: normal;
+}
+/* Roboto font */
+
+/*Righteous fonr*/
+@font-face {
+    font-family: "Righteous";
+    src: url("../public/Fonts/Righteous-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+/*Righteous fonr*/
