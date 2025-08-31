@@ -1,0 +1,6 @@
+.page-category img {
+    transition: transform 0.2s;
+}
+.page-category:hover img {
+    transform: scale(1.2) rotate(5deg);
+}
