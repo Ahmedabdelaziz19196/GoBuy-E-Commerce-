@@ -1,13 +1,16 @@
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import SearchIcon from "@mui/icons-material/Search";
 import Container from "@mui/material/Container";
 import SortIcon from "@mui/icons-material/Sort";
+import { ReactTyped } from "react-typed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
 import AllGategories from "./AllGategories";
 import { useState, useEffect } from "react";
 import LanguagesSelection from "./LanguagesSelection";
+import SearchForMobile from "./SearchForMobile";
 
 export default function Header() {
     const [showCategories, setShowCategories] = useState(false);
@@ -15,6 +18,8 @@ export default function Header() {
     const [iconFavClick, setIconFavClick] = useState(false);
     const [iconShopClick, setIconShopClick] = useState(false);
     const [iconAccountClick, setIconAccountClick] = useState(false);
+    const [iconSearchClick, setIconSearchClick] = useState(false);
+    const [showSerachBarForMobile, setShowSerachBarForMobile] = useState(false);
 
     function handleShowCategories() {
         setShowCategories(true);
@@ -31,6 +36,11 @@ export default function Header() {
     function handleAccountIcon() {
         setIconAccountClick(true);
         setTimeout(() => setIconAccountClick(false), 250);
+    }
+    function handleSerachtIcon() {
+        setIconSearchClick(true);
+        setTimeout(() => setIconSearchClick(false), 250);
+        setShowSerachBarForMobile(!showSerachBarForMobile);
     }
 
     // Close language selection when clicking outside
@@ -52,7 +62,7 @@ export default function Header() {
                 maxWidth="xl"
                 className="bg-white w-100 d-flex justify-content-between align-items-center pl-4 pt-2 pb-2 gap-4 position-relative "
             >
-                <div className="ps-5 d-flex align-items-center gap-lg-5 gap-4 ">
+                <div className="ps-lg-5 ps-md-5 ps-0 d-flex align-items-center gap-lg-5 gap-4 ">
                     <div>
                         <p
                             style={{
@@ -78,7 +88,7 @@ export default function Header() {
                         </p>
                     </div>
                     <div
-                        className="gategories d-flex align-items-center justify-content-center"
+                        className="gategories d-md-flex d-lg-flex align-items-center justify-content-center d-none"
                         onClick={handleShowCategories}
                     >
                         <SortIcon />
@@ -86,18 +96,48 @@ export default function Header() {
                     </div>
                 </div>
 
-                <div style={{ flex: "1" }}>
+                <div
+                    style={{ flex: "1", position: "relative" }}
+                    className="d-none d-lg-block d-md-block"
+                >
                     <input
                         type="text"
                         className="sreach-bar"
                         // className={`sreach-input ${mobileSreach ? "clicked" : ""}`}
-                        placeholder="Search..."
+                        // placeholder="Search..."
                         // value={searchInput}
                         // onChange={(e) => setSearchInput(e.target.value)}
                         // onKeyDown={handleEnterFormSearch}
                     />
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "10px",
+                            transform: "translateY(-50%)",
+                        }}
+                    >
+                        <ReactTyped
+                            style={{ color: "var(--main-color)" }}
+                            strings={["Search Here..."]}
+                            typeSpeed={50}
+                            backSpeed={30}
+                            backDelay={1000}
+                            startDelay={500}
+                            loop
+                        />
+                    </div>
                 </div>
                 <div className="d-flex align-items-center justify-content-center gap-2">
+                    <div
+                        className={`header-icon ${
+                            iconSearchClick ? "icon-clicked" : ""
+                        } d-md-none `}
+                        onClick={handleSerachtIcon}
+                    >
+                        <SearchIcon />
+                    </div>
+
                     <div
                         className={`header-icon ${
                             iconFavClick ? "icon-clicked" : ""
@@ -122,6 +162,7 @@ export default function Header() {
                     >
                         <AccountCircleOutlinedIcon />
                     </div>
+
                     <div
                         className="d-flex align-items-center justify-content-center gap-1 lang"
                         style={{ cursor: "pointer" }}
@@ -134,6 +175,7 @@ export default function Header() {
                             src="/imgs/usa-flag.webp"
                             alt="usa-flag"
                             style={{ width: "20px" }}
+                            className="d-none d-md-flex"
                         />
                         <p style={{ fontWeight: "bold" }}>EN</p>
                         <span
@@ -149,6 +191,7 @@ export default function Header() {
                 showCategories={showCategories}
                 setShowCategories={setShowCategories}
             />
+            <SearchForMobile showSerachBarForMobile={showSerachBarForMobile} />
         </div>
     );
 }
