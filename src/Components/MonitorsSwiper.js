@@ -1,9 +1,9 @@
 import "./LaptopsSwiper.css";
 import Container from "@mui/material/Container";
-import ResponsiveSliderLaptops from "./ResponsiveSliderLaptops";
+import ResponsiveSliderMonitors from "./ResponsiveSliderMonitors";
 import { useState } from "react";
 
-export default function LaptopsSwiper() {
+export default function MonitorsSwiper() {
     const [viewAllClick, setViewAllClick] = useState(false);
     function handleViewAllClickUI() {
         setViewAllClick(true);
@@ -11,7 +11,7 @@ export default function LaptopsSwiper() {
     }
     console.log(viewAllClick);
     return (
-        <div className="ps-3 pe-3 ">
+        <div className="ps-3 pe-3 mb-3 ">
             <div className="selection-header">
                 <p style={{ background: "white", padding: "0px 5px" }}>
                     VIEW
@@ -20,12 +20,12 @@ export default function LaptopsSwiper() {
                             color: "var(--main-color)",
                         }}
                     >
-                        {` LAPTOPS`}
+                        {` MONITORS`}
                     </span>
                 </p>
             </div>
             <Container maxWidth="xl">
-                <ResponsiveSliderLaptops />
+                <ResponsiveSliderMonitors />
                 <div
                     className="d-flex align-items-center justify-content-center  fit-content mt-2 mb-2"
                     onClick={handleViewAllClickUI}

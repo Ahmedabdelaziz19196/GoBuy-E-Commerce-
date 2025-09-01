@@ -5,9 +5,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./ResponsiveSlider.css";
 import React, { useEffect, useState } from "react";
-const LgSildeCount = 5;
-const MdSildeCount = 3;
-const SmSildeCount = 1;
 
 function NextArrow(props) {
     const { className, onClick, currentSlide, slideCount } = props;
@@ -16,9 +13,9 @@ function NextArrow(props) {
     if (screenWidth < 600) {
         lastSlide = currentSlide;
     } else if (screenWidth < 1024) {
-        lastSlide = currentSlide + MdSildeCount;
+        lastSlide = currentSlide + 3;
     } else {
-        lastSlide = currentSlide + LgSildeCount;
+        lastSlide = currentSlide + 5;
     }
     // console.log(showCurrent);
     return lastSlide >= slideCount - 1 ? null : (
@@ -59,13 +56,12 @@ function PrevArrow(props) {
     );
 }
 
-function ResponsiveSliderLaptops() {
+function ResponsiveSliderMonitors() {
     const [sliderSettings, setSliderSettings] = useState({
         dots: true,
         infinite: false,
         speed: 500,
-        slidesToShow: 5,
-        slidesToScroll: 3,
+
         initialSlide: 0,
         arrows: true,
         nextArrow: <NextArrow />,
@@ -94,20 +90,20 @@ function ResponsiveSliderLaptops() {
             if (screenWidth < 600) {
                 setSliderSettings((prevSettings) => ({
                     ...prevSettings,
-                    slidesToShow: SmSildeCount,
+                    slidesToShow: 1,
                     slidesToScroll: 1,
                 }));
             } else if (screenWidth < 1024) {
                 setSliderSettings((prevSettings) => ({
                     ...prevSettings,
-                    slidesToShow: MdSildeCount,
+                    slidesToShow: 3,
                     slidesToScroll: 3,
                 }));
             } else {
                 setSliderSettings((prevSettings) => ({
                     ...prevSettings,
-                    slidesToShow: LgSildeCount,
-                    slidesToScroll: 3,
+                    slidesToShow: 5,
+                    slidesToScroll: 5,
                 }));
             }
         };
@@ -137,7 +133,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -174,7 +170,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -211,7 +207,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -248,7 +244,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -285,7 +281,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -322,7 +318,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -359,7 +355,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -396,7 +392,7 @@ function ResponsiveSliderLaptops() {
                         }}
                     >
                         <img
-                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX271.png"
+                            src="/imgs/laptops silder/BenQ_MOBIUZ_EX2712.png"
                             alt="laptop"
                             style={{
                                 width: "100%",
@@ -427,4 +423,4 @@ function ResponsiveSliderLaptops() {
     );
 }
 
-export default ResponsiveSliderLaptops;
+export default ResponsiveSliderMonitors;
