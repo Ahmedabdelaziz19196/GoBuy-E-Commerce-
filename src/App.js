@@ -5,6 +5,7 @@ import PageCategories from "./Components/PageCategories";
 import SilderImages from "./Components/SilderImages";
 import MonitorsSwiper from "./Components/MonitorsSwiper";
 import ServiceFeatures from "./Components/ServiceFeatures";
+import Footer from "./Components/Footer";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
             <LaptopsSwiper />
             <MonitorsSwiper />
             <ServiceFeatures />
+            <Footer />
         </>
     );
 }

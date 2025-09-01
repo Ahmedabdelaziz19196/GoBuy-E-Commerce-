@@ -13,7 +13,7 @@ export default function ServiceFeatures() {
         >
             <Container
                 maxWidth="xl"
-                className="d-flex flex-column flex-sm-row justify-content-around align-items-center gap-4 position-relative"
+                className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-4 position-relative"
             >
                 <div className=" d-flex justify-content-between align-items-center">
                     <div

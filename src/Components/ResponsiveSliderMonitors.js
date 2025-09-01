@@ -5,6 +5,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./ResponsiveSlider.css";
 import React, { useEffect, useState } from "react";
+const LgSildeCount = 5;
+const MdSildeCount = 3;
+const SmSildeCount = 1;
 
 function NextArrow(props) {
     const { className, onClick, currentSlide, slideCount } = props;
@@ -13,11 +16,10 @@ function NextArrow(props) {
     if (screenWidth < 600) {
         lastSlide = currentSlide;
     } else if (screenWidth < 1024) {
-        lastSlide = currentSlide + 3;
+        lastSlide = currentSlide + MdSildeCount;
     } else {
-        lastSlide = currentSlide + 5;
+        lastSlide = currentSlide + LgSildeCount;
     }
-    // console.log(showCurrent);
     return lastSlide >= slideCount - 1 ? null : (
         <div
             className={className}
@@ -90,20 +92,20 @@ function ResponsiveSliderMonitors() {
             if (screenWidth < 600) {
                 setSliderSettings((prevSettings) => ({
                     ...prevSettings,
-                    slidesToShow: 1,
+                    slidesToShow: SmSildeCount,
                     slidesToScroll: 1,
                 }));
             } else if (screenWidth < 1024) {
                 setSliderSettings((prevSettings) => ({
                     ...prevSettings,
-                    slidesToShow: 3,
+                    slidesToShow: MdSildeCount,
                     slidesToScroll: 3,
                 }));
             } else {
                 setSliderSettings((prevSettings) => ({
                     ...prevSettings,
-                    slidesToShow: 5,
-                    slidesToScroll: 5,
+                    slidesToShow: LgSildeCount,
+                    slidesToScroll: 3,
                 }));
             }
         };
@@ -115,7 +117,6 @@ function ResponsiveSliderMonitors() {
             window.removeEventListener("resize", updateSettingsBasedOnScreen);
         };
     }, []);
-
     return (
         <div
             className="slider-container"

@@ -20,7 +20,6 @@ function NextArrow(props) {
     } else {
         lastSlide = currentSlide + LgSildeCount;
     }
-    // console.log(showCurrent);
     return lastSlide >= slideCount - 1 ? null : (
         <div
             className={className}
