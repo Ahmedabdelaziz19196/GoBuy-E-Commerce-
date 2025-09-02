@@ -1,0 +1,21 @@
+.categoty-list {
+    margin: 5px 0px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+}
+
+.categoty-list:hover {
+    background-color: var(--main-color);
+    color: white;
+}
+
+.categoty-list:last-child {
+    margin-bottom: 0px;
+}
+
+.categoty-list.icon-clicked {
+    background-color: var(--main-color);
+    color: white;
+}

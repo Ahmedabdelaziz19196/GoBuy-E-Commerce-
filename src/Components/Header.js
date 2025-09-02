@@ -11,6 +11,7 @@ import AllGategories from "./AllGategories";
 import { useState, useEffect } from "react";
 import LanguagesSelection from "./LanguagesSelection";
 import SearchForMobile from "./SearchForMobile";
+import { Link } from "react-router-dom";
 
 export default function Header() {
     const [showCategories, setShowCategories] = useState(false);
@@ -63,30 +64,34 @@ export default function Header() {
                 className="bg-white w-100 d-flex justify-content-between align-items-center pl-4 pt-2 pb-2 gap-4 position-relative "
             >
                 <div className="ps-lg-5 ps-md-5 ps-0 d-flex align-items-center gap-lg-5 gap-4 ">
-                    <div>
-                        <p
-                            style={{
-                                fontWeight: "400",
-                                fontFamily: "Righteous",
-                                fontSize: "40px",
-                                cursor: "pointer",
-                            }}
-                            onClick={() => console.log("goo dady")}
-                        >
-                            GoBuy
-                        </p>
-                        <p
-                            className="fw-light small mb-0"
-                            style={{
-                                position: "relative",
-                                bottom: "5px",
-                                letterSpacing: "3px",
-                                color: "gray",
-                            }}
-                        >
-                            ELECTRONICS
-                        </p>
-                    </div>
+                    <Link to="/" style={{ textDecoration: "none" }}>
+                        <div>
+                            <p
+                                style={{
+                                    fontWeight: "400",
+                                    fontFamily: "Righteous",
+                                    fontSize: "40px",
+                                    cursor: "pointer",
+                                    color: "black",
+                                }}
+                                onClick={() => console.log("goo dady")}
+                            >
+                                GoBuy
+                            </p>
+                            <p
+                                className="fw-light small mb-0"
+                                style={{
+                                    position: "relative",
+                                    bottom: "5px",
+                                    letterSpacing: "3px",
+                                    color: "gray",
+                                }}
+                            >
+                                ELECTRONICS
+                            </p>
+                        </div>
+                    </Link>
+
                     <div
                         className="gategories d-md-flex d-lg-flex align-items-center justify-content-center d-none"
                         onClick={handleShowCategories}

@@ -1,0 +1,6 @@
+.home:hover {
+    color: var(--main-color);
+}
+.home {
+    font-weight: bold;
+}

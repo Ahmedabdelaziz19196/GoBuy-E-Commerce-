@@ -20,6 +20,9 @@ body {
 p {
     margin: 0 !important;
 }
+ul {
+    list-style: none;
+}
 
 /* Roboto font */
 @font-face {

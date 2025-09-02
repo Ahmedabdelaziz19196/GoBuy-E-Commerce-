@@ -2,9 +2,21 @@ ul {
     list-style: none;
     padding: 0;
 }
-li {
+.footer-list {
     cursor: pointer;
 }
-li:hover {
+.footer-list:hover {
     text-decoration: underline;
+}
+@media (max-width: 576px) {
+    .border-sm-solid {
+        border-bottom: 2px solid white;
+        padding-bottom: 4px;
+    }
+    .w-sm-100 {
+        width: 100% !important;
+    }
+    .mb-sm-3 {
+        margin-bottom: 1rem !important;
+    }
 }

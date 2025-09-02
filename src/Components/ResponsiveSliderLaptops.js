@@ -1,121 +1,24 @@
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./ResponsiveSlider.css";
-import React, { useEffect, useState } from "react";
-const LgSildeCount = 5;
-const MdSildeCount = 3;
-const SmSildeCount = 1;
+import { useEffect, useState } from "react";
 
-function NextArrow(props) {
-    const { className, onClick, currentSlide, slideCount } = props;
-    const screenWidth = window.innerWidth;
-    let lastSlide = 0;
-    if (screenWidth < 600) {
-        lastSlide = currentSlide;
-    } else if (screenWidth < 1024) {
-        lastSlide = currentSlide + MdSildeCount;
-    } else {
-        lastSlide = currentSlide + LgSildeCount;
-    }
-    return lastSlide >= slideCount - 1 ? null : (
-        <div
-            className={className}
-            style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-            }}
-            onClick={onClick}
-        >
-            <ArrowForwardIosIcon
-                style={{ color: "var(--main-color)", fontSize: 22 }}
-            />
-        </div>
-    );
-}
-
-function PrevArrow(props) {
-    const { className, onClick, currentSlide } = props;
-    return currentSlide <= 0 ? null : (
-        <div
-            className={className}
-            style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-            }}
-            onClick={onClick}
-        >
-            <ArrowBackIosNewIcon
-                style={{ color: "var(--main-color)", fontSize: 22 }}
-            />
-        </div>
-    );
-}
+import sliderDefaultSettings from "../Functions/sliderDefaultSettings";
+import updateSettingsBasedOnScreen from "../Functions/updateSliderSettings";
 
 function ResponsiveSliderLaptops() {
-    const [sliderSettings, setSliderSettings] = useState({
-        dots: true,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 5,
-        slidesToScroll: 3,
-        initialSlide: 0,
-        arrows: true,
-        nextArrow: <NextArrow />,
-        prevArrow: <PrevArrow />,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                },
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                },
-            },
-        ],
-    });
+    const [sliderSettings, setSliderSettings] = useState(sliderDefaultSettings);
 
     useEffect(() => {
-        const updateSettingsBasedOnScreen = () => {
-            const screenWidth = window.innerWidth;
-            if (screenWidth < 600) {
-                setSliderSettings((prevSettings) => ({
-                    ...prevSettings,
-                    slidesToShow: SmSildeCount,
-                    slidesToScroll: 1,
-                }));
-            } else if (screenWidth < 1024) {
-                setSliderSettings((prevSettings) => ({
-                    ...prevSettings,
-                    slidesToShow: MdSildeCount,
-                    slidesToScroll: 3,
-                }));
-            } else {
-                setSliderSettings((prevSettings) => ({
-                    ...prevSettings,
-                    slidesToShow: LgSildeCount,
-                    slidesToScroll: 3,
-                }));
-            }
-        };
-
-        updateSettingsBasedOnScreen();
-        window.addEventListener("resize", updateSettingsBasedOnScreen);
-
+        updateSettingsBasedOnScreen(setSliderSettings);
+        window.addEventListener("resize", () =>
+            updateSettingsBasedOnScreen(setSliderSettings)
+        );
         return () => {
-            window.removeEventListener("resize", updateSettingsBasedOnScreen);
+            window.removeEventListener("resize", () =>
+                updateSettingsBasedOnScreen(setSliderSettings)
+            );
         };
     }, []);
 

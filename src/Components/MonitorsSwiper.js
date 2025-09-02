@@ -9,7 +9,6 @@ export default function MonitorsSwiper() {
         setViewAllClick(true);
         setTimeout(() => setViewAllClick(false), 250);
     }
-    console.log(viewAllClick);
     return (
         <div className="ps-3 pe-3 mb-3 ">
             <div className="selection-header">
