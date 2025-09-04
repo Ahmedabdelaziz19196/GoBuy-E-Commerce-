@@ -19,3 +19,122 @@
     background-color: var(--main-color);
     color: white;
 }
+
+/*accordion component one*/
+.accordion {
+    --bs-accordion-inner-border-radius: var(--acordion-border-raduis);
+    --bs-accordion-border-radius: var(--acordion-border-raduis);
+}
+.accordion-item {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px;
+}
+.accordion-button {
+    background-color: #f6f8fa;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 16px;
+    /* color: white; */
+}
+.accordion-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.accordion-button:focus {
+    box-shadow: none;
+}
+.accordion-button:not(.collapsed) {
+    background-color: #f6f8fa;
+    color: var(--main-color);
+    border-bottom: 1px solid var(--main-color);
+}
+.accordion-button:not(.collapsed):hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.accordion-button:not(.collapsed)::after {
+    color: var(--main-color);
+}
+.accordion-body {
+    padding: 16px;
+    background-color: #f6f8fa;
+    border-bottom-left-radius: var(--acordion-border-raduis);
+    border-bottom-right-radius: var(--acordion-border-raduis);
+}
+.form-check {
+    display: flex;
+}
+.form-check-label {
+    margin-left: 10px;
+    flex: 1;
+}
+.form-check-input {
+    bottom: 3px;
+    width: 20px;
+    height: 20px;
+    position: relative;
+}
+.form-check-input:checked {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}
+.form-check-input:focus {
+    border-color: #0b5394;
+    box-shadow: 0 0 0 0.25rem rgba(11, 83, 148, 0.25);
+}
+/*accordion component one*/
+
+/*accordion component Two*/
+.accordion .accordion-two {
+    --bs-accordion-inner-border-radius: 0px;
+    --bs-accordion-border-radius: 0px;
+    background-color: #f6f8fa;
+}
+.accordion-two .accordion-item {
+    box-shadow: none;
+    border: 0px;
+    border-bottom: 1px solid #e7e7e7;
+}
+.accordion-two .accordion-button {
+    padding: 16px 10px;
+    border-bottom: none !important;
+    padding-bottom: 10px;
+}
+.accordion-two .accordion-button,
+.accordion-two .accordion-button:not(.collapsed) {
+    box-shadow: none !important;
+}
+
+.accordion-two .accordion-button:hover {
+    background-color: #f6f8fa;
+}
+.accordion-two .accordion-body {
+    padding: 10px 10px;
+}
+.accordion-two .form-check {
+    padding-bottom: 5px;
+}
+/*accordion component Two*/
+/*accordion component last*/
+.accordion-last .accordion-item {
+    border-bottom: none !important;
+}
+/*accordion component last*/
+
+.VGA-sreach {
+    height: 40px;
+    background: transparent;
+    border: 1px solid #5e6369ff;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    color: #5e6369ff;
+}
+.VGA-sreach:focus {
+    outline-color: var(--main-color);
+}
+
+.MuiSlider-track.css-xvk2i-MuiSlider-track {
+    background: var(--main-color);
+    border: none;
+}
+.css-13vpke-MuiSlider-root {
+    color: var(--main-color) !important;
+}

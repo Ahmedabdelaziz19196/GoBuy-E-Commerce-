@@ -3,6 +3,7 @@
 }
 :root {
     --main-color: #0b5394;
+    --acordion-border-raduis: 10px;
 }
 
 body {
