@@ -1,23 +1,35 @@
+import "./LaptopsPage.css";
 import PageCategoryHeader from "./PageCategoryHeader";
 import Grid from "@mui/material/Grid";
 import ClearIcon from "@mui/icons-material/Clear";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import "./LaptopsPage.css";
+import TuneIcon from "@mui/icons-material/Tune";
+import AppsIcon from "@mui/icons-material/Apps";
+import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
 import Fuse from "fuse.js";
 import Accordion from "react-bootstrap/Accordion";
 import Form from "react-bootstrap/Form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import LaptopsSquareView from "./LaptopsSquareView";
+import LaptopsLinedView from "./LaptopsLinedView";
 export default function LaptopsPage() {
     const [vGASearch, setVGASearch] = useState("");
-    // const [price, setPrice] = useState({
-    //     min: 18000,
-    //     max: 300000,
-    // });
     const [price, setPrice] = useState([18000, 300000]);
+    const [resetllClick, setresetllClick] = useState(false);
+    const [ViewProducts, setViewproducts] = useState("square");
 
     function handleChange(event, newValue) {
         setPrice(newValue);
+    }
+    function handleViewAllClickUI() {
+        setresetllClick(true);
+        setTimeout(() => setresetllClick(false), 250);
+    }
+
+    function handleViewingIcons(e) {
+        let value = e.currentTarget.getAttribute("data-value");
+        setViewproducts(value);
     }
 
     const brand = ["Hp", "Dell", "Lenovo", "Msi", "Acer", "Asus", "Razer"];
@@ -114,6 +126,21 @@ export default function LaptopsPage() {
         "1 TB + 256 GB SSD",
         "2 TB",
     ];
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 599) {
+                setViewproducts("square");
+            }
+        };
+
+        handleResize();
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [setViewproducts]);
     return (
         <>
             <PageCategoryHeader />
@@ -539,11 +566,55 @@ export default function LaptopsPage() {
                                 </Accordion.Item>
                             </Accordion>
                             {/* Price */}
+                            <div
+                                className="text-center  w-100 mt-2 mb-2"
+                                onClick={handleViewAllClickUI}
+                            >
+                                <p
+                                    className={`view-all ${
+                                        resetllClick ? "icon-clicked" : ""
+                                    }`}
+                                >
+                                    Reset
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 12, md: 12, lg: 9.5 }}>
-                    {/* <LaptopCategory /> */}
+                    <div style={{ display: "flex", justifyContent: "right" }}>
+                        <div
+                            className="gategories d-md-none d-lg-none align-items-center justify-content-center d-flex"
+                            // onClick={handleShowCategories}
+                        >
+                            <TuneIcon />
+                            <p>Filter</p>
+                        </div>
+                        <div className="sorting-icon d-block d-lg-none d-md-none"></div>
+                        <div
+                            className={`sorting-icon ${
+                                ViewProducts === "line" ? "clicked" : ""
+                            } d-none d-lg-block d-md-block`}
+                            data-value="line"
+                            onClick={(e) => handleViewingIcons(e)}
+                        >
+                            <ViewHeadlineIcon />
+                        </div>
+                        <div
+                            className={`sorting-icon ${
+                                ViewProducts === "square" ? "clicked" : ""
+                            } d-none d-lg-block d-md-block`}
+                            data-value="square"
+                            onClick={(e) => handleViewingIcons(e)}
+                        >
+                            <AppsIcon />
+                        </div>
+                    </div>
+                    {ViewProducts === "square" ? (
+                        <LaptopsSquareView />
+                    ) : (
+                        <LaptopsLinedView />
+                    )}
                 </Grid>
             </Grid>
         </>

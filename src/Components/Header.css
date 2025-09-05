@@ -10,6 +10,9 @@
     border-radius: 10px;
     cursor: pointer;
 }
+.gategories:hover {
+    background-color: #053b69;
+}
 
 .sreach-bar {
     height: 40px;

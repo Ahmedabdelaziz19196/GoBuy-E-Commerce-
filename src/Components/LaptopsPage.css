@@ -113,9 +113,7 @@
 }
 /*accordion component Two*/
 /*accordion component last*/
-.accordion-last .accordion-item {
-    border-bottom: none !important;
-}
+
 /*accordion component last*/
 
 .VGA-sreach {
@@ -137,4 +135,64 @@
 }
 .css-13vpke-MuiSlider-root {
     color: var(--main-color) !important;
+}
+
+.sorting-icon {
+    color: gray;
+    cursor: pointer;
+}
+.sorting-icon:hover {
+    color: var(--main-color);
+}
+.sorting-icon.clicked {
+    color: var(--main-color);
+}
+
+@media (min-width: 1200px) {
+    .product-details.hoverd::after {
+        content: "";
+        position: absolute;
+        background-color: white;
+        height: 443px;
+        width: 120%;
+        top: 200px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        border-radius: 10px;
+        border: 1px solid #b3b3b3;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px;
+    }
+}
+@media (max-width: 1199px) {
+    .product-details.hoverd::after {
+        content: "";
+        position: absolute;
+        background-color: white;
+        height: 432px;
+        width: 120%;
+        top: 201px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        border-radius: 10px;
+        border: 1px solid #b3b3b3;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px;
+    }
+}
+@media (max-width: 599px) {
+    .product-details.hoverd::after {
+        content: "";
+        position: absolute;
+        background-color: white;
+        height: 485px;
+        width: 110%;
+        top: 223px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        border-radius: 10px;
+        border: 1px solid #b3b3b3;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px;
+    }
 }
