@@ -11,13 +11,37 @@ import Fuse from "fuse.js";
 import Accordion from "react-bootstrap/Accordion";
 import Form from "react-bootstrap/Form";
 import { useEffect, useState } from "react";
-import LaptopsSquareView from "./LaptopsSquareView";
-import LaptopsLinedView from "./LaptopsLinedView";
+import LaptopsLinedView from "./LaptopsListView";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
+import { useFilter } from "../Context/ProductFilters";
+import { useProduct } from "../Context/TheProducts";
+import ThePagination from "./ThePagination";
+import LaptopsGridView from "./LaptopsGridView";
 export default function LaptopsPage() {
     const [vGASearch, setVGASearch] = useState("");
     const [price, setPrice] = useState([18000, 300000]);
     const [resetllClick, setresetllClick] = useState(false);
-    const [ViewProducts, setViewproducts] = useState("square");
+    const [currentViewProducts, setCurrentViewProducts] = useState("grid");
+    const { laptops } = useFilter();
+    const { laptopsList } = useProduct();
+
+    // Set for the Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [perPageValue, setPerPageValue] = useState("16");
+    const indexOfLastItem = currentPage * perPageValue;
+    const indexOfFirstItem = indexOfLastItem - perPageValue;
+    const currentProducts = laptopsList.slice(
+        indexOfFirstItem,
+        indexOfLastItem
+    );
+    // Set for the Pagination
+    const perPageValueRadios = [
+        { perPage: "16" },
+        { perPage: "24" },
+        { perPage: "32" },
+        { perPage: "64" },
+    ];
 
     function handleChange(event, newValue) {
         setPrice(newValue);
@@ -27,109 +51,18 @@ export default function LaptopsPage() {
         setTimeout(() => setresetllClick(false), 250);
     }
 
-    function handleViewingIcons(e) {
-        let value = e.currentTarget.getAttribute("data-value");
-        setViewproducts(value);
-    }
-
-    const brand = ["Hp", "Dell", "Lenovo", "Msi", "Acer", "Asus", "Razer"];
-    const processors = [
-        "AMD Ryzen AI 9",
-        "Intel Core 5",
-        "Intel Core 7",
-        "Intel Core i7",
-        "Intel Core Ultra 7",
-        "Intel Core Ultra 9",
-        "Intel Core i5",
-        "Intel Core i9",
-        "AMD Ryzen 5",
-        "AMD Ryzen 7",
-        "AMD Ryzen 9",
-    ];
-    const generations = [
-        "14th generation",
-        "4th Generation",
-        "10th generation",
-        "11th generation",
-        "12th generation",
-        "13th generation",
-    ];
-    const vgaNumbers = [
-        "AMD Radeon RX 6600M",
-        "AMD Radeon RX 6500M",
-        "AMD Radeon RX 6700S",
-        "AMD Radeon RX6700M",
-        "NVIDIA GeForce RTX 3070",
-        "Nvidia GeForce RTX 3070 Ti",
-        "Nvidia GeForce RTX 3050",
-        "Nvidia GeForce RTX 5060",
-        "Nvidia GeForce RTX 5070 Ti",
-        "NVIDIA GeForce RTX 5090",
-        "NVIDIA GeForce RTX 2050",
-        "NVIDIA GeForce RTX 3050 Ti",
-        "NVIDIA GeForce RTX 4050",
-        "NVIDIA GeForce RTX 4060",
-        "NVIDIA GeForce RTX 4070",
-        "NVIDIA GeForce RTX 4080",
-        "NVIDIA GeForce RTX 4090",
-        "NVIDIA GeForce RTX 5070",
-        "NVIDIA GeForce RTX 5080",
-        "NVIDIA GeForce RTX 5050Ti",
-        "NVIDIA GeForce RTX 2050",
-        "AMD Radeon Graphics",
-        "NVIDIA GeForce GTX 1650",
-        "NVIDIA GeForce GTX 1650Ti",
-        "NVIDIA GeForce RTX 2060",
-        "NVIDIA GeForce RTX 3050",
-        "NVIDIA GeForce RTX 3060",
-        "NVIDIA GeForce RTX 3070",
-        "NVIDIA GeForce RTX 3080",
-    ];
     const options = {
         includeScore: true,
         threshold: 0.3,
     };
-    const fuse = new Fuse(vgaNumbers, options);
+    const fuse = new Fuse(laptops.vgaNumbers, options);
     const result = fuse.search(vGASearch);
     const SearchedVGA = result.map((type) => type.item);
 
-    const screenSizes = [
-        '13.4"',
-        '14"',
-        '15"',
-        '15.6"',
-        '16"',
-        '16.1"',
-        '17"',
-        '17.3"',
-        '18"',
-    ];
-    const refreshRates = [
-        "60 Hz",
-        "120 Hz",
-        "144 Hz",
-        "165 Hz",
-        "240 Hz",
-        "300 Hz",
-        "360 Hz",
-    ];
-    const ramOptions = ["8 GB", "12 GB", "16 GB", "24 GB", "32 GB", "64 GB"];
-    const storageOptions = [
-        "3TB SSD",
-        "4TB SSD",
-        "SSD 2TB",
-        "SSD 256 GB",
-        "SSD 512 GB",
-        "SSD 1TB",
-        "2 TB SSD",
-        "1 TB",
-        "1 TB + 256 GB SSD",
-        "2 TB",
-    ];
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth <= 599) {
-                setViewproducts("square");
+                setCurrentViewProducts("square");
             }
         };
 
@@ -140,7 +73,13 @@ export default function LaptopsPage() {
         return () => {
             window.removeEventListener("resize", handleResize);
         };
-    }, [setViewproducts]);
+    }, [setCurrentViewProducts]);
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }, [currentPage]);
     return (
         <>
             <PageCategoryHeader />
@@ -229,7 +168,7 @@ export default function LaptopsPage() {
                                         Brand
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {brand.map((type, index) => (
+                                        {laptops.brand.map((type, index) => (
                                             <Form.Check
                                                 key={index}
                                                 type={"checkbox"}
@@ -251,14 +190,16 @@ export default function LaptopsPage() {
                                         Processor
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {processors.map((type, index) => (
-                                            <Form.Check
-                                                key={index}
-                                                type={"checkbox"}
-                                                id={type}
-                                                label={type}
-                                            />
-                                        ))}
+                                        {laptops.processors.map(
+                                            (type, index) => (
+                                                <Form.Check
+                                                    key={index}
+                                                    type={"checkbox"}
+                                                    id={type}
+                                                    label={type}
+                                                />
+                                            )
+                                        )}
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -273,14 +214,16 @@ export default function LaptopsPage() {
                                         Generations
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {generations.map((type, index) => (
-                                            <Form.Check
-                                                key={index}
-                                                type={"checkbox"}
-                                                id={type}
-                                                label={type}
-                                            />
-                                        ))}
+                                        {laptops.generations.map(
+                                            (type, index) => (
+                                                <Form.Check
+                                                    key={index}
+                                                    type={"checkbox"}
+                                                    id={type}
+                                                    label={type}
+                                                />
+                                            )
+                                        )}
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -332,14 +275,16 @@ export default function LaptopsPage() {
                                         </div>
 
                                         {vGASearch === "" ? (
-                                            vgaNumbers.map((type, index) => (
-                                                <Form.Check
-                                                    key={index}
-                                                    type={"checkbox"}
-                                                    id={type}
-                                                    label={type}
-                                                />
-                                            ))
+                                            laptops.vgaNumbers.map(
+                                                (type, index) => (
+                                                    <Form.Check
+                                                        key={index}
+                                                        type={"checkbox"}
+                                                        id={type}
+                                                        label={type}
+                                                    />
+                                                )
+                                            )
                                         ) : SearchedVGA.length > 0 ? (
                                             SearchedVGA.map((type, index) => (
                                                 <Form.Check
@@ -366,14 +311,16 @@ export default function LaptopsPage() {
                                         Screen Size
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {screenSizes.map((type, index) => (
-                                            <Form.Check
-                                                key={index}
-                                                type={"checkbox"}
-                                                id={type}
-                                                label={type}
-                                            />
-                                        ))}
+                                        {laptops.screenSizes.map(
+                                            (type, index) => (
+                                                <Form.Check
+                                                    key={index}
+                                                    type={"checkbox"}
+                                                    id={type}
+                                                    label={type}
+                                                />
+                                            )
+                                        )}
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -388,14 +335,16 @@ export default function LaptopsPage() {
                                         Refresh Rate
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {refreshRates.map((type, index) => (
-                                            <Form.Check
-                                                key={index}
-                                                type={"checkbox"}
-                                                id={type}
-                                                label={type}
-                                            />
-                                        ))}
+                                        {laptops.refreshRates.map(
+                                            (type, index) => (
+                                                <Form.Check
+                                                    key={index}
+                                                    type={"checkbox"}
+                                                    id={type}
+                                                    label={type}
+                                                />
+                                            )
+                                        )}
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -410,14 +359,16 @@ export default function LaptopsPage() {
                                         RAM
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {ramOptions.map((type, index) => (
-                                            <Form.Check
-                                                key={index}
-                                                type={"checkbox"}
-                                                id={type}
-                                                label={type}
-                                            />
-                                        ))}
+                                        {laptops.ramOptions.map(
+                                            (type, index) => (
+                                                <Form.Check
+                                                    key={index}
+                                                    type={"checkbox"}
+                                                    id={type}
+                                                    label={type}
+                                                />
+                                            )
+                                        )}
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -432,14 +383,16 @@ export default function LaptopsPage() {
                                         Storage
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {storageOptions.map((type, index) => (
-                                            <Form.Check
-                                                key={index}
-                                                type={"checkbox"}
-                                                id={type}
-                                                label={type}
-                                            />
-                                        ))}
+                                        {laptops.storageOptions.map(
+                                            (type, index) => (
+                                                <Form.Check
+                                                    key={index}
+                                                    type={"checkbox"}
+                                                    id={type}
+                                                    label={type}
+                                                />
+                                            )
+                                        )}
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -582,39 +535,105 @@ export default function LaptopsPage() {
                     </div>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 12, md: 12, lg: 9.5 }}>
-                    <div style={{ display: "flex", justifyContent: "right" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
                         <div
-                            className="gategories d-md-none d-lg-none align-items-center justify-content-center d-flex"
-                            // onClick={handleShowCategories}
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: "4px",
+                            }}
                         >
-                            <TuneIcon />
-                            <p>Filter</p>
+                            <p
+                                style={{
+                                    color: "var(--main-color)",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Per Page :
+                            </p>
+                            <ButtonGroup>
+                                {perPageValueRadios.map((radio, idx) => (
+                                    <ToggleButton
+                                        key={idx}
+                                        id={`radio-${idx}`}
+                                        type="radio"
+                                        name="radio"
+                                        value={radio.perPage}
+                                        checked={perPageValue === radio.perPage}
+                                        onChange={(e) => {
+                                            setPerPageValue(
+                                                e.currentTarget.value
+                                            );
+                                            setCurrentPage(1);
+                                        }}
+                                        style={{
+                                            paddingTop: "1px",
+                                            paddingBottom: "1px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            height: "30px",
+                                            background: "white",
+                                            color: "black",
+                                            border: "1px solid #e7e7e7",
+                                        }}
+                                    >
+                                        {radio.perPage}
+                                    </ToggleButton>
+                                ))}
+                            </ButtonGroup>
                         </div>
-                        <div className="sorting-icon d-block d-lg-none d-md-none"></div>
+
                         <div
-                            className={`sorting-icon ${
-                                ViewProducts === "line" ? "clicked" : ""
-                            } d-none d-lg-block d-md-block`}
-                            data-value="line"
-                            onClick={(e) => handleViewingIcons(e)}
+                            style={{ display: "flex", justifyContent: "right" }}
                         >
-                            <ViewHeadlineIcon />
-                        </div>
-                        <div
-                            className={`sorting-icon ${
-                                ViewProducts === "square" ? "clicked" : ""
-                            } d-none d-lg-block d-md-block`}
-                            data-value="square"
-                            onClick={(e) => handleViewingIcons(e)}
-                        >
-                            <AppsIcon />
+                            <div
+                                className="gategories d-md-none d-lg-none align-items-center justify-content-center d-flex"
+                                // onClick={handleShowCategories}
+                            >
+                                <TuneIcon />
+                                <p>Filter</p>
+                            </div>
+                            <div className="sorting-icon d-block d-lg-none d-md-none"></div>
+                            <div
+                                className={`sorting-icon ${
+                                    currentViewProducts === "list"
+                                        ? "clicked"
+                                        : ""
+                                } d-none d-lg-block d-md-block`}
+                                onClick={() => setCurrentViewProducts("list")}
+                            >
+                                <ViewHeadlineIcon />
+                            </div>
+                            <div
+                                className={`sorting-icon ${
+                                    currentViewProducts === "grid"
+                                        ? "clicked"
+                                        : ""
+                                } d-none d-lg-block d-md-block`}
+                                onClick={() => setCurrentViewProducts("grid")}
+                            >
+                                <AppsIcon />
+                            </div>
                         </div>
                     </div>
-                    {ViewProducts === "square" ? (
-                        <LaptopsSquareView />
+
+                    {currentViewProducts === "grid" ? (
+                        <LaptopsGridView currentProducts={currentProducts} />
                     ) : (
-                        <LaptopsLinedView />
+                        <LaptopsLinedView currentProducts={currentProducts} />
                     )}
+                    <ThePagination
+                        perPageValue={perPageValue}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                    />
                 </Grid>
             </Grid>
         </>

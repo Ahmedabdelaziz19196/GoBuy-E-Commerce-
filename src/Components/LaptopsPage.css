@@ -147,15 +147,18 @@
 .sorting-icon.clicked {
     color: var(--main-color);
 }
+.listed-product:hover {
+    background-color: #f6f8fa !important;
+}
 
 @media (min-width: 1200px) {
     .product-details.hoverd::after {
         content: "";
         position: absolute;
         background-color: white;
-        height: 443px;
+        height: 450px;
         width: 120%;
-        top: 200px;
+        top: 210px;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: -1;
@@ -195,4 +198,10 @@
         border: 1px solid #b3b3b3;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px;
     }
+}
+
+.btn-check:checked + .btn {
+    background-color: var(--main-color) !important;
+    border-color: var(--main-color) !important;
+    color: white !important;
 }
