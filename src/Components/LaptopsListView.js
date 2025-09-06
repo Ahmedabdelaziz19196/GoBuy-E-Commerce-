@@ -56,13 +56,17 @@ export default function LaptopsListView({ currentProducts }) {
                                         display: "flex",
                                         justifyContent: "space-between",
                                         alignItems: "top",
+                                        gap: "5px",
                                     }}
                                 >
                                     <p style={{ fontWeight: "bold" }}>
                                         {laptopsProductsList[index].description}
                                     </p>
                                     <img
-                                        src="imgs/brands/lenovo.png"
+                                        src={
+                                            laptopsProductsList[index]
+                                                .brandImage
+                                        }
                                         alt="brand"
                                         style={{
                                             height: "20px",
@@ -252,7 +256,7 @@ export default function LaptopsListView({ currentProducts }) {
                             </div>
                             <div
                                 style={{
-                                    width: "400px",
+                                    minWidth: "200px",
                                     height: "100%",
                                     borderLeft: "1px solid #e7e7e7",
                                     paddingLeft: "10px",

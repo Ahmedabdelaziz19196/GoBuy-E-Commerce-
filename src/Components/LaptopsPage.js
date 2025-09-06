@@ -62,7 +62,7 @@ export default function LaptopsPage() {
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth <= 599) {
-                setCurrentViewProducts("square");
+                setCurrentViewProducts("grid");
             }
         };
 
