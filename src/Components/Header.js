@@ -8,13 +8,14 @@ import { ReactTyped } from "react-typed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
 import AllGategories from "./AllGategories";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import LanguagesSelection from "./LanguagesSelection";
 import SearchForMobile from "./SearchForMobile";
 import { Link } from "react-router-dom";
+import { SideCategoriesContext } from "../Context/SideCategoriesContext";
 
 export default function Header() {
-    const [showCategories, setShowCategories] = useState(false);
+    const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [langClick, setLangClick] = useState(false);
     const [iconFavClick, setIconFavClick] = useState(false);
     const [iconShopClick, setIconShopClick] = useState(false);
@@ -23,7 +24,7 @@ export default function Header() {
     const [showSerachBarForMobile, setShowSerachBarForMobile] = useState(false);
 
     function handleShowCategories() {
-        setShowCategories(true);
+        setSideCategoriesShow(true);
     }
 
     function handleFavIcon() {
@@ -74,7 +75,6 @@ export default function Header() {
                                     cursor: "pointer",
                                     color: "black",
                                 }}
-                                onClick={() => console.log("goo dady")}
                             >
                                 GoBuy
                             </p>
@@ -192,10 +192,7 @@ export default function Header() {
                 </div>
                 <LanguagesSelection langClick={langClick} />
             </Container>
-            <AllGategories
-                showCategories={showCategories}
-                setShowCategories={setShowCategories}
-            />
+            <AllGategories />
             <SearchForMobile showSerachBarForMobile={showSerachBarForMobile} />
         </div>
     );

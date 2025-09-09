@@ -7,19 +7,14 @@ export default function PageCategories() {
         <Container maxWidth="xl">
             <Grid container spacing={2} sx={{ margin: "20px 0px " }}>
                 <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }}>
-                    <div
-                        style={{
-                            border: "1px solid #b3b3b3",
-                            borderRadius: "20px",
-                            padding: "15px",
-                        }}
-                    >
+                    <div>
                         <Link to="laptops">
                             <div
                                 style={{
+                                    border: "2px solid #b3b3b3",
                                     overflow: "hidden",
                                     width: "100%",
-                                    borderRadius: "5px ",
+                                    borderRadius: "20px ",
                                     position: "relative",
                                     cursor: "pointer",
                                 }}
@@ -47,19 +42,14 @@ export default function PageCategories() {
                     </div>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 12, md: 12, lg: 6 }}>
-                    <div
-                        style={{
-                            border: "1px solid #b3b3b3",
-                            borderRadius: "20px",
-                            padding: "15px",
-                        }}
-                    >
+                    <div>
                         <Link to="monitors">
                             <div
                                 style={{
+                                    border: "2px solid #b3b3b3",
                                     overflow: "hidden",
                                     width: "100%",
-                                    borderRadius: "5px",
+                                    borderRadius: "20px ",
                                     position: "relative",
                                     cursor: "pointer",
                                 }}

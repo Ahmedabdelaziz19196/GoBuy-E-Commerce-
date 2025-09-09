@@ -1,21 +1,26 @@
 import { createContext, useContext, useState } from "react";
 const FiltersContext = createContext();
 export function FilterProvider({ children }) {
-    const [filter] = useState({
+    const filters = {
         laptops: {
+            categories: ["Gaming", "Business", "Personal", "Graphics"],
             brand: ["Hp", "Dell", "Lenovo", "Msi", "Acer", "Asus", "Razer"],
             processors: [
-                "AMD Ryzen AI 9",
+                "Intel Core i3",
+                "Intel Core i5",
+                "Intel Core i7",
+                "Intel Core i9",
                 "Intel Core 5",
                 "Intel Core 7",
-                "Intel Core i7",
+                "Intel Core Ultra 5",
                 "Intel Core Ultra 7",
                 "Intel Core Ultra 9",
-                "Intel Core i5",
-                "Intel Core i9",
-                "AMD Ryzen 5",
                 "AMD Ryzen 7",
                 "AMD Ryzen 9",
+                "AMD Ryzen AI 9",
+                "Snapdragon X",
+                "Snapdragon X Plus",
+                "Snapdragon X Elite",
             ],
             generations: [
                 "14th generation",
@@ -90,9 +95,51 @@ export function FilterProvider({ children }) {
                 "2 TB",
             ],
         },
+        monitors: {},
+    };
+    const [selectedFilters, setSlectedFilters] = useState({
+        laptops: {
+            inStock: false,
+            categories: [],
+            brand: [],
+            processors: [],
+            generations: [],
+            vgaNumbers: [],
+            screenSizes: [],
+            refreshRates: [],
+            ramOptions: [],
+            storageOptions: [],
+        },
+        monitors: {},
     });
+    function toggleLpatopsFilters(filterGroup, value) {
+        setSlectedFilters((prev) => {
+            const currentValues = prev.laptops[filterGroup];
+            if (typeof currentValues === "boolean") {
+                return {
+                    ...prev,
+                    laptops: {
+                        ...prev.laptops,
+                        [filterGroup]: value,
+                    },
+                };
+            }
+            const isSelected = currentValues.includes(value);
+            return {
+                ...prev,
+                laptops: {
+                    ...prev.laptops,
+                    [filterGroup]: isSelected
+                        ? currentValues.filter((v) => v !== value)
+                        : [...currentValues, value.toLowerCase()],
+                },
+            };
+        });
+    }
     return (
-        <FiltersContext.Provider value={filter}>
+        <FiltersContext.Provider
+            value={{ filters, selectedFilters, toggleLpatopsFilters }}
+        >
             {children}
         </FiltersContext.Provider>
     );

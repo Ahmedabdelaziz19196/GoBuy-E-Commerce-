@@ -10,38 +10,123 @@ import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
 import Fuse from "fuse.js";
 import Accordion from "react-bootstrap/Accordion";
 import Form from "react-bootstrap/Form";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import LaptopsLinedView from "./LaptopsListView";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import { useFilter } from "../Context/ProductFilters";
 import { useProduct } from "../Context/TheProducts";
+import { SideCategoriesContext } from "../Context/SideCategoriesContext";
 import ThePagination from "./ThePagination";
 import LaptopsGridView from "./LaptopsGridView";
+import LaptopsFilter from "./LaptopsFilter";
 export default function LaptopsPage() {
+    const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [vGASearch, setVGASearch] = useState("");
     const [price, setPrice] = useState([18000, 300000]);
     const [resetllClick, setresetllClick] = useState(false);
     const [currentViewProducts, setCurrentViewProducts] = useState("grid");
-    const { laptops } = useFilter();
+    const { filters, selectedFilters } = useFilter();
     const { laptopsList } = useProduct();
 
     // Set for the Pagination
+    //filter Laptops
+    const x = laptopsList.map((ele) => {
+        return ele.processor.name;
+    });
+    const y = new Set(x);
+    console.log(y);
+    const laptopsProductsList = laptopsList.filter((laptop) => {
+        const noFilterApplied = Object.values(selectedFilters.laptops).every(
+            (arr) => arr.length === 0 || arr === false
+        );
+        if (noFilterApplied) return true;
+
+        const filterCategory =
+            selectedFilters.laptops.categories.length === 0 ||
+            selectedFilters.laptops.categories.includes(
+                laptop.category.toLowerCase()
+            );
+        const filterBrand =
+            selectedFilters.laptops.brand.length === 0 ||
+            selectedFilters.laptops.brand.includes(laptop.brand.toLowerCase());
+
+        const filterProcessors =
+            selectedFilters.laptops.processors.length === 0 ||
+            selectedFilters.laptops.processors.includes(
+                laptop.processor.name.toLowerCase()
+            );
+
+        const filterProcessorsGeneration =
+            selectedFilters.laptops.generations.length === 0 ||
+            selectedFilters.laptops.generations.includes(
+                laptop.processor.generation.toLowerCase()
+            );
+
+        const filtervgaNumber =
+            selectedFilters.laptops.vgaNumbers.length === 0 ||
+            selectedFilters.laptops.vgaNumbers.includes(
+                laptop.graphics.name.toLowerCase()
+            );
+        const filterScreenSize =
+            selectedFilters.laptops.screenSizes.length === 0 ||
+            selectedFilters.laptops.screenSizes.includes(
+                laptop.display.size.toLowerCase()
+            );
+
+        const filterRefrshRate =
+            selectedFilters.laptops.refreshRates.length === 0 ||
+            selectedFilters.laptops.refreshRates.includes(
+                laptop.display.refreshRate.toLowerCase()
+            );
+
+        const filterRam =
+            selectedFilters.laptops.ramOptions.length === 0 ||
+            selectedFilters.laptops.ramOptions.includes(
+                laptop.ram.size.toLowerCase()
+            );
+
+        const filterStorage =
+            selectedFilters.laptops.storageOptions.length === 0 ||
+            selectedFilters.laptops.storageOptions.includes(
+                laptop.storage.toLowerCase()
+            );
+
+        return (
+            filterCategory &&
+            filterBrand &&
+            filterProcessors &&
+            filterProcessorsGeneration &&
+            filtervgaNumber &&
+            filterScreenSize &&
+            filterRefrshRate &&
+            filterRam &&
+            filterStorage
+        );
+    });
+
+    let FilteredLapstopsProductsList = laptopsProductsList;
+    if (selectedFilters.laptops.inStock) {
+        FilteredLapstopsProductsList = laptopsProductsList.filter((laptop) => {
+            return laptop.inStock === true;
+        });
+    }
+    //filter Laptops
+
     const [currentPage, setCurrentPage] = useState(1);
-    const [perPageValue, setPerPageValue] = useState("16");
+    const [perPageValue, setPerPageValue] = useState("25");
     const indexOfLastItem = currentPage * perPageValue;
     const indexOfFirstItem = indexOfLastItem - perPageValue;
-    const currentProducts = laptopsList.slice(
+    const currentProducts = FilteredLapstopsProductsList.slice(
         indexOfFirstItem,
         indexOfLastItem
     );
-    // Set for the Pagination
     const perPageValueRadios = [
-        { perPage: "16" },
-        { perPage: "24" },
-        { perPage: "32" },
-        { perPage: "64" },
+        { perPage: "15" },
+        { perPage: "25" },
+        { perPage: "35" },
     ];
+    // Set for the Pagination
 
     function handleChange(event, newValue) {
         setPrice(newValue);
@@ -55,7 +140,7 @@ export default function LaptopsPage() {
         includeScore: true,
         threshold: 0.3,
     };
-    const fuse = new Fuse(laptops.vgaNumbers, options);
+    const fuse = new Fuse(filters.laptops.vgaNumbers, options);
     const result = fuse.search(vGASearch);
     const SearchedVGA = result.map((type) => type.item);
 
@@ -74,12 +159,18 @@ export default function LaptopsPage() {
             window.removeEventListener("resize", handleResize);
         };
     }, [setCurrentViewProducts]);
+
     useEffect(() => {
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     }, [currentPage]);
+
+    useEffect(() => {
+        setSideCategoriesShow(false);
+    }, [setSideCategoriesShow]);
+
     return (
         <>
             <PageCategoryHeader />
@@ -96,26 +187,7 @@ export default function LaptopsPage() {
                             <Accordion.Item eventKey="0">
                                 <Accordion.Header>Categories</Accordion.Header>
                                 <Accordion.Body>
-                                    <Form.Check
-                                        type={"checkbox"}
-                                        id={`Gaming Laptops`}
-                                        label={`Gaming Laptops`}
-                                    />
-                                    <Form.Check
-                                        type={"checkbox"}
-                                        id={`Business Laptops`}
-                                        label={`Business Laptops`}
-                                    />
-                                    <Form.Check
-                                        type={"checkbox"}
-                                        id={`Personal Laptops`}
-                                        label={`Personal Laptops`}
-                                    />
-                                    <Form.Check
-                                        type={"checkbox"}
-                                        id={` Graphics & Design Laptops`}
-                                        label={` Graphics & Design Laptops`}
-                                    />
+                                    <LaptopsFilter filterType="categories" />
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
@@ -149,11 +221,7 @@ export default function LaptopsPage() {
                                         Available
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        <Form.Check
-                                            type={"checkbox"}
-                                            id={`In stock`}
-                                            label={`In stock`}
-                                        />
+                                        <LaptopsFilter filterType="inStock" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -168,14 +236,7 @@ export default function LaptopsPage() {
                                         Brand
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {laptops.brand.map((type, index) => (
-                                            <Form.Check
-                                                key={index}
-                                                type={"checkbox"}
-                                                id={type}
-                                                label={type}
-                                            />
-                                        ))}
+                                        <LaptopsFilter filterType="brand" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -190,16 +251,7 @@ export default function LaptopsPage() {
                                         Processor
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {laptops.processors.map(
-                                            (type, index) => (
-                                                <Form.Check
-                                                    key={index}
-                                                    type={"checkbox"}
-                                                    id={type}
-                                                    label={type}
-                                                />
-                                            )
-                                        )}
+                                        <LaptopsFilter filterType="processors" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -214,16 +266,7 @@ export default function LaptopsPage() {
                                         Generations
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {laptops.generations.map(
-                                            (type, index) => (
-                                                <Form.Check
-                                                    key={index}
-                                                    type={"checkbox"}
-                                                    id={type}
-                                                    label={type}
-                                                />
-                                            )
-                                        )}
+                                        <LaptopsFilter filterType="generations" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -275,16 +318,7 @@ export default function LaptopsPage() {
                                         </div>
 
                                         {vGASearch === "" ? (
-                                            laptops.vgaNumbers.map(
-                                                (type, index) => (
-                                                    <Form.Check
-                                                        key={index}
-                                                        type={"checkbox"}
-                                                        id={type}
-                                                        label={type}
-                                                    />
-                                                )
-                                            )
+                                            <LaptopsFilter filterType="vgaNumbers" />
                                         ) : SearchedVGA.length > 0 ? (
                                             SearchedVGA.map((type, index) => (
                                                 <Form.Check
@@ -311,16 +345,7 @@ export default function LaptopsPage() {
                                         Screen Size
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {laptops.screenSizes.map(
-                                            (type, index) => (
-                                                <Form.Check
-                                                    key={index}
-                                                    type={"checkbox"}
-                                                    id={type}
-                                                    label={type}
-                                                />
-                                            )
-                                        )}
+                                        <LaptopsFilter filterType="screenSizes" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -335,16 +360,7 @@ export default function LaptopsPage() {
                                         Refresh Rate
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {laptops.refreshRates.map(
-                                            (type, index) => (
-                                                <Form.Check
-                                                    key={index}
-                                                    type={"checkbox"}
-                                                    id={type}
-                                                    label={type}
-                                                />
-                                            )
-                                        )}
+                                        <LaptopsFilter filterType="refreshRates" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -359,16 +375,7 @@ export default function LaptopsPage() {
                                         RAM
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {laptops.ramOptions.map(
-                                            (type, index) => (
-                                                <Form.Check
-                                                    key={index}
-                                                    type={"checkbox"}
-                                                    id={type}
-                                                    label={type}
-                                                />
-                                            )
-                                        )}
+                                        <LaptopsFilter filterType="ramOptions" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -383,16 +390,7 @@ export default function LaptopsPage() {
                                         Storage
                                     </Accordion.Header>
                                     <Accordion.Body className="accordion-two">
-                                        {laptops.storageOptions.map(
-                                            (type, index) => (
-                                                <Form.Check
-                                                    key={index}
-                                                    type={"checkbox"}
-                                                    id={type}
-                                                    label={type}
-                                                />
-                                            )
-                                        )}
+                                        <LaptopsFilter filterType="storageOptions" />
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
@@ -631,8 +629,11 @@ export default function LaptopsPage() {
                     )}
                     <ThePagination
                         perPageValue={perPageValue}
-                        currentPage={currentPage}
+                        FilteredLapstopsProductsList={
+                            FilteredLapstopsProductsList
+                        }
                         setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
                     />
                 </Grid>
             </Grid>

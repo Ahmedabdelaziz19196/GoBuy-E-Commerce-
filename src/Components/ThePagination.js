@@ -1,14 +1,12 @@
 import * as React from "react";
 import Pagination from "@mui/material/Pagination";
-import { useProduct } from "../Context/TheProducts";
 
 export default function ThePagination({
     perPageValue,
     currentPage,
     setCurrentPage,
+    FilteredLapstopsProductsList,
 }) {
-    const { laptopsList } = useProduct();
-
     function setThePage(e) {
         if (
             e.target.closest("[aria-label]").getAttribute("aria-label") ===
@@ -36,7 +34,9 @@ export default function ThePagination({
             <Pagination
                 page={currentPage}
                 onChange={setThePage}
-                count={Math.ceil(laptopsList.length / perPageValue)}
+                count={Math.ceil(
+                    FilteredLapstopsProductsList.length / perPageValue
+                )}
                 variant="outlined"
                 shape="rounded"
                 sx={{

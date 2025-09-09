@@ -4,7 +4,6 @@ import Snackbar from "@mui/material/Snackbar";
 import { SnackbarContent } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import { laptopsProductsList } from "../laptopsProducts";
 import { useState } from "react";
 
 export default function LaptopsListView({ currentProducts }) {
@@ -37,7 +36,7 @@ export default function LaptopsListView({ currentProducts }) {
                             }}
                         >
                             <img
-                                src={laptopsProductsList[index].productImageOne}
+                                src={ele.productImageOne}
                                 alt="laptop"
                                 style={{
                                     height: "100%",
@@ -60,13 +59,10 @@ export default function LaptopsListView({ currentProducts }) {
                                     }}
                                 >
                                     <p style={{ fontWeight: "bold" }}>
-                                        {laptopsProductsList[index].description}
+                                        {ele.description}
                                     </p>
                                     <img
-                                        src={
-                                            laptopsProductsList[index]
-                                                .brandImage
-                                        }
+                                        src={ele.brandImage}
                                         alt="brand"
                                         style={{
                                             height: "20px",
@@ -86,13 +82,13 @@ export default function LaptopsListView({ currentProducts }) {
                                 >
                                     <p>
                                         SKU:
-                                        {laptopsProductsList[index].productid}
+                                        {ele.productid}
                                     </p>
                                     <ContentCopyIcon
                                         sx={{ fontSize: "inherit" }}
                                         onClick={() => {
                                             navigator.clipboard
-                                                .writeText("83K100F0ED")
+                                                .writeText(ele.productid)
                                                 .then(() => {
                                                     setOpenToast(true);
                                                     setTimeout(() => {
@@ -122,10 +118,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .brand
-                                                }
+                                                {ele.brand}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -136,10 +129,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .productName
-                                                }
+                                                {ele.productName}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -150,10 +140,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .processor.name
-                                                }
+                                                {ele.processor.name}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -164,10 +151,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .processor.size
-                                                }
+                                                {ele.processor.size}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -178,10 +162,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .processor.storage
-                                                }
+                                                {ele.processor.storage}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -192,10 +173,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .graphics.name
-                                                }
+                                                {ele.graphics.name}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -206,10 +184,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .display.size
-                                                }
+                                                {ele.display.size}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -220,7 +195,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {laptopsProductsList[index].os}
+                                                {ele.os}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -231,10 +206,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .color
-                                                }
+                                                {ele.color}
                                             </strong>
                                         </span>{" "}
                                         |{" "}
@@ -245,10 +217,7 @@ export default function LaptopsListView({ currentProducts }) {
                                                     color: "var(--main-color)",
                                                 }}
                                             >
-                                                {
-                                                    laptopsProductsList[index]
-                                                        .warranty
-                                                }
+                                                {ele.warranty}
                                             </strong>
                                         </span>
                                     </p>
@@ -272,7 +241,7 @@ export default function LaptopsListView({ currentProducts }) {
                                         fontWeight: "bold",
                                     }}
                                 >
-                                    {laptopsProductsList[index].price}
+                                    {ele.price}
                                 </h5>
                                 <div
                                     className="gategories d-md-flex d-lg-flex align-items-center justify-content-center d-none gap-2 "

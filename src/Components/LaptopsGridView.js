@@ -5,7 +5,6 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Grid";
 import { useState } from "react";
-import { laptopsProductsList } from "../laptopsProducts";
 
 export default function LaptopsGridView({ currentProducts }) {
     const [viweProduct, setViewProduct] = useState(null);
@@ -43,7 +42,7 @@ export default function LaptopsGridView({ currentProducts }) {
                             }}
                         >
                             <img
-                                src={laptopsProductsList[index].productImageOne}
+                                src={ele.productImageOne}
                                 alt="lapTop"
                                 style={{
                                     width: "100%",
@@ -64,13 +63,13 @@ export default function LaptopsGridView({ currentProducts }) {
                                         marginTop: "10px",
                                     }}
                                 >
-                                    {laptopsProductsList[index].price}
+                                    {ele.price}
                                 </h5>
                                 <img
-                                    src={laptopsProductsList[index].brandImage}
+                                    src={ele.brandImage}
                                     alt="brand"
                                     style={{
-                                        height: "20px",
+                                        height: "15px",
                                         background: "#f6f8fa",
                                     }}
                                 />
@@ -97,7 +96,7 @@ export default function LaptopsGridView({ currentProducts }) {
                                         transition: "0.2s",
                                     }}
                                 >
-                                    {laptopsProductsList[index].description}
+                                    {ele.description}
                                 </p>
                             </div>
                             <p
@@ -114,7 +113,7 @@ export default function LaptopsGridView({ currentProducts }) {
                                     transition: "0.2s",
                                 }}
                             >
-                                {laptopsProductsList[index].description}
+                                {ele.description}
                             </p>
                             <Tooltip
                                 title="Add To Wisthlist"

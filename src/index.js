@@ -5,18 +5,21 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { FilterProvider } from "./Context/ProductFilters";
 import { ProductsProvider } from "./Context/TheProducts";
+import { SideCategoriesProvider } from "./Context/SideCategoriesContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <ProductsProvider>
-        <FilterProvider>
-            <React.StrictMode>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </React.StrictMode>
-        </FilterProvider>
-    </ProductsProvider>
+    <SideCategoriesProvider>
+        <ProductsProvider>
+            <FilterProvider>
+                <React.StrictMode>
+                    <BrowserRouter>
+                        <App />
+                    </BrowserRouter>
+                </React.StrictMode>
+            </FilterProvider>
+        </ProductsProvider>
+    </SideCategoriesProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
