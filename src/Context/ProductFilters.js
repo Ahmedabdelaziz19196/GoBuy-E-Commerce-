@@ -1,6 +1,8 @@
 import { createContext, useContext, useState } from "react";
+import { useProduct } from "./TheProducts";
 const FiltersContext = createContext();
 export function FilterProvider({ children }) {
+    const { laptopsList } = useProduct();
     const filters = {
         laptops: {
             categories: ["Gaming", "Business", "Personal", "Graphics"],
@@ -24,11 +26,17 @@ export function FilterProvider({ children }) {
             ],
             generations: [
                 "14th generation",
+                "14th Gen",
                 "4th Generation",
                 "10th generation",
                 "11th generation",
                 "12th generation",
                 "13th generation",
+                "Lunar Lake Series 2",
+                "Arrow Lake Series 2",
+                "Snapdragon X Series",
+                "Zen 3+ Architecture",
+                "Zen 4 Architecture",
             ],
             vgaNumbers: [
                 "AMD Radeon RX 6600M",
@@ -62,38 +70,17 @@ export function FilterProvider({ children }) {
                 "NVIDIA GeForce RTX 3080",
             ],
             screenSizes: [
-                '13.4"',
+                '13.3"',
                 '14"',
-                '15"',
+                '15.3"',
                 '15.6"',
                 '16"',
                 '16.1"',
-                '17"',
-                '17.3"',
                 '18"',
             ],
-            refreshRates: [
-                "60 Hz",
-                "120 Hz",
-                "144 Hz",
-                "165 Hz",
-                "240 Hz",
-                "300 Hz",
-                "360 Hz",
-            ],
-            ramOptions: ["8 GB", "12 GB", "16 GB", "24 GB", "32 GB", "64 GB"],
-            storageOptions: [
-                "3TB SSD",
-                "4TB SSD",
-                "SSD 2TB",
-                "SSD 256 GB",
-                "SSD 512 GB",
-                "SSD 1TB",
-                "2 TB SSD",
-                "1 TB",
-                "1 TB + 256 GB SSD",
-                "2 TB",
-            ],
+            refreshRates: ["60 Hz", "120 Hz", "144 Hz", "165 Hz", "240 Hz"],
+            ramOptions: ["4 GB", "8 GB", "16 GB", "24 GB", "32 GB", "64 GB"],
+            storageOptions: ["SSD 256 GB", "SSD 512 GB", "SSD 1TB", "SSD 2TB"],
         },
         monitors: {},
     };
@@ -136,9 +123,95 @@ export function FilterProvider({ children }) {
             };
         });
     }
+
+    const laptopsProductsList = laptopsList.filter((laptop) => {
+        const noFilterApplied = Object.values(selectedFilters.laptops).every(
+            (arr) => arr.length === 0 || arr === false
+        );
+        if (noFilterApplied) return true;
+
+        const filterCategory =
+            selectedFilters.laptops.categories.length === 0 ||
+            selectedFilters.laptops.categories.includes(
+                laptop.category.toLowerCase()
+            );
+        const filterBrand =
+            selectedFilters.laptops.brand.length === 0 ||
+            selectedFilters.laptops.brand.includes(laptop.brand.toLowerCase());
+
+        const filterProcessors =
+            selectedFilters.laptops.processors.length === 0 ||
+            selectedFilters.laptops.processors.includes(
+                laptop.processor.name.toLowerCase()
+            );
+
+        const filterProcessorsGeneration =
+            selectedFilters.laptops.generations.length === 0 ||
+            selectedFilters.laptops.generations.includes(
+                laptop.processor.generation.toLowerCase()
+            );
+
+        const filtervgaNumber =
+            selectedFilters.laptops.vgaNumbers.length === 0 ||
+            selectedFilters.laptops.vgaNumbers.includes(
+                laptop.graphics.name.toLowerCase()
+            );
+        const filterScreenSize =
+            selectedFilters.laptops.screenSizes.length === 0 ||
+            selectedFilters.laptops.screenSizes.includes(
+                laptop.display.size.toLowerCase()
+            );
+
+        const filterRefrshRate =
+            selectedFilters.laptops.refreshRates.length === 0 ||
+            selectedFilters.laptops.refreshRates.includes(
+                laptop.display.refreshRate.toLowerCase()
+            );
+
+        const filterRam =
+            selectedFilters.laptops.ramOptions.length === 0 ||
+            selectedFilters.laptops.ramOptions.includes(
+                laptop.ram.size.toLowerCase()
+            );
+
+        const filterStorage =
+            selectedFilters.laptops.storageOptions.length === 0 ||
+            selectedFilters.laptops.storageOptions.includes(
+                laptop.storage.toLowerCase()
+            );
+
+        return (
+            filterCategory &&
+            filterBrand &&
+            filterProcessors &&
+            filterProcessorsGeneration &&
+            filtervgaNumber &&
+            filterScreenSize &&
+            filterRefrshRate &&
+            filterRam &&
+            filterStorage
+        );
+    });
+
+    let FilteredLapstopsProductsList = laptopsProductsList;
+    if (selectedFilters.laptops.inStock) {
+        FilteredLapstopsProductsList = laptopsProductsList.filter((laptop) => {
+            return laptop.inStock === true;
+        });
+    }
+
+    //---------------------------------------------------------------------------------------------------------
+    //......
+    //^^ Monitors
+
     return (
         <FiltersContext.Provider
-            value={{ filters, selectedFilters, toggleLpatopsFilters }}
+            value={{
+                filters,
+                selectedFilters,
+                toggleLpatopsFilters,
+                FilteredLapstopsProductsList,
+            }}
         >
             {children}
         </FiltersContext.Provider>
