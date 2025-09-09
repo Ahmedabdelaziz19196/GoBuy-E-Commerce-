@@ -30,7 +30,7 @@ export default function MonitorsPage() {
                     <img
                         src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3R6OWQ1ejZnN3hmNW5ja2o3OXJqYWJwcjFvaTBoZzBjcmY5ZzhrYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JWybLzXs7Hn0JKhSji/giphy.gif"
                         alt="on fire"
-                        style={{ width: "406px" }}
+                        style={{ width: "390px" }}
                     />
                     <Link to="/" style={{ textDecoration: "none" }}>
                         <button className="gategories ">
