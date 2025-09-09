@@ -2,6 +2,9 @@ import { createContext, useContext, useState } from "react";
 import { useProduct } from "./TheProducts";
 const FiltersContext = createContext();
 export function FilterProvider({ children }) {
+    const minPrice = 18000;
+    const maxPrice = 300000;
+    const [price, setPrice] = useState([minPrice, maxPrice]);
     const { laptopsList } = useProduct();
     const filters = {
         laptops: {
@@ -96,6 +99,7 @@ export function FilterProvider({ children }) {
             refreshRates: [],
             ramOptions: [],
             storageOptions: [],
+            priceOptions: [],
         },
         monitors: {},
     });
@@ -124,7 +128,7 @@ export function FilterProvider({ children }) {
         });
     }
 
-    const laptopsProductsList = laptopsList.filter((laptop) => {
+    const laptopsProductsList = laptopsList.filter((laptop, index) => {
         const noFilterApplied = Object.values(selectedFilters.laptops).every(
             (arr) => arr.length === 0 || arr === false
         );
@@ -180,6 +184,14 @@ export function FilterProvider({ children }) {
                 laptop.storage.toLowerCase()
             );
 
+        const laptopPrice = laptop.price;
+        const priceClean = laptopPrice.replace(/[^0-9]/g, "");
+        const numberPrice = parseInt(priceClean, 10);
+        const filterPrice =
+            selectedFilters.laptops.priceOptions.length === 0 ||
+            (numberPrice >= selectedFilters.laptops.priceOptions[0] &&
+                numberPrice <= selectedFilters.laptops.priceOptions[1]);
+
         return (
             filterCategory &&
             filterBrand &&
@@ -189,7 +201,8 @@ export function FilterProvider({ children }) {
             filterScreenSize &&
             filterRefrshRate &&
             filterRam &&
-            filterStorage
+            filterStorage &&
+            filterPrice
         );
     });
 
@@ -208,9 +221,14 @@ export function FilterProvider({ children }) {
         <FiltersContext.Provider
             value={{
                 filters,
+                setSlectedFilters,
                 selectedFilters,
                 toggleLpatopsFilters,
                 FilteredLapstopsProductsList,
+                price,
+                setPrice,
+                minPrice,
+                maxPrice,
             }}
         >
             {children}

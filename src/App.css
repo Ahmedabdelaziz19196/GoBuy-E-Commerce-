@@ -24,6 +24,11 @@ p {
 ul {
     list-style: none;
 }
+button {
+    border: none;
+    outline: none;
+    width: inherit;
+}
 
 /* Roboto font */
 @font-face {

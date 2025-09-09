@@ -1,3 +1,5 @@
+import "./LaptopsPage.css";
+
 import Fuse from "fuse.js";
 import ClearIcon from "@mui/icons-material/Clear";
 import Box from "@mui/material/Box";
@@ -10,16 +12,66 @@ import { useFilter } from "../Context/ProductFilters";
 
 export default function SideFilterUIComp() {
     const [vGASearch, setVGASearch] = useState("");
-    const [price, setPrice] = useState([18000, 300000]);
     const [resetllClick, setresetllClick] = useState(false);
-    const { filters } = useFilter();
+    const {
+        filters,
+        price,
+        setPrice,
+        setSlectedFilters,
+        minPrice,
+        maxPrice,
+        selectedFilters,
+    } = useFilter();
 
     function handleChange(event, newValue) {
         setPrice(newValue);
+        if (newValue[0] === 18000 && newValue[1] === 300000) {
+            setSlectedFilters((prev) => ({
+                ...prev,
+                laptops: { ...prev.laptops, priceOptions: [] },
+            }));
+        } else {
+            setSlectedFilters((prev) => ({
+                ...prev,
+                laptops: {
+                    ...prev.laptops,
+                    priceOptions: [newValue[0], newValue[1]],
+                },
+            }));
+        }
     }
-    function handleViewAllClickUI() {
+    function handleResetFilters() {
+        setSlectedFilters((prev) => ({
+            ...prev,
+            laptops: {
+                inStock: false,
+                categories: [],
+                brand: [],
+                processors: [],
+                generations: [],
+                vgaNumbers: [],
+                screenSizes: [],
+                refreshRates: [],
+                ramOptions: [],
+                storageOptions: [],
+                priceOptions: [],
+            },
+        }));
         setresetllClick(true);
         setTimeout(() => setresetllClick(false), 250);
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+        window.location.href = window.location.pathname;
+    }
+
+    function resetCategory(e) {
+        const theCategory = e.target.className.split(" ")[1];
+        setSlectedFilters((prev) => ({
+            ...prev,
+            laptops: { ...prev.laptops, [theCategory]: [] },
+        }));
     }
 
     const options = {
@@ -48,7 +100,6 @@ export default function SideFilterUIComp() {
             <div
                 style={{
                     width: "100%",
-                    // height: "200px",
                     borderRadius: "10px",
                     background: "#f6f8fa",
                     boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 10px",
@@ -81,7 +132,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            Brand
+                            {`Brand ${
+                                selectedFilters.laptops.brand.length
+                                    ? `(${selectedFilters.laptops.brand.length})`
+                                    : ""
+                            }`}
+                            {selectedFilters.laptops.brand.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory brand"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <LaptopsFilter filterType="brand" />
@@ -93,7 +173,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            Processor
+                            {`Processor ${
+                                selectedFilters.laptops.processors.length
+                                    ? `(${selectedFilters.laptops.processors.length})`
+                                    : ""
+                            }`}
+                            {selectedFilters.laptops.processors.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory processors"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <LaptopsFilter filterType="processors" />
@@ -105,7 +214,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            Generations
+                            {`Generations ${
+                                selectedFilters.laptops.generations.length
+                                    ? `(${selectedFilters.laptops.generations.length})`
+                                    : ""
+                            }`}
+                            {selectedFilters.laptops.generations.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory generations"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <LaptopsFilter filterType="generations" />
@@ -117,7 +255,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            VGA Number
+                            {`VGA Number ${
+                                selectedFilters.laptops.vgaNumbers.length
+                                    ? `(${selectedFilters.laptops.vgaNumbers.length})`
+                                    : ""
+                            }`}
+                            {selectedFilters.laptops.vgaNumbers.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory vgaNumbers"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <div
@@ -172,7 +339,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            Screen Size
+                            {`Screen Size ${
+                                selectedFilters.laptops.screenSizes.length
+                                    ? `(${selectedFilters.laptops.screenSizes.length})`
+                                    : ""
+                            }`}
+                            {selectedFilters.laptops.screenSizes.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory screenSizes"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <LaptopsFilter filterType="screenSizes" />
@@ -184,7 +380,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            Refresh Rate
+                            {`Refresh Rate ${
+                                selectedFilters.laptops.refreshRates.length
+                                    ? `(${selectedFilters.laptops.refreshRates.length})`
+                                    : ""
+                            }`}{" "}
+                            {selectedFilters.laptops.refreshRates.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory refreshRates"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <LaptopsFilter filterType="refreshRates" />
@@ -196,7 +421,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            RAM
+                            {`RAM ${
+                                selectedFilters.laptops.ramOptions.length
+                                    ? `(${selectedFilters.laptops.ramOptions.length})`
+                                    : ""
+                            }`}{" "}
+                            {selectedFilters.laptops.ramOptions.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory ramOptions"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <LaptopsFilter filterType="ramOptions" />
@@ -208,7 +462,36 @@ export default function SideFilterUIComp() {
                 <Accordion className="accordion-two">
                     <Accordion.Item eventKey="0" className="accordion-two">
                         <Accordion.Header className="accordion-two">
-                            Storage
+                            {`Storage ${
+                                selectedFilters.laptops.storageOptions.length
+                                    ? `(${selectedFilters.laptops.storageOptions.length})`
+                                    : ""
+                            }`}{" "}
+                            {selectedFilters.laptops.storageOptions.length ? (
+                                <span
+                                    style={{
+                                        fontSize: "16px",
+                                        cursor: "pointer",
+                                        backgroundColor: "var(--main-color)",
+                                        width: "fit-content",
+                                        marginLeft: "4px",
+                                        padding: "0px 5px",
+                                        borderRadius: "50%",
+                                        color: "white",
+                                        position: "relative",
+                                        top: "2px",
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        resetCategory(e);
+                                    }}
+                                    className="resetFilterCategory storageOptions"
+                                >
+                                    ×
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Accordion.Header>
                         <Accordion.Body className="accordion-two">
                             <LaptopsFilter filterType="storageOptions" />
@@ -259,9 +542,26 @@ export default function SideFilterUIComp() {
                                             placeholder="18000"
                                             value={price[0]}
                                             onChange={(e) => {
+                                                const value =
+                                                    e.target.value.replace(
+                                                        /[^0-9]/g,
+                                                        ""
+                                                    );
                                                 const newPrice = [...price];
-                                                newPrice[0] = e.target.value;
+                                                newPrice[0] = value;
                                                 setPrice(newPrice);
+                                                setSlectedFilters((prev) => ({
+                                                    ...prev,
+                                                    laptops: {
+                                                        ...prev.laptops,
+                                                        priceOptions: [
+                                                            value,
+                                                            prev.laptops
+                                                                .priceOptions[1] ||
+                                                                maxPrice,
+                                                        ],
+                                                    },
+                                                }));
                                             }}
                                         />
                                         <p>EGP </p>
@@ -292,9 +592,26 @@ export default function SideFilterUIComp() {
                                             placeholder="300000"
                                             value={price[1]}
                                             onChange={(e) => {
+                                                const value =
+                                                    e.target.value.replace(
+                                                        /[^0-9]/g,
+                                                        ""
+                                                    );
                                                 const newPrice = [...price];
-                                                newPrice[1] = e.target.value;
+                                                newPrice[1] = value;
                                                 setPrice(newPrice);
+                                                setSlectedFilters((prev) => ({
+                                                    ...prev,
+                                                    laptops: {
+                                                        ...prev.laptops,
+                                                        priceOptions: [
+                                                            prev.laptops
+                                                                .priceOptions[0] ||
+                                                                minPrice,
+                                                            value,
+                                                        ],
+                                                    },
+                                                }));
                                             }}
                                         />
                                         <p>EGP </p>
@@ -325,18 +642,15 @@ export default function SideFilterUIComp() {
                     </Accordion.Item>
                 </Accordion>
                 {/* Price */}
-                <div
-                    className="text-center  w-100 mt-2 mb-2"
-                    onClick={handleViewAllClickUI}
+
+                <button
+                    className={`view-all ${
+                        resetllClick ? "icon-clicked" : ""
+                    } text-center  w-100 mt-2 mb-2`}
+                    onClick={handleResetFilters}
                 >
-                    <p
-                        className={`view-all ${
-                            resetllClick ? "icon-clicked" : ""
-                        }`}
-                    >
-                        Reset
-                    </p>
-                </div>
+                    Reset
+                </button>
             </div>
         </div>
     );

@@ -214,3 +214,7 @@
     border-color: var(--main-color) !important;
     color: white !important;
 }
+
+.resetFilterCategory:hover {
+    background-color: #074275 !important;
+}
