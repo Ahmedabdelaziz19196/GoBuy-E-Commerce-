@@ -1,11 +1,14 @@
 import { createContext, useContext, useState } from "react";
 import { useProduct } from "./TheProducts";
+
 const FiltersContext = createContext();
+
 export function FilterProvider({ children }) {
     const minPrice = 18000;
     const maxPrice = 300000;
     const [price, setPrice] = useState([minPrice, maxPrice]);
     const { laptopsList } = useProduct();
+
     const filters = {
         laptops: {
             categories: ["Gaming", "Business", "Personal", "Graphics"],
@@ -87,6 +90,7 @@ export function FilterProvider({ children }) {
         },
         monitors: {},
     };
+
     const [selectedFilters, setSlectedFilters] = useState({
         laptops: {
             inStock: false,
@@ -103,6 +107,7 @@ export function FilterProvider({ children }) {
         },
         monitors: {},
     });
+
     function toggleLpatopsFilters(filterGroup, value) {
         setSlectedFilters((prev) => {
             const currentValues = prev.laptops[filterGroup];
@@ -128,11 +133,15 @@ export function FilterProvider({ children }) {
         });
     }
 
-    const laptopsProductsList = laptopsList.filter((laptop, index) => {
+    const laptopsProductsList = laptopsList.filter((laptop) => {
         const noFilterApplied = Object.values(selectedFilters.laptops).every(
             (arr) => arr.length === 0 || arr === false
         );
         if (noFilterApplied) return true;
+
+        const laptopPrice = laptop.price;
+        const priceClean = laptopPrice.replace(/[^0-9]/g, "");
+        const numberPrice = parseInt(priceClean, 10);
 
         const filterCategory =
             selectedFilters.laptops.categories.length === 0 ||
@@ -184,9 +193,6 @@ export function FilterProvider({ children }) {
                 laptop.storage.toLowerCase()
             );
 
-        const laptopPrice = laptop.price;
-        const priceClean = laptopPrice.replace(/[^0-9]/g, "");
-        const numberPrice = parseInt(priceClean, 10);
         const filterPrice =
             selectedFilters.laptops.priceOptions.length === 0 ||
             (numberPrice >= selectedFilters.laptops.priceOptions[0] &&
@@ -213,72 +219,120 @@ export function FilterProvider({ children }) {
         });
     }
 
-    const availableFilter = {
-        categories: [
+    const availableFilter = {};
+
+    const filterGroups = [
+        "categories",
+        "brand",
+        "processors",
+        "generations",
+        "vgaNumbers",
+        "screenSizes",
+        "refreshRates",
+        "ramOptions",
+        "storageOptions",
+    ];
+
+    function getFilteredListExcludingGroup(excludedGroup) {
+        return laptopsList.filter((laptop) => {
+            const laptopPrice = laptop.price;
+            const priceClean = laptopPrice.replace(/[^0-9]/g, "");
+            const numberPrice = parseInt(priceClean, 10);
+
+            return (
+                filterGroups.every((group) => {
+                    if (group === excludedGroup) return true;
+
+                    const selected = selectedFilters.laptops[group];
+                    if (selected.length === 0) return true;
+
+                    let value;
+                    switch (group) {
+                        case "categories":
+                            value = laptop.category;
+                            break;
+                        case "brand":
+                            value = laptop.brand;
+                            break;
+                        case "processors":
+                            value = laptop.processor.name;
+                            break;
+                        case "generations":
+                            value = laptop.processor.generation;
+                            break;
+                        case "vgaNumbers":
+                            value = laptop.graphics.name;
+                            break;
+                        case "screenSizes":
+                            value = laptop.display.size;
+                            break;
+                        case "refreshRates":
+                            value = laptop.display.refreshRate;
+                            break;
+                        case "ramOptions":
+                            value = laptop.ram.size;
+                            break;
+                        case "storageOptions":
+                            value = laptop.storage;
+                            break;
+                        default:
+                            return true;
+                    }
+                    return selected.includes(value.toLowerCase());
+                }) &&
+                (selectedFilters.laptops.priceOptions.length === 0 ||
+                    (numberPrice >= selectedFilters.laptops.priceOptions[0] &&
+                        numberPrice <=
+                            selectedFilters.laptops.priceOptions[1])) &&
+                (!selectedFilters.laptops.inStock || laptop.inStock === true)
+            );
+        });
+    }
+
+    filterGroups.forEach((group) => {
+        const filteredList = getFilteredListExcludingGroup(group);
+        availableFilter[group] = [
             ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.category.toLowerCase()
-                )
+                filteredList.map((lap) => {
+                    let value;
+                    switch (group) {
+                        case "categories":
+                            value = lap.category;
+                            break;
+                        case "brand":
+                            value = lap.brand;
+                            break;
+                        case "processors":
+                            value = lap.processor.name;
+                            break;
+                        case "generations":
+                            value = lap.processor.generation;
+                            break;
+                        case "vgaNumbers":
+                            value = lap.graphics.name;
+                            break;
+                        case "screenSizes":
+                            value = lap.display.size;
+                            break;
+                        case "refreshRates":
+                            value = lap.display.refreshRate;
+                            break;
+                        case "ramOptions":
+                            value = lap.ram.size;
+                            break;
+                        case "storageOptions":
+                            value = lap.storage;
+                            break;
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                    return value.toLowerCase();
+                })
             ),
-        ],
-        brand: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.brand.toLowerCase()
-                )
-            ),
-        ],
-        processors: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.processor.name.toLowerCase()
-                )
-            ),
-        ],
-        generations: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.processor.generation.toLowerCase()
-                )
-            ),
-        ],
-        vgaNumbers: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.graphics.name.toLowerCase()
-                )
-            ),
-        ],
-        screenSizes: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.display.size.toLowerCase()
-                )
-            ),
-        ],
-        refreshRates: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.display.refreshRate.toLowerCase()
-                )
-            ),
-        ],
-        ramOptions: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.ram.size.toLowerCase()
-                )
-            ),
-        ],
-        storageOptions: [
-            ...new Set(
-                FilteredLapstopsProductsList.map((lap) =>
-                    lap.storage.toLowerCase()
-                )
-            ),
-        ],
-    };
-    console.log(selectedFilters.laptops);
+        ];
+        // console.log(availableFilter);
+    });
     //---------------------------------------------------------------------------------------------------------
     //......
     //^^ Monitors
@@ -302,6 +356,7 @@ export function FilterProvider({ children }) {
         </FiltersContext.Provider>
     );
 }
+
 export function useFilter() {
     return useContext(FiltersContext);
 }

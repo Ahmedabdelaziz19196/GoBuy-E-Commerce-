@@ -632,7 +632,7 @@ export const laptopsProductsList = [
         price: "32,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "B86Q7UA",
@@ -694,7 +694,7 @@ export const laptopsProductsList = [
         price: "42,999 EGP",
         inStock: false,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "9R1K0UA",
@@ -757,7 +757,7 @@ export const laptopsProductsList = [
         price: "43,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "83DT0002US",
@@ -821,7 +821,7 @@ export const laptopsProductsList = [
         price: "29,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "21SR0017GQ",
@@ -1205,7 +1205,7 @@ export const laptopsProductsList = [
         price: "152,000 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "90NB14Q2-M00BV0",
@@ -1271,7 +1271,7 @@ export const laptopsProductsList = [
         price: "47,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "Not specified",
@@ -1465,7 +1465,7 @@ export const laptopsProductsList = [
         price: "94,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "90NB11D2-M00KX0",
@@ -2915,7 +2915,7 @@ export const laptopsProductsList = [
         price: "91,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "90NB1502-M00HM0",
@@ -3044,7 +3044,7 @@ export const laptopsProductsList = [
         price: "139,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "B64BNUA#ABA",
@@ -5162,7 +5162,7 @@ export const laptopsProductsList = [
         price: "32,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "7K9P3XB",
@@ -5355,7 +5355,7 @@ export const laptopsProductsList = [
         price: "149,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
 
     {
@@ -5608,7 +5608,7 @@ export const laptopsProductsList = [
         price: "42,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "1T8K4WF",
@@ -5800,7 +5800,7 @@ export const laptopsProductsList = [
         price: "59,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "9K2P7WF",
@@ -6177,7 +6177,7 @@ export const laptopsProductsList = [
         price: "49,999 EGP",
         inStock: true,
         warranty: "1 Year",
-        category: "graphic and design",
+        category: "Graphics",
     },
     {
         productid: "3M8T2JD",

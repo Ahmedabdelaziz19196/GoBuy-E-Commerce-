@@ -5,14 +5,7 @@ export default function LaptopsFilter({ filterType }) {
     const { filters, selectedFilters, toggleLpatopsFilters, availableFilter } =
         useFilter();
     // console.log(availableFilter);
-    function filter(type) {
-        if (filterType === "categories") {
-            return !availableFilter[filterType].includes(type.toLowerCase());
-        }
-        if (filterType === "brand") {
-            return !availableFilter[filterType].includes(type.toLowerCase());
-        }
-    }
+
     return (
         <>
             {filterType !== "inStock" ? (
@@ -28,7 +21,11 @@ export default function LaptopsFilter({ filterType }) {
                         onChange={() =>
                             toggleLpatopsFilters(filterType, type.toLowerCase())
                         }
-                        disabled={filter(type)}
+                        disabled={
+                            !availableFilter[filterType].includes(
+                                type.toLowerCase()
+                            )
+                        }
                     />
                 ))
             ) : (
