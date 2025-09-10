@@ -213,6 +213,72 @@ export function FilterProvider({ children }) {
         });
     }
 
+    const availableFilter = {
+        categories: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.category.toLowerCase()
+                )
+            ),
+        ],
+        brand: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.brand.toLowerCase()
+                )
+            ),
+        ],
+        processors: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.processor.name.toLowerCase()
+                )
+            ),
+        ],
+        generations: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.processor.generation.toLowerCase()
+                )
+            ),
+        ],
+        vgaNumbers: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.graphics.name.toLowerCase()
+                )
+            ),
+        ],
+        screenSizes: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.display.size.toLowerCase()
+                )
+            ),
+        ],
+        refreshRates: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.display.refreshRate.toLowerCase()
+                )
+            ),
+        ],
+        ramOptions: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.ram.size.toLowerCase()
+                )
+            ),
+        ],
+        storageOptions: [
+            ...new Set(
+                FilteredLapstopsProductsList.map((lap) =>
+                    lap.storage.toLowerCase()
+                )
+            ),
+        ],
+    };
+    console.log(selectedFilters.laptops);
     //---------------------------------------------------------------------------------------------------------
     //......
     //^^ Monitors
@@ -229,6 +295,7 @@ export function FilterProvider({ children }) {
                 setPrice,
                 minPrice,
                 maxPrice,
+                availableFilter,
             }}
         >
             {children}
