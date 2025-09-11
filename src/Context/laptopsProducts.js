@@ -20,6 +20,7 @@ export default function LaptopsProvider({ children }) {
 
         fetchLaptops();
     }, []);
+    console.log("yes");
     return (
         <LaptopsContext.Provider value={{ laptopsProductsList }}>
             {children}
