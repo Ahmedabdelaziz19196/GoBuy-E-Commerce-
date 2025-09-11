@@ -24,7 +24,7 @@ export default function LaptopsPage() {
     const [sideFiltersShown, setSideFiltersShown] = useState(false);
     const [SideFilterState, setSideFilerState] = useState(true);
     // const [searchParams, setSearchParams] = useSearchParams();
-    const { selectedFilters } = useFilter();
+    // const { selectedFilters } = useFilter();
 
     // useEffect(() => {
     //     setSearchParams({
@@ -36,7 +36,7 @@ export default function LaptopsPage() {
     //     });
     // }, [setSearchParams, currentPage, perPageValue, selectedFilters]);
 
-    console.log(selectedFilters.laptops);
+    // console.log(selectedFilters.laptops);
     // const encodedFilters = btoa(JSON.stringify(selectedFilters.laptops));
     // console.log(encodedFilters);
     // const filters = JSON.parse(atob(encodedFilters));

@@ -1,16 +1,12 @@
-import { createContext, useContext, useState } from "react";
-import { laptopsProductsList } from "../laptopsProducts";
+import { createContext, useContext } from "react";
+import { useLaptops } from "./laptopsProducts";
 const ProductsContext = createContext();
 export function ProductsProvider({ children }) {
-    const monitorsProducts = Array.from(
-        { length: 64 },
-        (_, i) => `Item ${i + 1}`
-    );
+    const { laptopsProductsList } = useLaptops();
 
-    const [products] = useState({
+    const products = {
         laptopsList: laptopsProductsList,
-        monitorsList: monitorsProducts,
-    });
+    };
     return (
         <ProductsContext.Provider value={products}>
             {children}
