@@ -45,18 +45,10 @@ export function FilterProvider({ children }) {
                 "Zen 4 Architecture",
             ],
             vgaNumbers: [
-                "AMD Radeon RX 6600M",
-                "AMD Radeon RX 6500M",
-                "AMD Radeon RX 6700S",
-                "AMD Radeon RX6700M",
-                "NVIDIA GeForce RTX 3070",
-                "Nvidia GeForce RTX 3070 Ti",
                 "Nvidia GeForce RTX 3050",
                 "Nvidia GeForce RTX 5060",
                 "Nvidia GeForce RTX 5070 Ti",
-                "NVIDIA GeForce RTX 5090",
                 "NVIDIA GeForce RTX 2050",
-                "NVIDIA GeForce RTX 3050 Ti",
                 "NVIDIA GeForce RTX 4050",
                 "NVIDIA GeForce RTX 4060",
                 "NVIDIA GeForce RTX 4070",
@@ -67,12 +59,7 @@ export function FilterProvider({ children }) {
                 "NVIDIA GeForce RTX 5050Ti",
                 "NVIDIA GeForce RTX 2050",
                 "AMD Radeon Graphics",
-                "NVIDIA GeForce GTX 1650",
-                "NVIDIA GeForce GTX 1650Ti",
-                "NVIDIA GeForce RTX 2060",
                 "NVIDIA GeForce RTX 3050",
-                "NVIDIA GeForce RTX 3060",
-                "NVIDIA GeForce RTX 3070",
                 "NVIDIA GeForce RTX 3080",
             ],
             screenSizes: [
@@ -130,92 +117,6 @@ export function FilterProvider({ children }) {
                         : [...currentValues, value.toLowerCase()],
                 },
             };
-        });
-    }
-
-    const laptopsProductsList = laptopsList.filter((laptop) => {
-        const noFilterApplied = Object.values(selectedFilters.laptops).every(
-            (arr) => arr.length === 0 || arr === false
-        );
-        if (noFilterApplied) return true;
-
-        const laptopPrice = laptop.price;
-        const priceClean = laptopPrice.replace(/[^0-9]/g, "");
-        const numberPrice = parseInt(priceClean, 10);
-
-        const filterCategory =
-            selectedFilters.laptops.categories.length === 0 ||
-            selectedFilters.laptops.categories.includes(
-                laptop.category.toLowerCase()
-            );
-        const filterBrand =
-            selectedFilters.laptops.brand.length === 0 ||
-            selectedFilters.laptops.brand.includes(laptop.brand.toLowerCase());
-
-        const filterProcessors =
-            selectedFilters.laptops.processors.length === 0 ||
-            selectedFilters.laptops.processors.includes(
-                laptop.processor.name.toLowerCase()
-            );
-
-        const filterProcessorsGeneration =
-            selectedFilters.laptops.generations.length === 0 ||
-            selectedFilters.laptops.generations.includes(
-                laptop.processor.generation.toLowerCase()
-            );
-
-        const filtervgaNumber =
-            selectedFilters.laptops.vgaNumbers.length === 0 ||
-            selectedFilters.laptops.vgaNumbers.includes(
-                laptop.graphics.name.toLowerCase()
-            );
-        const filterScreenSize =
-            selectedFilters.laptops.screenSizes.length === 0 ||
-            selectedFilters.laptops.screenSizes.includes(
-                laptop.display.size.toLowerCase()
-            );
-
-        const filterRefrshRate =
-            selectedFilters.laptops.refreshRates.length === 0 ||
-            selectedFilters.laptops.refreshRates.includes(
-                laptop.display.refreshRate.toLowerCase()
-            );
-
-        const filterRam =
-            selectedFilters.laptops.ramOptions.length === 0 ||
-            selectedFilters.laptops.ramOptions.includes(
-                laptop.ram.size.toLowerCase()
-            );
-
-        const filterStorage =
-            selectedFilters.laptops.storageOptions.length === 0 ||
-            selectedFilters.laptops.storageOptions.includes(
-                laptop.storage.toLowerCase()
-            );
-
-        const filterPrice =
-            selectedFilters.laptops.priceOptions.length === 0 ||
-            (numberPrice >= selectedFilters.laptops.priceOptions[0] &&
-                numberPrice <= selectedFilters.laptops.priceOptions[1]);
-
-        return (
-            filterCategory &&
-            filterBrand &&
-            filterProcessors &&
-            filterProcessorsGeneration &&
-            filtervgaNumber &&
-            filterScreenSize &&
-            filterRefrshRate &&
-            filterRam &&
-            filterStorage &&
-            filterPrice
-        );
-    });
-
-    let FilteredLapstopsProductsList = laptopsProductsList;
-    if (selectedFilters.laptops.inStock) {
-        FilteredLapstopsProductsList = laptopsProductsList.filter((laptop) => {
-            return laptop.inStock === true;
         });
     }
 
@@ -278,6 +179,7 @@ export function FilterProvider({ children }) {
                         default:
                             return true;
                     }
+
                     return selected.includes(value.toLowerCase());
                 }) &&
                 (selectedFilters.laptops.priceOptions.length === 0 ||
@@ -288,12 +190,12 @@ export function FilterProvider({ children }) {
             );
         });
     }
-
+    let FilteredLapstopsProductsList = "";
     filterGroups.forEach((group) => {
-        const filteredList = getFilteredListExcludingGroup(group);
+        FilteredLapstopsProductsList = getFilteredListExcludingGroup(group);
         availableFilter[group] = [
             ...new Set(
-                filteredList.map((lap) => {
+                FilteredLapstopsProductsList.map((lap) => {
                     let value;
                     switch (group) {
                         case "categories":
@@ -331,8 +233,8 @@ export function FilterProvider({ children }) {
                 })
             ),
         ];
-        // console.log(availableFilter);
     });
+
     //---------------------------------------------------------------------------------------------------------
     //......
     //^^ Monitors
