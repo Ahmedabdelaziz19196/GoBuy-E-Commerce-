@@ -2,7 +2,6 @@ import "./Header.css";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import LinearProgress from "@mui/material/LinearProgress";
 import SearchIcon from "@mui/icons-material/Search";
 import Container from "@mui/material/Container";
 import SortIcon from "@mui/icons-material/Sort";
@@ -14,7 +13,6 @@ import LanguagesSelection from "./LanguagesSelection";
 import SearchForMobile from "./SearchForMobile";
 import { Link } from "react-router-dom";
 import { SideCategoriesContext } from "../Context/SideCategoriesContext";
-import { useLaptops } from "../Context/laptopsProducts";
 
 export default function Header() {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
@@ -24,7 +22,6 @@ export default function Header() {
     const [iconAccountClick, setIconAccountClick] = useState(false);
     const [iconSearchClick, setIconSearchClick] = useState(false);
     const [showSerachBarForMobile, setShowSerachBarForMobile] = useState(false);
-    const { laptopsProductsList } = useLaptops();
     function handleShowCategories() {
         setSideCategoriesShow(true);
     }
@@ -194,11 +191,6 @@ export default function Header() {
                 </div>
                 <LanguagesSelection langClick={langClick} />
             </Container>
-            {laptopsProductsList.length === 0 ? (
-                <LinearProgress style={{ background: "white" }} />
-            ) : (
-                ""
-            )}
 
             <AllGategories />
             <SearchForMobile showSerachBarForMobile={showSerachBarForMobile} />

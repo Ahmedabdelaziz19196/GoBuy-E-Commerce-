@@ -15,9 +15,6 @@ export default function LaptopsFilter({ filterType }) {
                         type="checkbox"
                         id={`${filterType}-${type}`}
                         label={type}
-                        checked={selectedFilters.laptops[filterType].includes(
-                            type.toLowerCase()
-                        )}
                         onChange={() =>
                             toggleLpatopsFilters(filterType, type.toLowerCase())
                         }
@@ -25,6 +22,15 @@ export default function LaptopsFilter({ filterType }) {
                             !availableFilter[filterType].includes(
                                 type.toLowerCase()
                             )
+                        }
+                        checked={
+                            !availableFilter[filterType].includes(
+                                type.toLowerCase()
+                            )
+                                ? false
+                                : selectedFilters.laptops[filterType].includes(
+                                      type.toLowerCase()
+                                  )
                         }
                     />
                 ))

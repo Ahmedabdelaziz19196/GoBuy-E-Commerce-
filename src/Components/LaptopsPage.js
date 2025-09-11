@@ -9,12 +9,15 @@ import LaptopsLinedView from "./LaptopsListView";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import { useFilter } from "../Context/ProductFilters";
-// import { useSearchParams } from "react-router-dom";
 import { SideCategoriesContext } from "../Context/SideCategoriesContext";
 import ThePagination from "./ThePagination";
 import LaptopsGridView from "./LaptopsGridView";
 import SideFilterUIComp from "./SideFilterUIComp";
 import SideFiltersForMobiles from "./SideFiltersForMobiles";
+import LinearProgress from "@mui/material/LinearProgress";
+
+import { useLaptops } from "../Context/laptopsProducts";
+
 export default function LaptopsPage() {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [currentViewProducts, setCurrentViewProducts] = useState("grid");
@@ -23,6 +26,8 @@ export default function LaptopsPage() {
     const { FilteredLapstopsProductsList } = useFilter();
     const [sideFiltersShown, setSideFiltersShown] = useState(false);
     const [SideFilterState, setSideFilerState] = useState(true);
+    const { laptopsProductsList } = useLaptops();
+
     // const [searchParams, setSearchParams] = useSearchParams();
     // const { selectedFilters } = useFilter();
 
@@ -56,6 +61,7 @@ export default function LaptopsPage() {
         indexOfFirstItem,
         indexOfLastItem
     );
+    console.log(currentProducts);
     const perPageValueRadios = [
         { perPage: "15" },
         { perPage: "25" },
@@ -108,8 +114,14 @@ export default function LaptopsPage() {
 
     return (
         <>
+            {laptopsProductsList.length === 0 ? (
+                <div style={{ position: "sticky", top: "99px", zIndex: "999" }}>
+                    <LinearProgress style={{ background: "white" }} />
+                </div>
+            ) : (
+                ""
+            )}
             <PageCategoryHeader />
-
             <Grid container spacing={2} sx={{ margin: "0px 20px 20px 20px" }}>
                 <Grid size={{ xs: 12, sm: 12, md: 12, lg: 2.5 }}>
                     {SideFilterState ? <SideFilterUIComp /> : ""}
@@ -203,12 +215,26 @@ export default function LaptopsPage() {
                             </div>
                         </div>
                     </div>
-
-                    {currentViewProducts === "grid" ? (
+                    {currentProducts.length === 0 ? (
+                        <h5
+                            style={{
+                                marginTop: "10px",
+                                color: "var(--main-color)",
+                                textDecoration: "ununderline",
+                            }}
+                        >
+                            No Laptops Found
+                        </h5>
+                    ) : currentViewProducts === "grid" ? (
                         <LaptopsGridView currentProducts={currentProducts} />
                     ) : (
                         <LaptopsLinedView currentProducts={currentProducts} />
                     )}
+                    {/* {currentViewProducts === "grid" ? (
+                        <LaptopsGridView currentProducts={currentProducts} />
+                    ) : (
+                        <LaptopsLinedView currentProducts={currentProducts} />
+                    )} */}
                     <ThePagination
                         perPageValue={perPageValue}
                         FilteredLapstopsProductsList={
