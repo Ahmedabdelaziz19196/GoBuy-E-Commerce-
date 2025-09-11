@@ -9,13 +9,12 @@ import LaptopsLinedView from "./LaptopsListView";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import { useFilter } from "../Context/ProductFilters";
-import { useSearchParams } from "react-router-dom";
+// import { useSearchParams } from "react-router-dom";
 import { SideCategoriesContext } from "../Context/SideCategoriesContext";
 import ThePagination from "./ThePagination";
 import LaptopsGridView from "./LaptopsGridView";
 import SideFilterUIComp from "./SideFilterUIComp";
 import SideFiltersForMobiles from "./SideFiltersForMobiles";
-import { stringify } from "uuid";
 export default function LaptopsPage() {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [currentViewProducts, setCurrentViewProducts] = useState("grid");
@@ -24,25 +23,18 @@ export default function LaptopsPage() {
     const { FilteredLapstopsProductsList } = useFilter();
     const [sideFiltersShown, setSideFiltersShown] = useState(false);
     const [SideFilterState, setSideFilerState] = useState(true);
-    const [searchParams, setSearchParams] = useSearchParams();
+    // const [searchParams, setSearchParams] = useSearchParams();
     const { selectedFilters } = useFilter();
 
-    const categoriesMapping = {
-        gaming: "g",
-        business: "b",
-        personal: "p",
-        graphics: "g",
-    };
-
-    useEffect(() => {
-        setSearchParams({
-            pageNumver: currentPage || 1,
-            perPage: perPageValue || "25",
-            // category: selectedFilters.laptops.categories,
-            // brand: selectedFilters.laptops.brand,
-            // processors: selectedFilters.laptops.processors,
-        });
-    }, [setSearchParams, currentPage, perPageValue, selectedFilters]);
+    // useEffect(() => {
+    //     setSearchParams({
+    //         pageNumver: currentPage || 1,
+    //         perPage: perPageValue || "25",
+    //         // category: selectedFilters.laptops.categories,
+    //         // brand: selectedFilters.laptops.brand,
+    //         // processors: selectedFilters.laptops.processors,
+    //     });
+    // }, [setSearchParams, currentPage, perPageValue, selectedFilters]);
 
     console.log(selectedFilters.laptops);
     // const encodedFilters = btoa(JSON.stringify(selectedFilters.laptops));
