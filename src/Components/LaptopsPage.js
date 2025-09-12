@@ -61,7 +61,6 @@ export default function LaptopsPage() {
         indexOfFirstItem,
         indexOfLastItem
     );
-    console.log(currentProducts);
     const perPageValueRadios = [
         { perPage: "15" },
         { perPage: "25" },

@@ -1,10 +1,48 @@
 import { Form } from "react-bootstrap";
 import { useFilter } from "../Context/ProductFilters";
+import { useEffect } from "react";
 
 export default function LaptopsFilter({ filterType }) {
-    const { filters, selectedFilters, toggleLpatopsFilters, availableFilter } =
-        useFilter();
-    // console.log(availableFilter);
+    const {
+        filters,
+        selectedFilters,
+        toggleLpatopsFilters,
+        availableFilter,
+        setSlectedFilters,
+    } = useFilter();
+
+    useEffect(() => {
+        const filterKeys = [
+            "categories",
+            "brand",
+            "processors",
+            "generations",
+            "vgaNumbers",
+            "screenSizes",
+            "refreshRates",
+            "ramOptions",
+            "storageOptions",
+        ];
+        filterKeys.forEach((key) => {
+            const missingItems = selectedFilters.laptops[key].filter(
+                (item) => !availableFilter[key].includes(item)
+            );
+
+            if (missingItems.length > 0) {
+                const updatedItems = selectedFilters.laptops[key].filter(
+                    (item) => !missingItems.includes(item)
+                );
+
+                setSlectedFilters((prev) => ({
+                    ...prev,
+                    laptops: {
+                        ...prev.laptops,
+                        [key]: updatedItems,
+                    },
+                }));
+            }
+        });
+    }, [availableFilter, selectedFilters.laptops, setSlectedFilters]);
 
     return (
         <>
@@ -15,22 +53,19 @@ export default function LaptopsFilter({ filterType }) {
                         type="checkbox"
                         id={`${filterType}-${type}`}
                         label={type}
-                        onChange={() =>
-                            toggleLpatopsFilters(filterType, type.toLowerCase())
-                        }
+                        checked={selectedFilters.laptops[filterType].includes(
+                            type.toLowerCase()
+                        )}
+                        onChange={() => {
+                            toggleLpatopsFilters(
+                                filterType,
+                                type.toLowerCase()
+                            );
+                        }}
                         disabled={
                             !availableFilter[filterType].includes(
                                 type.toLowerCase()
                             )
-                        }
-                        checked={
-                            !availableFilter[filterType].includes(
-                                type.toLowerCase()
-                            )
-                                ? false
-                                : selectedFilters.laptops[filterType].includes(
-                                      type.toLowerCase()
-                                  )
                         }
                     />
                 ))
@@ -40,9 +75,9 @@ export default function LaptopsFilter({ filterType }) {
                     id={`${filterType}`}
                     label={`In Stock`}
                     checked={selectedFilters.laptops.inStock}
-                    onChange={(e) =>
-                        toggleLpatopsFilters("inStock", e.target.checked)
-                    }
+                    onChange={(e) => {
+                        toggleLpatopsFilters("inStock", e.target.checked);
+                    }}
                 />
             )}
         </>
