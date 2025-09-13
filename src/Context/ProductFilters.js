@@ -4,7 +4,7 @@ import { useProduct } from "./TheProducts";
 const FiltersContext = createContext();
 
 export function FilterProvider({ children }) {
-    const minPrice = 18000;
+    const minPrice = 16000;
     const maxPrice = 300000;
     const [price, setPrice] = useState([minPrice, maxPrice]);
     const { laptopsList } = useProduct();
@@ -107,34 +107,18 @@ export function FilterProvider({ children }) {
                         [filterGroup]: value,
                     },
                 };
+            } else {
+                const isSelected = currentValues.includes(value);
+                updatedFilters = {
+                    ...prev,
+                    laptops: {
+                        ...prev.laptops,
+                        [filterGroup]: isSelected
+                            ? currentValues.filter((v) => v !== value)
+                            : [...currentValues, value.toLowerCase()],
+                    },
+                };
             }
-            const isSelected = currentValues.includes(value);
-            updatedFilters = {
-                ...prev,
-                laptops: {
-                    ...prev.laptops,
-                    [filterGroup]: isSelected
-                        ? currentValues.filter((v) => v !== value)
-                        : [...currentValues, value.toLowerCase()],
-                },
-            };
-            const filterKeys = [
-                "categories",
-                "brand",
-                "processors",
-                "generations",
-                "vgaNumbers",
-                "screenSizes",
-                "refreshRates",
-                "ramOptions",
-                "storageOptions",
-            ];
-            filterKeys.forEach((key) => {
-                localStorage.setItem(
-                    key,
-                    JSON.stringify(updatedFilters.laptops[key])
-                );
-            });
 
             return updatedFilters;
         });
@@ -254,6 +238,7 @@ export function FilterProvider({ children }) {
             ),
         ];
     });
+
     //---------------------------------------------------------------------------------------------------------
     //......
     //^^ Monitors

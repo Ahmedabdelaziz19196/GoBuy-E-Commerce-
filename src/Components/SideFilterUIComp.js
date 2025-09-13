@@ -25,7 +25,7 @@ export default function SideFilterUIComp() {
 
     function handleChange(event, newValue) {
         setPrice(newValue);
-        if (newValue[0] === 18000 && newValue[1] === 300000) {
+        if (newValue[0] === minPrice && newValue[1] === maxPrice) {
             setSlectedFilters((prev) => ({
                 ...prev,
                 laptops: { ...prev.laptops, priceOptions: [] },
@@ -539,7 +539,7 @@ export default function SideFilterUIComp() {
                                             }}
                                             type="text"
                                             className="VGA-sreach"
-                                            placeholder="18000"
+                                            placeholder={minPrice}
                                             value={price[0]}
                                             onChange={(e) => {
                                                 const value =
@@ -589,7 +589,7 @@ export default function SideFilterUIComp() {
                                             }}
                                             type="text"
                                             className="VGA-sreach"
-                                            placeholder="300000"
+                                            placeholder={maxPrice}
                                             value={price[1]}
                                             onChange={(e) => {
                                                 const value =
@@ -622,8 +622,8 @@ export default function SideFilterUIComp() {
                                     value={price}
                                     onChange={handleChange}
                                     // valueLabelDisplay="auto"
-                                    min={18000}
-                                    max={300000}
+                                    min={minPrice}
+                                    max={maxPrice}
                                     step={100}
                                 />
                                 <div
@@ -634,8 +634,8 @@ export default function SideFilterUIComp() {
                                         fontSize: "13px",
                                     }}
                                 >
-                                    <p>18000 EGP</p>
-                                    <p>300000 EGP</p>
+                                    <p>{minPrice} EGP</p>
+                                    <p>{maxPrice} EGP</p>
                                 </div>
                             </Box>
                         </Accordion.Body>

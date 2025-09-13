@@ -40,7 +40,6 @@ export default function LaptopsFilter({ filterType }) {
                         [key]: updatedItems,
                     },
                 }));
-                localStorage.setItem(key, JSON.stringify(updatedItems));
             }
         });
     }, [availableFilter, selectedFilters.laptops, setSlectedFilters]);

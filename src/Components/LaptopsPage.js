@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import TuneIcon from "@mui/icons-material/Tune";
 import AppsIcon from "@mui/icons-material/Apps";
 import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import LaptopsLinedView from "./LaptopsListView";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
@@ -28,12 +28,17 @@ export default function LaptopsPage() {
     const { laptopsProductsList } = useLaptops();
     const [pageParams, setPageParams] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
-    const { selectedFilters, filters, minPrice, maxPrice, setSlectedFilters } =
-        useFilter();
-    // console.log(selectedFilters.laptops);
-
-    useEffect(() => {
-        const filterKeys = [
+    const {
+        selectedFilters,
+        filters,
+        minPrice,
+        maxPrice,
+        setSlectedFilters,
+        setPrice,
+    } = useFilter();
+    console.log(selectedFilters);
+    const filterKeys = useMemo(
+        () => [
             "categories",
             "brand",
             "processors",
@@ -43,21 +48,19 @@ export default function LaptopsPage() {
             "refreshRates",
             "ramOptions",
             "storageOptions",
-        ];
+        ],
+        []
+    );
+    useEffect(() => {
         let params = [];
         filterKeys.forEach((key) => {
-            const savedFilters = JSON.parse(localStorage.getItem(key));
-            console.log(key, savedFilters);
-            if (savedFilters) {
-                const selectedItems = savedFilters;
-                console.log(savedFilters);
-                const indexs = selectedItems.map((item) =>
-                    filters.laptops[key].findIndex(
-                        (ele) => ele.toLowerCase() === item
-                    )
-                );
-                params.push(indexs.join("") || "");
-            }
+            const selectedItems = selectedFilters.laptops[key];
+            const indexs = selectedItems.map((item) =>
+                filters.laptops[key].findIndex(
+                    (ele) => ele.toLowerCase() === item
+                )
+            );
+            params.push(indexs.join("") || "");
         });
 
         let inStockParam = "";
@@ -91,6 +94,7 @@ export default function LaptopsPage() {
         selectedFilters,
         minPrice,
         maxPrice,
+        filterKeys,
     ]);
 
     useEffect(() => {
@@ -100,24 +104,52 @@ export default function LaptopsPage() {
             const restorePageParams = filtersFromParams.split("-");
             setCurrentPage(+restorePageParams[0] || 1);
             setPerPageValue(restorePageParams[1] || "25");
-            const restoredCategoriesParams = restorePageParams[2];
-            const restoredCategories = restoredCategoriesParams
-                .split("")
-                .map((ele) =>
-                    filters.laptops.categories
-                        .filter((_, index) => {
-                            return index === Number(ele);
-                        })
-                        .join("")
-                )
-                .map((item) => item.toLowerCase());
+            filterKeys.forEach((key, index) => {
+                const restoredDataParams = restorePageParams[index + 2];
+                const restoredCategories = restoredDataParams
+                    .split("")
+                    .map((ele) =>
+                        filters.laptops[key]
+                            .filter((_, index) => {
+                                return index === Number(ele);
+                            })
+                            .join("")
+                    )
+                    .map((item) => item.toLowerCase());
 
+                setSlectedFilters((prev) => ({
+                    ...prev,
+                    laptops: {
+                        ...prev.laptops,
+                        [key]: restoredCategories,
+                    },
+                }));
+            });
+            setPrice([
+                +restorePageParams[11] * 1000,
+                +restorePageParams[12] * 1000,
+            ]);
             setSlectedFilters((prev) => ({
                 ...prev,
-                laptops: { ...prev.laptops, categories: restoredCategories },
+                laptops: {
+                    ...prev.laptops,
+                    priceOptions: [
+                        +restorePageParams[11] * 1000,
+                        +restorePageParams[12] * 1000,
+                    ],
+                    inStock: restorePageParams[13] === "0" ? false : true,
+                },
             }));
         }
-    }, [setPageParams, searchParams, pageParams, setSlectedFilters, filters]);
+    }, [
+        setPageParams,
+        searchParams,
+        pageParams,
+        setSlectedFilters,
+        filters,
+        filterKeys,
+        setPrice,
+    ]);
 
     // Set for the Pagination
     const indexOfLastItem = currentPage * perPageValue;
