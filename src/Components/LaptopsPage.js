@@ -15,9 +15,8 @@ import LaptopsGridView from "./LaptopsGridView";
 import SideFilterUIComp from "./SideFilterUIComp";
 import SideFiltersForMobiles from "./SideFiltersForMobiles";
 import LinearProgress from "@mui/material/LinearProgress";
-
 import { useLaptops } from "../Context/laptopsProducts";
-
+import { useSearchParams } from "react-router-dom";
 export default function LaptopsPage() {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [currentViewProducts, setCurrentViewProducts] = useState("grid");
@@ -27,32 +26,98 @@ export default function LaptopsPage() {
     const [sideFiltersShown, setSideFiltersShown] = useState(false);
     const [SideFilterState, setSideFilerState] = useState(true);
     const { laptopsProductsList } = useLaptops();
-
-    // const [searchParams, setSearchParams] = useSearchParams();
-    // const { selectedFilters } = useFilter();
-
-    // useEffect(() => {
-    //     setSearchParams({
-    //         pageNumver: currentPage || 1,
-    //         perPage: perPageValue || "25",
-    //         // category: selectedFilters.laptops.categories,
-    //         // brand: selectedFilters.laptops.brand,
-    //         // processors: selectedFilters.laptops.processors,
-    //     });
-    // }, [setSearchParams, currentPage, perPageValue, selectedFilters]);
-
+    const [pageParams, setPageParams] = useState();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const { selectedFilters, filters, minPrice, maxPrice, setSlectedFilters } =
+        useFilter();
     // console.log(selectedFilters.laptops);
-    // const encodedFilters = btoa(JSON.stringify(selectedFilters.laptops));
-    // console.log(encodedFilters);
-    // const filters = JSON.parse(atob(encodedFilters));
-    // console.log(filters);
-    // console.log(filters.inStock);
 
-    // const x = laptopsList.map((ele) => {
-    //     return ele.price;
-    // });
-    // const y = new Set(x);
-    // console.log(y);
+    useEffect(() => {
+        const filterKeys = [
+            "categories",
+            "brand",
+            "processors",
+            "generations",
+            "vgaNumbers",
+            "screenSizes",
+            "refreshRates",
+            "ramOptions",
+            "storageOptions",
+        ];
+        let params = [];
+        filterKeys.forEach((key) => {
+            const savedFilters = JSON.parse(localStorage.getItem(key));
+            console.log(key, savedFilters);
+            if (savedFilters) {
+                const selectedItems = savedFilters;
+                console.log(savedFilters);
+                const indexs = selectedItems.map((item) =>
+                    filters.laptops[key].findIndex(
+                        (ele) => ele.toLowerCase() === item
+                    )
+                );
+                params.push(indexs.join("") || "");
+            }
+        });
+
+        let inStockParam = "";
+        if (selectedFilters.laptops.inStock) {
+            inStockParam = 1;
+        } else {
+            inStockParam = 0;
+        }
+
+        const minPriceParam =
+            selectedFilters.laptops.priceOptions[0] / 1000 || minPrice / 1000;
+
+        const maxPriceParam =
+            selectedFilters.laptops.priceOptions[1] / 1000 || maxPrice / 1000;
+
+        setSearchParams({
+            filters: [
+                currentPage || 1,
+                perPageValue || 25,
+                ...params,
+                minPriceParam,
+                maxPriceParam,
+                inStockParam,
+            ].join("-"),
+        });
+    }, [
+        filters,
+        setSearchParams,
+        currentPage,
+        perPageValue,
+        selectedFilters,
+        minPrice,
+        maxPrice,
+    ]);
+
+    useEffect(() => {
+        const filtersFromParams = searchParams.get("filters");
+        if (filtersFromParams && filtersFromParams !== pageParams) {
+            setPageParams(filtersFromParams);
+            const restorePageParams = filtersFromParams.split("-");
+            setCurrentPage(+restorePageParams[0] || 1);
+            setPerPageValue(restorePageParams[1] || "25");
+            const restoredCategoriesParams = restorePageParams[2];
+            const restoredCategories = restoredCategoriesParams
+                .split("")
+                .map((ele) =>
+                    filters.laptops.categories
+                        .filter((_, index) => {
+                            return index === Number(ele);
+                        })
+                        .join("")
+                )
+                .map((item) => item.toLowerCase());
+
+            setSlectedFilters((prev) => ({
+                ...prev,
+                laptops: { ...prev.laptops, categories: restoredCategories },
+            }));
+        }
+    }, [setPageParams, searchParams, pageParams, setSlectedFilters, filters]);
 
     // Set for the Pagination
     const indexOfLastItem = currentPage * perPageValue;

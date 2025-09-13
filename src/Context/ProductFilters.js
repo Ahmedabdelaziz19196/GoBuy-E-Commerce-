@@ -98,8 +98,9 @@ export function FilterProvider({ children }) {
     function toggleLpatopsFilters(filterGroup, value) {
         setSlectedFilters((prev) => {
             const currentValues = prev.laptops[filterGroup];
+            let updatedFilters;
             if (typeof currentValues === "boolean") {
-                return {
+                updatedFilters = {
                     ...prev,
                     laptops: {
                         ...prev.laptops,
@@ -108,7 +109,7 @@ export function FilterProvider({ children }) {
                 };
             }
             const isSelected = currentValues.includes(value);
-            return {
+            updatedFilters = {
                 ...prev,
                 laptops: {
                     ...prev.laptops,
@@ -117,6 +118,25 @@ export function FilterProvider({ children }) {
                         : [...currentValues, value.toLowerCase()],
                 },
             };
+            const filterKeys = [
+                "categories",
+                "brand",
+                "processors",
+                "generations",
+                "vgaNumbers",
+                "screenSizes",
+                "refreshRates",
+                "ramOptions",
+                "storageOptions",
+            ];
+            filterKeys.forEach((key) => {
+                localStorage.setItem(
+                    key,
+                    JSON.stringify(updatedFilters.laptops[key])
+                );
+            });
+
+            return updatedFilters;
         });
     }
 

@@ -28,7 +28,7 @@ export default function LaptopsFilter({ filterType }) {
                 (item) => !availableFilter[key].includes(item)
             );
 
-            if (missingItems.length > 0) {
+            if (missingItems.length > 0 && availableFilter[key].length > 0) {
                 const updatedItems = selectedFilters.laptops[key].filter(
                     (item) => !missingItems.includes(item)
                 );
@@ -40,6 +40,7 @@ export default function LaptopsFilter({ filterType }) {
                         [key]: updatedItems,
                     },
                 }));
+                localStorage.setItem(key, JSON.stringify(updatedItems));
             }
         });
     }, [availableFilter, selectedFilters.laptops, setSlectedFilters]);
