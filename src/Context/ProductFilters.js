@@ -4,7 +4,7 @@ import { useProduct } from "./TheProducts";
 const FiltersContext = createContext();
 
 export function FilterProvider({ children }) {
-    const minPrice = 16000;
+    const minPrice = 12000;
     const maxPrice = 300000;
     const [price, setPrice] = useState([minPrice, maxPrice]);
     const { laptopsList } = useProduct();
@@ -33,7 +33,6 @@ export function FilterProvider({ children }) {
             generations: [
                 "14th generation",
                 "14th Gen",
-                "4th Generation",
                 "10th generation",
                 "11th generation",
                 "12th generation",

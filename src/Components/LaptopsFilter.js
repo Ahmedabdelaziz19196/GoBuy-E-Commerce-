@@ -27,7 +27,6 @@ export default function LaptopsFilter({ filterType }) {
             const missingItems = selectedFilters.laptops[key].filter(
                 (item) => !availableFilter[key].includes(item)
             );
-
             if (missingItems.length > 0 && availableFilter[key].length > 0) {
                 const updatedItems = selectedFilters.laptops[key].filter(
                     (item) => !missingItems.includes(item)

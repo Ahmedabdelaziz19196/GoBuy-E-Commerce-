@@ -17,11 +17,23 @@ import SideFiltersForMobiles from "./SideFiltersForMobiles";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useLaptops } from "../Context/laptopsProducts";
 import { useSearchParams } from "react-router-dom";
-export default function LaptopsPage() {
+
+export default function LaptopsPage({
+    setViewedProducts,
+    setFavProducts,
+    favIconClickdedIndex,
+    setFavIconClickedIndex,
+    cartIconClickdedIndex,
+    setCartIconClickedIndex,
+    setCartProducts,
+    updateFavAndCartProducts,
+}) {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [currentViewProducts, setCurrentViewProducts] = useState("grid");
     const [currentPage, setCurrentPage] = useState(1);
     const [perPageValue, setPerPageValue] = useState("25");
+    const [sortingMethod, setSortingMethod] = useState("None");
+    const [sortedPriceProducts, setSortedPriceProducts] = useState([]);
     const { FilteredLapstopsProductsList } = useFilter();
     const [sideFiltersShown, setSideFiltersShown] = useState(false);
     const [SideFilterState, setSideFilerState] = useState(true);
@@ -36,7 +48,7 @@ export default function LaptopsPage() {
         setSlectedFilters,
         setPrice,
     } = useFilter();
-    console.log(selectedFilters);
+
     const filterKeys = useMemo(
         () => [
             "categories",
@@ -99,6 +111,7 @@ export default function LaptopsPage() {
 
     useEffect(() => {
         const filtersFromParams = searchParams.get("filters");
+
         if (filtersFromParams && filtersFromParams !== pageParams) {
             setPageParams(filtersFromParams);
             const restorePageParams = filtersFromParams.split("-");
@@ -150,19 +163,72 @@ export default function LaptopsPage() {
         filterKeys,
         setPrice,
     ]);
+    useEffect(() => {
+        const pageView = localStorage.getItem("pageView");
+        setCurrentViewProducts(pageView);
+    }, []);
+    //Sorting Data
+    const productsToSort = [
+        { sorting: "None" },
+        { sorting: "Heigh to Low" },
+        { sorting: "Low to Heigh" },
+    ];
+    useEffect(() => {
+        let sortingPrice = [...FilteredLapstopsProductsList];
+        if (sortingMethod === "Low to Heigh") {
+            sortingPrice = [...FilteredLapstopsProductsList].sort(
+                (laptopA, laptopB) => {
+                    const priceA = parseInt(
+                        laptopA.price.replace(/[^0-9]/g, ""),
+                        10
+                    );
+                    const priceB = parseInt(
+                        laptopB.price.replace(/[^0-9]/g, ""),
+                        10
+                    );
+                    return priceA - priceB;
+                }
+            );
+        } else if (sortingMethod === "Heigh to Low") {
+            sortingPrice = [...FilteredLapstopsProductsList].sort(
+                (laptopA, laptopB) => {
+                    const priceA = parseInt(
+                        laptopA.price.replace(/[^0-9]/g, ""),
+                        10
+                    );
+                    const priceB = parseInt(
+                        laptopB.price.replace(/[^0-9]/g, ""),
+                        10
+                    );
+                    return priceB - priceA;
+                }
+            );
+        } else if (sortingMethod === "None") {
+            sortingPrice = [...FilteredLapstopsProductsList];
+        }
+        setSortedPriceProducts(sortingPrice);
+    }, [
+        FilteredLapstopsProductsList,
+        sortingMethod,
+        currentPage,
+        perPageValue,
+    ]);
 
+    //Sorting Data
     // Set for the Pagination
     const indexOfLastItem = currentPage * perPageValue;
     const indexOfFirstItem = indexOfLastItem - perPageValue;
-    const currentProducts = FilteredLapstopsProductsList.slice(
+    const currentProducts = sortedPriceProducts.slice(
         indexOfFirstItem,
         indexOfLastItem
     );
+
     const perPageValueRadios = [
         { perPage: "15" },
         { perPage: "25" },
         { perPage: "35" },
     ];
+
     // Set for the Pagination
 
     function handleShowFilters() {
@@ -282,6 +348,7 @@ export default function LaptopsPage() {
                             style={{ display: "flex", justifyContent: "right" }}
                         >
                             <div
+                                style={{ padding: "4px 10px" }}
                                 className="gategories d-md-none d-lg-none align-items-center justify-content-center d-flex"
                                 onClick={handleShowFilters}
                             >
@@ -295,7 +362,11 @@ export default function LaptopsPage() {
                                         ? "clicked"
                                         : ""
                                 } d-none d-lg-block d-md-block`}
-                                onClick={() => setCurrentViewProducts("list")}
+                                onClick={() => {
+                                    const pageView = "list";
+                                    setCurrentViewProducts(pageView);
+                                    localStorage.setItem("pageView", pageView);
+                                }}
                             >
                                 <ViewHeadlineIcon />
                             </div>
@@ -305,12 +376,55 @@ export default function LaptopsPage() {
                                         ? "clicked"
                                         : ""
                                 } d-none d-lg-block d-md-block`}
-                                onClick={() => setCurrentViewProducts("grid")}
+                                onClick={() => {
+                                    const pageView = "grid";
+                                    setCurrentViewProducts("grid");
+                                    localStorage.setItem("pageView", pageView);
+                                }}
                             >
                                 <AppsIcon />
                             </div>
                         </div>
                     </div>
+                    <div className="d-flex align-items-lg-center mt-2 gap-1 flex-column flex-lg-row flex-md-row">
+                        <p
+                            style={{
+                                color: "var(--main-color)",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Price Sorting By :
+                        </p>
+                        <ButtonGroup>
+                            {productsToSort.map((radio, idx) => (
+                                <ToggleButton
+                                    key={idx}
+                                    id={`sorting-${idx}`}
+                                    type="radio"
+                                    name="sorting"
+                                    value={radio.sorting}
+                                    checked={sortingMethod === radio.sorting}
+                                    onChange={(e) => {
+                                        setSortingMethod(e.currentTarget.value);
+                                        setCurrentPage(1);
+                                    }}
+                                    style={{
+                                        paddingTop: "1px",
+                                        paddingBottom: "1px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        height: "30px",
+                                        background: "white",
+                                        color: "black",
+                                        border: "1px solid #e7e7e7",
+                                    }}
+                                >
+                                    {radio.sorting}
+                                </ToggleButton>
+                            ))}
+                        </ButtonGroup>
+                    </div>
+
                     {currentProducts.length === 0 ? (
                         <h5
                             style={{
@@ -322,15 +436,28 @@ export default function LaptopsPage() {
                             No Laptops Found
                         </h5>
                     ) : currentViewProducts === "grid" ? (
-                        <LaptopsGridView currentProducts={currentProducts} />
+                        <LaptopsGridView
+                            currentProducts={currentProducts}
+                            setFavProducts={setFavProducts}
+                            favIconClickdedIndex={favIconClickdedIndex}
+                            setFavIconClickedIndex={setFavIconClickedIndex}
+                            cartIconClickdedIndex={cartIconClickdedIndex}
+                            setCartIconClickedIndex={setCartIconClickedIndex}
+                            setCartProducts={setCartProducts}
+                            updateFavAndCartProducts={updateFavAndCartProducts}
+                        />
                     ) : (
-                        <LaptopsLinedView currentProducts={currentProducts} />
+                        <LaptopsLinedView
+                            currentProducts={currentProducts}
+                            setFavProducts={setFavProducts}
+                            favIconClickdedIndex={favIconClickdedIndex}
+                            setFavIconClickedIndex={setFavIconClickedIndex}
+                            cartIconClickdedIndex={cartIconClickdedIndex}
+                            setCartIconClickedIndex={setCartIconClickedIndex}
+                            setCartProducts={setCartProducts}
+                            updateFavAndCartProducts={updateFavAndCartProducts}
+                        />
                     )}
-                    {/* {currentViewProducts === "grid" ? (
-                        <LaptopsGridView currentProducts={currentProducts} />
-                    ) : (
-                        <LaptopsLinedView currentProducts={currentProducts} />
-                    )} */}
                     <ThePagination
                         perPageValue={perPageValue}
                         FilteredLapstopsProductsList={

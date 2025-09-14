@@ -4,17 +4,66 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Grid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function LaptopsGridView({ currentProducts }) {
+export default function LaptopsGridView({
+    currentProducts,
+    setFavProducts,
+    setCartProducts,
+    favIconClickdedIndex,
+    setFavIconClickedIndex,
+    cartIconClickdedIndex,
+    setCartIconClickedIndex,
+}) {
     const [viweProduct, setViewProduct] = useState(null);
-    const [favIconHoverd, setFavIconHoverd] = useState(false);
-    const [shopIconHoverd, setShopIconHoverd] = useState(false);
-    // useEffect(() => {
-    //     if (viweProduct === null) {
-    //         setHoveredIcons({});
-    //     }
-    // }, [viweProduct]);
+    const [favIconHoverdIndex, setFavIconHoverdIndex] = useState(null);
+    const [cartIconHoverdIndex, setCartIconHoverdIndex] = useState(null);
+    const [viewedProducts] = useState(currentProducts);
+
+    useEffect(() => {
+        if (viweProduct === null) {
+            setFavIconHoverdIndex(null);
+            setCartIconHoverdIndex(null);
+        }
+    }, [viweProduct]);
+
+    useEffect(() => {
+        setFavProducts(
+            viewedProducts.filter((_, index) => favIconClickdedIndex[index])
+        );
+        setCartProducts(
+            viewedProducts.filter((_, index) => cartIconClickdedIndex[index])
+        );
+    }, [
+        favIconClickdedIndex,
+        setFavProducts,
+        viewedProducts,
+        cartIconClickdedIndex,
+        setCartProducts,
+    ]);
+
+    function handleSavedFavProductsSatet(index) {
+        const savedFavIndexes = {
+            ...favIconClickdedIndex,
+            [index]: !favIconClickdedIndex[index],
+        };
+        setFavIconClickedIndex(savedFavIndexes);
+        localStorage.setItem(
+            "favProductsIndexsStates",
+            JSON.stringify(savedFavIndexes)
+        );
+    }
+    function handleSavedcartProductsSatet(index) {
+        const savedCartIndexes = {
+            ...cartIconClickdedIndex,
+            [index]: !cartIconClickdedIndex[index],
+        };
+        setCartIconClickedIndex(savedCartIndexes);
+        localStorage.setItem(
+            "cartProductsIndexsStates",
+            JSON.stringify(savedCartIndexes)
+        );
+    }
     return (
         <Grid container spacing={1} sx={{ marginTop: "10px" }}>
             {currentProducts.map((ele, index) => (
@@ -116,7 +165,11 @@ export default function LaptopsGridView({ currentProducts }) {
                                 {ele.description}
                             </p>
                             <Tooltip
-                                title="Add To Wisthlist"
+                                title={
+                                    favIconClickdedIndex[index]
+                                        ? ""
+                                        : "Add To Wisthlist"
+                                }
                                 arrow
                                 placement="right"
                             >
@@ -129,10 +182,18 @@ export default function LaptopsGridView({ currentProducts }) {
                                             viweProduct === index ? "" : "none",
                                         cursor: "pointer",
                                     }}
-                                    onMouseEnter={() => setFavIconHoverd(true)}
-                                    onMouseLeave={() => setFavIconHoverd(false)}
+                                    onMouseEnter={() =>
+                                        setFavIconHoverdIndex(index)
+                                    }
+                                    onMouseLeave={() =>
+                                        setFavIconHoverdIndex(null)
+                                    }
+                                    onClick={() =>
+                                        handleSavedFavProductsSatet(index)
+                                    }
                                 >
-                                    {favIconHoverd ? (
+                                    {favIconHoverdIndex === index ||
+                                    favIconClickdedIndex[index] ? (
                                         <FavoriteIcon
                                             sx={{
                                                 color: "var(--main-color)",
@@ -151,7 +212,12 @@ export default function LaptopsGridView({ currentProducts }) {
                             </Tooltip>
 
                             <Tooltip
-                                title="Add To Cart"
+                                // title="Add To Cart"
+                                title={
+                                    cartIconClickdedIndex[index]
+                                        ? ""
+                                        : "Add To Cart"
+                                }
                                 arrow
                                 placement="right"
                             >
@@ -164,12 +230,18 @@ export default function LaptopsGridView({ currentProducts }) {
                                             viweProduct === index ? "" : "none",
                                         cursor: "pointer",
                                     }}
-                                    onMouseEnter={() => setShopIconHoverd(true)}
+                                    onMouseEnter={() =>
+                                        setCartIconHoverdIndex(index)
+                                    }
                                     onMouseLeave={() =>
-                                        setShopIconHoverd(false)
+                                        setCartIconHoverdIndex(null)
+                                    }
+                                    onClick={() =>
+                                        handleSavedcartProductsSatet(index)
                                     }
                                 >
-                                    {shopIconHoverd ? (
+                                    {cartIconHoverdIndex === index ||
+                                    cartIconClickdedIndex[index] ? (
                                         <ShoppingBagIcon
                                             sx={{
                                                 color: "var(--main-color)",

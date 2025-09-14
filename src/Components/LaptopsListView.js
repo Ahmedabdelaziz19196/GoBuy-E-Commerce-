@@ -3,11 +3,58 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Snackbar from "@mui/material/Snackbar";
 import { SnackbarContent } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import { useState } from "react";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import { useState, useEffect } from "react";
 
-export default function LaptopsListView({ currentProducts }) {
+export default function LaptopsListView({
+    currentProducts,
+    setFavProducts,
+    setCartProducts,
+    favIconClickdedIndex,
+    setFavIconClickedIndex,
+    cartIconClickdedIndex,
+    setCartIconClickedIndex,
+}) {
     const [openToast, setOpenToast] = useState(false);
+    const [viewedProducts] = useState(currentProducts);
+    useEffect(() => {
+        setFavProducts(
+            viewedProducts.filter((_, index) => favIconClickdedIndex[index])
+        );
+        setCartProducts(
+            viewedProducts.filter((_, index) => cartIconClickdedIndex[index])
+        );
+    }, [
+        favIconClickdedIndex,
+        setFavProducts,
+        viewedProducts,
+        cartIconClickdedIndex,
+        setCartProducts,
+    ]);
+    function handleSavedFavProductsSatet(index) {
+        const savedFavIndexes = {
+            ...favIconClickdedIndex,
+            [index]: !favIconClickdedIndex[index],
+        };
+        setFavIconClickedIndex(savedFavIndexes);
+        localStorage.setItem(
+            "favProductsIndexsStates",
+            JSON.stringify(savedFavIndexes)
+        );
+    }
+    function handleSavedcartProductsSatet(index) {
+        const savedCartIndexes = {
+            ...cartIconClickdedIndex,
+            [index]: !cartIconClickdedIndex[index],
+        };
+        setCartIconClickedIndex(savedCartIndexes);
+        localStorage.setItem(
+            "cartProductsIndexsStates",
+            JSON.stringify(savedCartIndexes)
+        );
+    }
     return (
         <Grid container spacing={1} sx={{ marginTop: "10px" }}>
             {currentProducts.map((ele, index) => (
@@ -243,20 +290,32 @@ export default function LaptopsListView({ currentProducts }) {
                                 >
                                     {ele.price}
                                 </h5>
-                                <div
+                                <button
                                     className="gategories d-md-flex d-lg-flex align-items-center justify-content-center d-none gap-2 "
-                                    // onClick={handleShowCategories}
+                                    onClick={() =>
+                                        handleSavedFavProductsSatet(index)
+                                    }
                                 >
-                                    <FavoriteIcon />
-                                    <p>To Wisthlist</p>
-                                </div>
-                                <div
+                                    {favIconClickdedIndex[index] ? (
+                                        <FavoriteIcon />
+                                    ) : (
+                                        <FavoriteBorderOutlinedIcon />
+                                    )}
+                                    <p>Add To Wisthlist</p>
+                                </button>
+                                <button
                                     className="gategories d-md-flex d-lg-flex align-items-center justify-content-center d-none gap-2"
-                                    // onClick={handleShowCategories}
+                                    onClick={() =>
+                                        handleSavedcartProductsSatet(index)
+                                    }
                                 >
-                                    <ShoppingBagIcon />
+                                    {cartIconClickdedIndex[index] ? (
+                                        <ShoppingBagIcon />
+                                    ) : (
+                                        <ShoppingBagOutlinedIcon />
+                                    )}
                                     <p>To Cart</p>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>
