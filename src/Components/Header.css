@@ -52,7 +52,7 @@
     cursor: pointer;
     border-radius: 50%;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
     height: 35px;
     width: 35px;
     display: flex;

@@ -1,7 +1,9 @@
 import "./Header.css";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Container from "@mui/material/Container";
 import SortIcon from "@mui/icons-material/Sort";
@@ -14,7 +16,7 @@ import SearchForMobile from "./SearchForMobile";
 import { Link } from "react-router-dom";
 import { SideCategoriesContext } from "../Context/SideCategoriesContext";
 
-export default function Header() {
+export default function Header({ favProducts, cartProducts }) {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [langClick, setLangClick] = useState(false);
     const [iconFavClick, setIconFavClick] = useState(false);
@@ -148,7 +150,37 @@ export default function Header() {
                         }`}
                         onClick={handleFavIcon}
                     >
-                        <FavoriteBorderOutlinedIcon />
+                        {favProducts.length > 0 ? (
+                            <>
+                                <FavoriteIcon
+                                    sx={{
+                                        color: "var(--main-color)",
+                                        position: "relative",
+                                    }}
+                                />
+                                <p
+                                    style={{
+                                        position: "absolute",
+                                        background: "#ff9500",
+                                        height: "17px",
+                                        width: "17px",
+                                        top: "19px",
+                                        right: "4px",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        borderRadius: "50%",
+                                        fontSize: "10px",
+                                        color: "white",
+                                        boxShadow: "0 0 6px rgba(0, 0, 0, 0.4)",
+                                    }}
+                                >
+                                    {favProducts.length}
+                                </p>
+                            </>
+                        ) : (
+                            <FavoriteBorderOutlinedIcon />
+                        )}
                     </div>
                     <div
                         className={`header-icon ${
@@ -156,7 +188,37 @@ export default function Header() {
                         }`}
                         onClick={handleShopIcon}
                     >
-                        <ShoppingCartOutlinedIcon />
+                        {cartProducts.length > 0 ? (
+                            <>
+                                <ShoppingCartIcon
+                                    sx={{
+                                        color: "var(--main-color)",
+                                        position: "relative",
+                                    }}
+                                />
+                                <p
+                                    style={{
+                                        position: "absolute",
+                                        background: "#ff9500",
+                                        height: "17px",
+                                        width: "17px",
+                                        top: "19px",
+                                        right: "4px",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        borderRadius: "50%",
+                                        fontSize: "10px",
+                                        color: "white",
+                                        boxShadow: "0 0 6px rgba(0, 0, 0, 0.4)",
+                                    }}
+                                >
+                                    {cartProducts.length}
+                                </p>
+                            </>
+                        ) : (
+                            <ShoppingCartOutlinedIcon />
+                        )}
                     </div>
                     <div
                         className={`header-icon ${
@@ -197,3 +259,5 @@ export default function Header() {
         </div>
     );
 }
+// <FavoriteIcon/>
+// <ShoppingBagIcon/>

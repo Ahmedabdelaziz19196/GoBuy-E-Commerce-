@@ -1,0 +1,9 @@
+.listed-img:hover {
+    border: 1px solid #b3b3b3;
+}
+@media (max-width: 575px) {
+    .main-img {
+        height: 334px !important;
+        flex: none !important   ;
+    }
+}

@@ -7,7 +7,9 @@ export default function LaptopsProvider({ children }) {
     useEffect(() => {
         const fetchLaptops = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, "laptops"));
+                const querySnapshot = await getDocs(collection(db, "laptops"), {
+                    source: "server",
+                });
                 const laptopsData = querySnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
