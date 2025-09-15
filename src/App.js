@@ -37,6 +37,7 @@ function App() {
             setCartProducts(JSON.parse(savedCartProducts));
         }
     }, []);
+
     useEffect(() => {
         localStorage.setItem("favProducts", JSON.stringify(favProducts));
     }, [favProducts]);

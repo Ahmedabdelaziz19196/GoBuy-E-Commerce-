@@ -26,11 +26,12 @@ export default function LaptopsDetails({
     setFavIconClickedIndex,
     cartIconClickdedIndex,
     setCartIconClickedIndex,
-    currentProducts,
     setFavProducts,
     setCartProducts,
     numberOfOrders,
     setNumberOfOrders,
+    favProducts,
+    cartProducts,
 }) {
     const [product, setProduct] = useState(null);
     const [viewedImgURL, setViewedImgURL] = useState(null);
@@ -38,7 +39,6 @@ export default function LaptopsDetails({
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [openToast, setOpenToast] = useState(false);
     const [productIndex, setProductIndex] = useState();
-    const [viewedProducts] = useState(currentProducts);
     const { productId } = useParams();
     const { FilteredLapstopsProductsList } = useFilter();
 
@@ -51,9 +51,8 @@ export default function LaptopsDetails({
         );
         setProduct(theProduct);
         setProductIndex(theIndex);
-    }, [FilteredLapstopsProductsList, productId, product]);
-    console.log(numberOfOrders);
-    //set img ot view
+    }, [FilteredLapstopsProductsList, productId]);
+
     useEffect(() => {
         if (product) {
             const imgList = [
@@ -68,50 +67,62 @@ export default function LaptopsDetails({
         }
     }, [product]);
 
-    useEffect(() => {
-        setFavProducts(
-            viewedProducts.filter((_, index) => favIconClickdedIndex[index])
-        );
-        setCartProducts(
-            viewedProducts.filter((_, index) => cartIconClickdedIndex[index])
-        );
-    }, [
-        favIconClickdedIndex,
-        setFavProducts,
-        viewedProducts,
-        cartIconClickdedIndex,
-        setCartProducts,
-    ]);
+
+    function handleSavedFavProductsSatet() {
+        const isCurrentlyAdded = favIconClickdedIndex[productIndex];
+        const savedFavIndexes = {
+            ...favIconClickdedIndex,
+            [productIndex]: !isCurrentlyAdded,
+        };
+        setFavIconClickedIndex(savedFavIndexes);
+        localStorage.setItem("favProductsIndexsStates", JSON.stringify(savedFavIndexes));
+
+
+        if (!isCurrentlyAdded) {
+            if (!favProducts.some(p => p.productid === product.productid)) {
+                setFavProducts(prev => [...prev, product]);
+            }
+        } else {
+            setFavProducts(prev => prev.filter(p => p.productid !== product.productid));
+        }
+    }
+
+    function handleSavedcartProductsSatet() {
+        const isCurrentlyAdded = cartIconClickdedIndex[productIndex];
+        const savedCartIndexes = {
+            ...cartIconClickdedIndex,
+            [productIndex]: !isCurrentlyAdded,
+        };
+        setCartIconClickedIndex(savedCartIndexes);
+        localStorage.setItem("cartProductsIndexsStates", JSON.stringify(savedCartIndexes));
+
+        // **أضف/احذف من cartProducts مع الكمية**
+        const quantity = numberOfOrders[productIndex] || 1;
+        if (!isCurrentlyAdded) {
+            // أضف لو مش موجود
+            if (!cartProducts.some(p => p.productid === product.productid)) {
+                setCartProducts(prev => [...prev, { ...product, quantity }]);
+            } else {
+                // لو موجود، حدّث الكمية
+                setCartProducts(prev =>
+                    prev.map(p =>
+                        p.productid === product.productid ? { ...p, quantity } : p
+                    )
+                );
+            }
+        } else {
+            // احذف
+            setCartProducts(prev => prev.filter(p => p.productid !== product.productid));
+        }
+    }
 
     if (!product) {
         return (
-            <div style={{ height: "calc(100vh - 443.61px )" }}>
+            <div style={{ height: "calc(100vh - 443.61px)" }}>
                 <div style={{ zIndex: "999" }}>
                     <LinearProgress style={{ background: "white" }} />
                 </div>
             </div>
-        );
-    }
-    function handleSavedFavProductsSatet() {
-        const savedFavIndexes = {
-            ...favIconClickdedIndex,
-            [productIndex]: !favIconClickdedIndex[productIndex],
-        };
-        setFavIconClickedIndex(savedFavIndexes);
-        localStorage.setItem(
-            "favProductsIndexsStates",
-            JSON.stringify(savedFavIndexes)
-        );
-    }
-    function handleSavedcartProductsSatet() {
-        const savedCartIndexes = {
-            ...cartIconClickdedIndex,
-            [productIndex]: !cartIconClickdedIndex[productIndex],
-        };
-        setCartIconClickedIndex(savedCartIndexes);
-        localStorage.setItem(
-            "cartProductsIndexsStates",
-            JSON.stringify(savedCartIndexes)
         );
     }
 
@@ -172,9 +183,7 @@ export default function LaptopsDetails({
                                     style={{
                                         height: "100%",
                                         opacity:
-                                            listImgToView.indexOf(
-                                                viewedImgURL
-                                            ) === currentImageIndex
+                                            listImgToView.indexOf(viewedImgURL) === currentImageIndex
                                                 ? "1"
                                                 : "0",
                                         transition: "0.3s",
@@ -214,17 +223,13 @@ export default function LaptopsDetails({
                                         });
                                 }}
                             >
-                                <p>
-                                    SKU:
-                                    {product.productid}
-                                </p>
+                                <p>SKU: {product.productid}</p>
                                 <ContentCopyIcon sx={{ fontSize: "inherit" }} />
                                 <Snackbar open={openToast}>
                                     <SnackbarContent
                                         message="SKU Copied"
                                         sx={{
-                                            backgroundColor:
-                                                "var(--main-color)",
+                                            backgroundColor: "var(--main-color)",
                                             color: "white",
                                             boxShadow: "none",
                                         }}
@@ -251,10 +256,7 @@ export default function LaptopsDetails({
                                     </p>
                                 </div>
                                 <div>
-                                    <img
-                                        src={product.brandImage}
-                                        alt="brandLogo"
-                                    />
+                                    <img src={product.brandImage} alt="brandLogo" />
                                 </div>
                             </div>
                             <div
@@ -267,83 +269,43 @@ export default function LaptopsDetails({
                             >
                                 <p>
                                     Brand:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.brand}
                                     </span>
                                 </p>
                                 <p>
                                     Laptop model:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
-                                        {product.description
-                                            .split(" ")
-                                            .slice(0, 5)
-                                            .join(" ")}
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
+                                        {product.description.split(" ").slice(0, 5).join(" ")}
                                     </span>
                                 </p>
                                 <p>
                                     Processor:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.processor.name}
                                     </span>
                                 </p>
                                 <p>
                                     RAM:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
-                                        {product.ram.size +
-                                            " " +
-                                            product.ram.type}
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
+                                        {product.ram.size + " " + product.ram.type}
                                     </span>
                                 </p>
                                 <p>
                                     Storage:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.storage}
                                     </span>
                                 </p>
                                 <p>
                                     Graphics:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.graphics.name}
                                     </span>
                                 </p>
                                 <p>
                                     Display:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.display.size +
                                             " " +
                                             product.display.resolution +
@@ -353,53 +315,31 @@ export default function LaptopsDetails({
                                 </p>
                                 <p>
                                     Operating system:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.os}
                                     </span>
                                 </p>
                                 <p>
                                     Color:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.color}
                                     </span>
                                 </p>
                                 <p>
                                     Warranty:{" "}
-                                    <span
-                                        style={{
-                                            fontWeight: "bold",
-                                            color: "var(--main-color)",
-                                        }}
-                                    >
+                                    <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                                         {product.warranty}
                                     </span>
                                 </p>
                             </div>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    gap: "10px",
-                                    marginBottom: "10px",
-                                }}
-                            >
+                            <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
                                 <div
                                     style={{
                                         background: "white",
                                         width: "120px",
                                         height: "44px",
                                         borderRadius: "50px",
-                                        boxShadow:
-                                            "rgba(0, 0, 0, 0.1) 0px 0px 10px",
+                                        boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 10px",
                                         display: "flex",
                                         justifyContent: "space-around",
                                         alignItems: "center",
@@ -413,29 +353,19 @@ export default function LaptopsDetails({
                                             padding: "5px",
                                             color: "white",
                                             cursor: "pointer",
-                                            boxShadow:
-                                                "rgba(0, 0, 0, 0.1) 0px 0px 10px",
+                                            boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 10px",
                                         }}
                                         className="gategories"
                                         onClick={() => {
-                                            if (
-                                                numberOfOrders[productIndex] > 1
-                                            ) {
+                                            if (numberOfOrders[productIndex] > 1) {
                                                 const updatedOrders = {
                                                     ...numberOfOrders,
-                                                    [productIndex]:
-                                                        (numberOfOrders[
-                                                            productIndex
-                                                        ] || 0) - 1,
+                                                    [productIndex]: (numberOfOrders[productIndex] || 0) - 1,
                                                 };
-                                                setNumberOfOrders(
-                                                    updatedOrders
-                                                );
+                                                setNumberOfOrders(updatedOrders);
                                                 localStorage.setItem(
                                                     "numberForOrder",
-                                                    JSON.stringify(
-                                                        updatedOrders
-                                                    )
+                                                    JSON.stringify(updatedOrders)
                                                 );
                                             }
                                         }}
@@ -451,17 +381,13 @@ export default function LaptopsDetails({
                                             padding: "5px",
                                             color: "white",
                                             cursor: "pointer",
-                                            boxShadow:
-                                                "rgba(0, 0, 0, 0.1) 0px 0px 10px",
+                                            boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 10px",
                                         }}
                                         className="gategories"
                                         onClick={() => {
                                             const updatedOrders = {
                                                 ...numberOfOrders,
-                                                [productIndex]:
-                                                    (numberOfOrders[
-                                                        productIndex
-                                                    ] || 0) + 1,
+                                                [productIndex]: (numberOfOrders[productIndex] || 0) + 1,
                                             };
                                             setNumberOfOrders(updatedOrders);
                                             localStorage.setItem(
@@ -471,14 +397,12 @@ export default function LaptopsDetails({
                                         }}
                                     >
                                         <AddIcon />
-                                    </button>{" "}
+                                    </button>
                                 </div>
                                 <button
-                                    className="gategories d-flex d-flex align-items-center justify-content-center  gap-2"
+                                    className="gategories d-flex align-items-center justify-content-center gap-2"
                                     style={{ borderRadius: "50%" }}
-                                    onClick={() =>
-                                        handleSavedcartProductsSatet()
-                                    }
+                                    onClick={handleSavedcartProductsSatet}
                                 >
                                     {cartIconClickdedIndex[productIndex] ? (
                                         <ShoppingBagIcon />
@@ -494,11 +418,9 @@ export default function LaptopsDetails({
                                     }}
                                 ></div>
                                 <button
-                                    className="gategories d-flex d-flex align-items-center justify-content-center  gap-2 "
+                                    className="gategories d-flex align-items-center justify-content-center gap-2"
                                     style={{ borderRadius: "50%" }}
-                                    onClick={() =>
-                                        handleSavedFavProductsSatet()
-                                    }
+                                    onClick={handleSavedFavProductsSatet}
                                 >
                                     {favIconClickdedIndex[productIndex] ? (
                                         <FavoriteIcon />
@@ -509,37 +431,18 @@ export default function LaptopsDetails({
                             </div>
                             <Accordion>
                                 <Accordion.Item eventKey="0">
-                                    <Accordion.Header>
-                                        You Can Conect With Me
-                                    </Accordion.Header>
+                                    <Accordion.Header>You Can Connect With Me</Accordion.Header>
                                     <Accordion.Body>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <LinkedInIcon
-                                                sx={{
-                                                    fontSize: "30px",
-                                                    color: "#0A66C2",
-                                                }}
-                                            />
-                                            <p
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <LinkedInIcon sx={{ fontSize: "30px", color: "#0A66C2" }} />
+                                            <p style={{ fontSize: "20px", fontWeight: "bold" }}>
                                                 linkedin:
                                             </p>
                                             <a
                                                 href="https://www.linkedin.com/in/ahmed-abdelaziz-6351a3346/"
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                style={{
-                                                    textDecoration: "none",
-                                                }}
+                                                style={{ textDecoration: "none" }}
                                             >
                                                 <p
                                                     style={{
@@ -557,33 +460,16 @@ export default function LaptopsDetails({
                                         </div>
                                     </Accordion.Body>
                                     <Accordion.Body>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <GitHubIcon
-                                                sx={{
-                                                    fontSize: "30px",
-                                                    color: "black",
-                                                }}
-                                            />
-                                            <p
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <GitHubIcon sx={{ fontSize: "30px", color: "black" }} />
+                                            <p style={{ fontSize: "20px", fontWeight: "bold" }}>
                                                 GitHub:
                                             </p>
                                             <a
                                                 href="https://github.com/Ahmedabdelaziz19196"
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                style={{
-                                                    textDecoration: "none",
-                                                }}
+                                                style={{ textDecoration: "none" }}
                                             >
                                                 <p
                                                     style={{
@@ -600,33 +486,16 @@ export default function LaptopsDetails({
                                         </div>
                                     </Accordion.Body>
                                     <Accordion.Body>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <WhatsAppIcon
-                                                sx={{
-                                                    fontSize: "30px",
-                                                    color: "#25D366 ",
-                                                }}
-                                            />
-                                            <p
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <WhatsAppIcon sx={{ fontSize: "30px", color: "#25D366" }} />
+                                            <p style={{ fontSize: "20px", fontWeight: "bold" }}>
                                                 Chat:
                                             </p>
                                             <a
                                                 href="https://wa.me/201060054285"
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                style={{
-                                                    textDecoration: "none",
-                                                }}
+                                                style={{ textDecoration: "none" }}
                                             >
                                                 <p
                                                     style={{
@@ -644,31 +513,12 @@ export default function LaptopsDetails({
                                         </div>
                                     </Accordion.Body>
                                     <Accordion.Body>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <CallIcon
-                                                sx={{
-                                                    fontSize: "30px",
-                                                }}
-                                            />
-                                            <p
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <CallIcon sx={{ fontSize: "30px" }} />
+                                            <p style={{ fontSize: "20px", fontWeight: "bold" }}>
                                                 Call:
                                             </p>
-                                            <a
-                                                href="tel:+201060054285"
-                                                style={{
-                                                    textDecoration: "none",
-                                                }}
-                                            >
+                                            <a href="tel:+201060054285" style={{ textDecoration: "none" }}>
                                                 <p
                                                     style={{
                                                         color: "black",
