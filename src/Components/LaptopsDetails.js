@@ -9,6 +9,11 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import Accordion from "react-bootstrap/Accordion";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import CallIcon from "@mui/icons-material/Call";
 import { clsx } from "clsx";
 import { SnackbarContent } from "@mui/material";
 import { useParams } from "react-router-dom";
@@ -21,6 +26,11 @@ export default function LaptopsDetails({
     setFavIconClickedIndex,
     cartIconClickdedIndex,
     setCartIconClickedIndex,
+    currentProducts,
+    setFavProducts,
+    setCartProducts,
+    numberOfOrders,
+    setNumberOfOrders,
 }) {
     const [product, setProduct] = useState(null);
     const [viewedImgURL, setViewedImgURL] = useState(null);
@@ -28,9 +38,10 @@ export default function LaptopsDetails({
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [openToast, setOpenToast] = useState(false);
     const [productIndex, setProductIndex] = useState();
-    const [numberOfOrders, setNumberOfOrders] = useState(1);
+    const [viewedProducts] = useState(currentProducts);
     const { productId } = useParams();
     const { FilteredLapstopsProductsList } = useFilter();
+
     useEffect(() => {
         const theProduct = FilteredLapstopsProductsList.find(
             (ele) => ele.productid === productId
@@ -41,7 +52,7 @@ export default function LaptopsDetails({
         setProduct(theProduct);
         setProductIndex(theIndex);
     }, [FilteredLapstopsProductsList, productId, product]);
-    // console.log(favIconClickdedIndex[productIndex]);
+    console.log(numberOfOrders);
     //set img ot view
     useEffect(() => {
         if (product) {
@@ -57,6 +68,21 @@ export default function LaptopsDetails({
         }
     }, [product]);
 
+    useEffect(() => {
+        setFavProducts(
+            viewedProducts.filter((_, index) => favIconClickdedIndex[index])
+        );
+        setCartProducts(
+            viewedProducts.filter((_, index) => cartIconClickdedIndex[index])
+        );
+    }, [
+        favIconClickdedIndex,
+        setFavProducts,
+        viewedProducts,
+        cartIconClickdedIndex,
+        setCartProducts,
+    ]);
+
     if (!product) {
         return (
             <div style={{ height: "calc(100vh - 443.61px )" }}>
@@ -66,7 +92,6 @@ export default function LaptopsDetails({
             </div>
         );
     }
-
     function handleSavedFavProductsSatet() {
         const savedFavIndexes = {
             ...favIconClickdedIndex,
@@ -89,6 +114,7 @@ export default function LaptopsDetails({
             JSON.stringify(savedCartIndexes)
         );
     }
+
     return (
         <>
             <LaptopDetailsHeader product={product} />
@@ -231,7 +257,14 @@ export default function LaptopsDetails({
                                     />
                                 </div>
                             </div>
-                            <div>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "4px",
+                                    marginBottom: "10px",
+                                }}
+                            >
                                 <p>
                                     Brand:{" "}
                                     <span
@@ -352,7 +385,13 @@ export default function LaptopsDetails({
                                     </span>
                                 </p>
                             </div>
-                            <div style={{ display: "flex", gap: "10px" }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    marginBottom: "10px",
+                                }}
+                            >
                                 <div
                                     style={{
                                         background: "white",
@@ -378,10 +417,32 @@ export default function LaptopsDetails({
                                                 "rgba(0, 0, 0, 0.1) 0px 0px 10px",
                                         }}
                                         className="gategories"
+                                        onClick={() => {
+                                            if (
+                                                numberOfOrders[productIndex] > 1
+                                            ) {
+                                                const updatedOrders = {
+                                                    ...numberOfOrders,
+                                                    [productIndex]:
+                                                        (numberOfOrders[
+                                                            productIndex
+                                                        ] || 0) - 1,
+                                                };
+                                                setNumberOfOrders(
+                                                    updatedOrders
+                                                );
+                                                localStorage.setItem(
+                                                    "numberForOrder",
+                                                    JSON.stringify(
+                                                        updatedOrders
+                                                    )
+                                                );
+                                            }
+                                        }}
                                     >
                                         <RemoveIcon />
                                     </button>
-                                    {numberOfOrders}
+                                    {numberOfOrders[productIndex] || 1}
                                     <button
                                         style={{
                                             background: "var(--main-color)",
@@ -394,6 +455,20 @@ export default function LaptopsDetails({
                                                 "rgba(0, 0, 0, 0.1) 0px 0px 10px",
                                         }}
                                         className="gategories"
+                                        onClick={() => {
+                                            const updatedOrders = {
+                                                ...numberOfOrders,
+                                                [productIndex]:
+                                                    (numberOfOrders[
+                                                        productIndex
+                                                    ] || 0) + 1,
+                                            };
+                                            setNumberOfOrders(updatedOrders);
+                                            localStorage.setItem(
+                                                "numberForOrder",
+                                                JSON.stringify(updatedOrders)
+                                            );
+                                        }}
                                     >
                                         <AddIcon />
                                     </button>{" "}
@@ -432,6 +507,184 @@ export default function LaptopsDetails({
                                     )}
                                 </button>
                             </div>
+                            <Accordion>
+                                <Accordion.Item eventKey="0">
+                                    <Accordion.Header>
+                                        You Can Conect With Me
+                                    </Accordion.Header>
+                                    <Accordion.Body>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <LinkedInIcon
+                                                sx={{
+                                                    fontSize: "30px",
+                                                    color: "#0A66C2",
+                                                }}
+                                            />
+                                            <p
+                                                style={{
+                                                    fontSize: "20px",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                linkedin:
+                                            </p>
+                                            <a
+                                                href="https://www.linkedin.com/in/ahmed-abdelaziz-6351a3346/"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{
+                                                    textDecoration: "none",
+                                                }}
+                                            >
+                                                <p
+                                                    style={{
+                                                        color: "black",
+                                                        textDecoration: "none",
+                                                        position: "relative",
+                                                        fontSize: "20px",
+                                                        paddingLeft: "3px",
+                                                    }}
+                                                    className="linkedin-link"
+                                                >
+                                                    ahmed-abdelaziz
+                                                </p>
+                                            </a>
+                                        </div>
+                                    </Accordion.Body>
+                                    <Accordion.Body>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <GitHubIcon
+                                                sx={{
+                                                    fontSize: "30px",
+                                                    color: "black",
+                                                }}
+                                            />
+                                            <p
+                                                style={{
+                                                    fontSize: "20px",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                GitHub:
+                                            </p>
+                                            <a
+                                                href="https://github.com/Ahmedabdelaziz19196"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{
+                                                    textDecoration: "none",
+                                                }}
+                                            >
+                                                <p
+                                                    style={{
+                                                        color: "black",
+                                                        textDecoration: "none",
+                                                        position: "relative",
+                                                        fontSize: "20px",
+                                                        paddingLeft: "3px",
+                                                    }}
+                                                >
+                                                    Ahmedabdelaziz
+                                                </p>
+                                            </a>
+                                        </div>
+                                    </Accordion.Body>
+                                    <Accordion.Body>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <WhatsAppIcon
+                                                sx={{
+                                                    fontSize: "30px",
+                                                    color: "#25D366 ",
+                                                }}
+                                            />
+                                            <p
+                                                style={{
+                                                    fontSize: "20px",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                Chat:
+                                            </p>
+                                            <a
+                                                href="https://wa.me/201060054285"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{
+                                                    textDecoration: "none",
+                                                }}
+                                            >
+                                                <p
+                                                    style={{
+                                                        color: "black",
+                                                        textDecoration: "none",
+                                                        position: "relative",
+                                                        fontSize: "20px",
+                                                        paddingLeft: "3px",
+                                                    }}
+                                                    className="whatsApp"
+                                                >
+                                                    01060054285
+                                                </p>
+                                            </a>
+                                        </div>
+                                    </Accordion.Body>
+                                    <Accordion.Body>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <CallIcon
+                                                sx={{
+                                                    fontSize: "30px",
+                                                }}
+                                            />
+                                            <p
+                                                style={{
+                                                    fontSize: "20px",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                Call:
+                                            </p>
+                                            <a
+                                                href="tel:+201060054285"
+                                                style={{
+                                                    textDecoration: "none",
+                                                }}
+                                            >
+                                                <p
+                                                    style={{
+                                                        color: "black",
+                                                        textDecoration: "none",
+                                                        position: "relative",
+                                                        fontSize: "20px",
+                                                        paddingLeft: "3px",
+                                                    }}
+                                                >
+                                                    01060054285
+                                                </p>
+                                            </a>
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            </Accordion>
                         </div>
                     </Grid>
                 </Grid>

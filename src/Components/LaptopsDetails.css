@@ -7,3 +7,11 @@
         flex: none !important   ;
     }
 }
+
+.linkedin-link:hover {
+    color: #0a66c2 !important;
+}
+
+.whatsApp:hover {
+    color: #25d366 !important;
+}

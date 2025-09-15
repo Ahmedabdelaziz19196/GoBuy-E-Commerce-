@@ -93,7 +93,7 @@ export default function SideFilterUIComp() {
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>Categories</Accordion.Header>
                     <Accordion.Body>
-                        <LaptopsFilter filterType="categories" />
+                        {/* <LaptopsFilter filterType="categories" /> */}
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>

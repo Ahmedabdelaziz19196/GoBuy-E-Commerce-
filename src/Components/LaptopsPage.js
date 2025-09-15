@@ -27,6 +27,8 @@ export default function LaptopsPage({
     setCartIconClickedIndex,
     setCartProducts,
     updateFavAndCartProducts,
+    currentProducts,
+    setCurrentProducts,
 }) {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [currentViewProducts, setCurrentViewProducts] = useState("grid");
@@ -216,13 +218,15 @@ export default function LaptopsPage({
 
     //Sorting Data
     // Set for the Pagination
-    const indexOfLastItem = currentPage * perPageValue;
-    const indexOfFirstItem = indexOfLastItem - perPageValue;
-    const currentProducts = sortedPriceProducts.slice(
-        indexOfFirstItem,
-        indexOfLastItem
-    );
-
+    useEffect(() => {
+        const indexOfLastItem = currentPage * perPageValue;
+        const indexOfFirstItem = indexOfLastItem - perPageValue;
+        const Products = sortedPriceProducts.slice(
+            indexOfFirstItem,
+            indexOfLastItem
+        );
+        setCurrentProducts(Products);
+    }, [currentPage, perPageValue, setCurrentProducts, sortedPriceProducts]);
     const perPageValueRadios = [
         { perPage: "15" },
         { perPage: "25" },

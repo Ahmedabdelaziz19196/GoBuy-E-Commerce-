@@ -14,6 +14,8 @@ function App() {
     const [cartProducts, setCartProducts] = useState([]);
     const [favIconClickdedIndex, setFavIconClickedIndex] = useState({});
     const [cartIconClickdedIndex, setCartIconClickedIndex] = useState({});
+    const [currentProducts, setCurrentProducts] = useState([]);
+    const [numberOfOrders, setNumberOfOrders] = useState({});
 
     useEffect(() => {
         const savedFavIndexes = localStorage.getItem("favProductsIndexsStates");
@@ -56,6 +58,12 @@ function App() {
             JSON.stringify(cartIconClickdedIndex)
         );
     }, [cartIconClickdedIndex]);
+
+    useEffect(() => {
+        const savedOrders =
+            JSON.parse(localStorage.getItem("numberForOrder")) || {};
+        setNumberOfOrders(savedOrders);
+    }, []);
     return (
         <>
             <Header favProducts={favProducts} cartProducts={cartProducts} />
@@ -71,6 +79,8 @@ function App() {
                             setFavIconClickedIndex={setFavIconClickedIndex}
                             cartIconClickdedIndex={cartIconClickdedIndex}
                             setCartIconClickedIndex={setCartIconClickedIndex}
+                            currentProducts={currentProducts}
+                            setCurrentProducts={setCurrentProducts}
                         />
                     }
                 />
@@ -82,6 +92,13 @@ function App() {
                             setFavIconClickedIndex={setFavIconClickedIndex}
                             cartIconClickdedIndex={cartIconClickdedIndex}
                             setCartIconClickedIndex={setCartIconClickedIndex}
+                            currentProducts={currentProducts}
+                            favProducts={favProducts}
+                            setFavProducts={setFavProducts}
+                            cartProducts={cartProducts}
+                            setCartProducts={setCartProducts}
+                            numberOfOrders={numberOfOrders}
+                            setNumberOfOrders={setNumberOfOrders}
                         />
                     }
                 />

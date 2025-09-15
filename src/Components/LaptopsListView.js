@@ -141,7 +141,8 @@ export default function LaptopsListView({
                                         </p>
                                         <ContentCopyIcon
                                             sx={{ fontSize: "inherit" }}
-                                            onClick={() => {
+                                            onClick={(e) => {
+                                                e.preventDefault();
                                                 navigator.clipboard
                                                     .writeText(ele.productid)
                                                     .then(() => {
