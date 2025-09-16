@@ -19,38 +19,34 @@ import { SnackbarContent } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useFilter } from "../Context/ProductFilters";
 import LaptopDetailsHeader from "./LaptopDetailsHeader";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import LaptopsDetailsLowInfo from "./LaptopsDetailsLowInfo";
+import { Link } from "react-router-dom";
 
 export default function LaptopsDetails({
-    favIconClickdedIndex,
-    setFavIconClickedIndex,
-    cartIconClickdedIndex,
-    setCartIconClickedIndex,
+    favIconClickdedId,
+    setFavIconClickedId,
+    cartIconClickdedId,
+    setCartIconClickedId,
     setFavProducts,
     setCartProducts,
     numberOfOrders,
     setNumberOfOrders,
-    favProducts,
-    cartProducts,
 }) {
     const [product, setProduct] = useState(null);
     const [viewedImgURL, setViewedImgURL] = useState(null);
     const [listImgToView, setListImgToView] = useState([]);
+    // const [relatedProducts, setRelatedProducts] = useState([]);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [openToast, setOpenToast] = useState(false);
-    const [productIndex, setProductIndex] = useState();
+    const [showMiniInfo, setShowMiniInfo] = useState(false);
     const { productId } = useParams();
     const { FilteredLapstopsProductsList } = useFilter();
-
     useEffect(() => {
         const theProduct = FilteredLapstopsProductsList.find(
             (ele) => ele.productid === productId
         );
-        const theIndex = FilteredLapstopsProductsList.findIndex(
-            (ele) => ele.productid === productId
-        );
         setProduct(theProduct);
-        setProductIndex(theIndex);
     }, [FilteredLapstopsProductsList, productId]);
 
     useEffect(() => {
@@ -65,18 +61,58 @@ export default function LaptopsDetails({
             setListImgToView(imgList);
             setViewedImgURL(imgList[0]);
         }
-    }, [product]);
+    }, [product, FilteredLapstopsProductsList]);
+
+    const relatedProducts = useMemo(() => {
+        if (product) {
+            const categoriedProducts = FilteredLapstopsProductsList.filter(
+                (laptop) => laptop.category === product.category
+            ).sort(() => Math.random() - 0.5);
+            const ProductIndex = categoriedProducts.findIndex(
+                (laptop) => laptop.productid === product.productid
+            );
+            let theList;
+            if (ProductIndex - 4 < 0) {
+                theList = categoriedProducts.slice(
+                    ProductIndex + 1,
+                    ProductIndex + 9
+                );
+            } else {
+                theList = [
+                    ...categoriedProducts.slice(ProductIndex - 4, ProductIndex),
+                    ...categoriedProducts.slice(
+                        ProductIndex + 1,
+                        ProductIndex + 5
+                    ),
+                ];
+            }
+            return theList;
+        }
+    }, [FilteredLapstopsProductsList, product]);
+    useEffect(() => {
+        function handleScroll() {
+            if (window.scrollY >= 508) {
+                setShowMiniInfo(true);
+            } else {
+                setShowMiniInfo(false);
+            }
+        }
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     function handleSavedFavProductsSatet() {
-        const isCurrentlyAdded = favIconClickdedIndex[productIndex];
-        const savedFavIndexes = {
-            ...favIconClickdedIndex,
-            [productIndex]: !isCurrentlyAdded,
+        const isCurrentlyAdded = favIconClickdedId[product.productid];
+        const savedFavIds = {
+            ...favIconClickdedId,
+            [product.productid]: !isCurrentlyAdded,
         };
-        setFavIconClickedIndex(savedFavIndexes);
+        setFavIconClickedId(savedFavIds);
         localStorage.setItem(
-            "favProductsIndexsStates",
-            JSON.stringify(savedFavIndexes)
+            "favProductsIdsStates",
+            JSON.stringify(savedFavIds)
         );
 
         if (!isCurrentlyAdded) {
@@ -89,15 +125,15 @@ export default function LaptopsDetails({
     }
 
     function handleSavedcartProductsSatet() {
-        const isCurrentlyAdded = cartIconClickdedIndex[productIndex];
-        const savedCartIndexes = {
-            ...cartIconClickdedIndex,
-            [productIndex]: !isCurrentlyAdded,
+        const isCurrentlyAdded = cartIconClickdedId[product.productid];
+        const savedCartIds = {
+            ...cartIconClickdedId,
+            [product.productid]: !isCurrentlyAdded,
         };
-        setCartIconClickedIndex(savedCartIndexes);
+        setCartIconClickedId(savedCartIds);
         localStorage.setItem(
-            "cartProductsIndexsStates",
-            JSON.stringify(savedCartIndexes)
+            "cartProductsIdsStates",
+            JSON.stringify(savedCartIds)
         );
 
         if (!isCurrentlyAdded) {
@@ -123,6 +159,73 @@ export default function LaptopsDetails({
         <>
             <LaptopDetailsHeader product={product} />
             <div style={{ padding: "0px 20px" }}>
+                <div
+                    style={{
+                        background: "var(--main-color)",
+                        boxShadow: "rgba(0, 0, 0, 0.1) 0px 0px 10px",
+                        height: "fit-content",
+                        width: "100%",
+                        position: "fixed",
+                        top: showMiniInfo ? "97px" : "0px",
+                        left: "0",
+                        transition: "0.2s",
+                        padding: "7px",
+                        display: "flex",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        color: "white",
+                        gap: "10px",
+                        zIndex: "999",
+                    }}
+                >
+                    <img
+                        src={product.productImageOne}
+                        alt="miniInfo"
+                        style={{ height: "50px", borderRadius: "10px" }}
+                    />
+                    <p
+                        style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                        }}
+                        className="d-none d-md-block d-lg-block"
+                    >
+                        {product.description}
+                    </p>
+                    <p>{product.price}</p>
+                    <div style={{ display: "flex" }}>
+                        <button
+                            className="gategories d-flex align-items-center justify-content-center gap-2"
+                            style={{ borderRadius: "50%" }}
+                            onClick={handleSavedcartProductsSatet}
+                        >
+                            {cartIconClickdedId[product.productid] ? (
+                                <ShoppingBagIcon />
+                            ) : (
+                                <ShoppingBagOutlinedIcon />
+                            )}
+                        </button>
+                        <div
+                            style={{
+                                background: "#b3b3b3",
+                                height: "44px",
+                                width: "1px",
+                            }}
+                        ></div>
+                        <button
+                            className="gategories d-flex align-items-center justify-content-center gap-2"
+                            style={{ borderRadius: "50%" }}
+                            onClick={handleSavedFavProductsSatet}
+                        >
+                            {favIconClickdedId[product.productid] ? (
+                                <FavoriteIcon />
+                            ) : (
+                                <FavoriteBorderOutlinedIcon />
+                            )}
+                        </button>
+                    </div>
+                </div>
                 <h5>{product.description}</h5>
                 <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 12, md: 7, lg: 8 }}>
@@ -143,7 +246,6 @@ export default function LaptopsDetails({
                                                 alt="laptop"
                                                 style={{
                                                     width: "70px",
-                                                    cursor: "pointer",
                                                     marginBottom: "3px",
                                                     borderRadius: "5px",
                                                 }}
@@ -420,13 +522,15 @@ export default function LaptopsDetails({
                                         className="gategories"
                                         onClick={() => {
                                             if (
-                                                numberOfOrders[productIndex] > 1
+                                                numberOfOrders[
+                                                    product.productid
+                                                ] > 1
                                             ) {
                                                 const updatedOrders = {
                                                     ...numberOfOrders,
-                                                    [productIndex]:
+                                                    [product.productid]:
                                                         (numberOfOrders[
-                                                            productIndex
+                                                            product.productid
                                                         ] || 0) - 1,
                                                 };
                                                 setNumberOfOrders(
@@ -443,7 +547,7 @@ export default function LaptopsDetails({
                                     >
                                         <RemoveIcon />
                                     </button>
-                                    {numberOfOrders[productIndex] || 1}
+                                    {numberOfOrders[product.productid] || 1}
                                     <button
                                         style={{
                                             background: "var(--main-color)",
@@ -459,9 +563,9 @@ export default function LaptopsDetails({
                                         onClick={() => {
                                             const updatedOrders = {
                                                 ...numberOfOrders,
-                                                [productIndex]:
+                                                [product.productid]:
                                                     (numberOfOrders[
-                                                        productIndex
+                                                        product.productid
                                                     ] || 0) + 1,
                                             };
                                             setNumberOfOrders(updatedOrders);
@@ -479,7 +583,7 @@ export default function LaptopsDetails({
                                     style={{ borderRadius: "50%" }}
                                     onClick={handleSavedcartProductsSatet}
                                 >
-                                    {cartIconClickdedIndex[productIndex] ? (
+                                    {cartIconClickdedId[product.productid] ? (
                                         <ShoppingBagIcon />
                                     ) : (
                                         <ShoppingBagOutlinedIcon />
@@ -497,7 +601,7 @@ export default function LaptopsDetails({
                                     style={{ borderRadius: "50%" }}
                                     onClick={handleSavedFavProductsSatet}
                                 >
-                                    {favIconClickdedIndex[productIndex] ? (
+                                    {favIconClickdedId[product.productid] ? (
                                         <FavoriteIcon />
                                     ) : (
                                         <FavoriteBorderOutlinedIcon />
@@ -507,7 +611,7 @@ export default function LaptopsDetails({
                             <Accordion>
                                 <Accordion.Item eventKey="0">
                                     <Accordion.Header>
-                                        You Can Connect With Me
+                                        Get in Touch
                                     </Accordion.Header>
                                     <Accordion.Body>
                                         <div
@@ -522,14 +626,14 @@ export default function LaptopsDetails({
                                                     color: "#0A66C2",
                                                 }}
                                             />
-                                            <p
+                                            {/* <p
                                                 style={{
                                                     fontSize: "20px",
                                                     fontWeight: "bold",
                                                 }}
                                             >
                                                 linkedin:
-                                            </p>
+                                            </p> */}
                                             <a
                                                 href="https://www.linkedin.com/in/ahmed-abdelaziz-6351a3346/"
                                                 target="_blank"
@@ -548,7 +652,7 @@ export default function LaptopsDetails({
                                                     }}
                                                     className="linkedin-link"
                                                 >
-                                                    ahmed-abdelaziz
+                                                    On LinkedIn
                                                 </p>
                                             </a>
                                         </div>
@@ -566,14 +670,14 @@ export default function LaptopsDetails({
                                                     color: "black",
                                                 }}
                                             />
-                                            <p
+                                            {/* <p
                                                 style={{
                                                     fontSize: "20px",
                                                     fontWeight: "bold",
                                                 }}
                                             >
                                                 GitHub:
-                                            </p>
+                                            </p> */}
                                             <a
                                                 href="https://github.com/Ahmedabdelaziz19196"
                                                 target="_blank"
@@ -591,7 +695,7 @@ export default function LaptopsDetails({
                                                         paddingLeft: "3px",
                                                     }}
                                                 >
-                                                    Ahmedabdelaziz
+                                                    On GitHub
                                                 </p>
                                             </a>
                                         </div>
@@ -615,7 +719,7 @@ export default function LaptopsDetails({
                                                     fontWeight: "bold",
                                                 }}
                                             >
-                                                Chat:
+                                                WhatsApp:
                                             </p>
                                             <a
                                                 href="https://wa.me/201060054285"
@@ -656,7 +760,7 @@ export default function LaptopsDetails({
                                                     fontWeight: "bold",
                                                 }}
                                             >
-                                                Call:
+                                                Call Me:
                                             </p>
                                             <a
                                                 href="tel:+201060054285"
@@ -682,6 +786,225 @@ export default function LaptopsDetails({
                             </Accordion>
                         </div>
                     </Grid>
+                </Grid>
+                <Grid
+                    container
+                    spacing={2}
+                    style={{
+                        borderRadius: "20px",
+                        background: "#f6f8fa",
+                        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                        padding: "16px",
+                        width: "100%",
+                        margin: "20px 0px",
+                    }}
+                >
+                    <LaptopsDetailsLowInfo
+                        label="brand:"
+                        value={product.brand}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Name:"
+                        value={product.productName}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Description:"
+                        value={product.description}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Processor:"
+                        value={
+                            product.processor.name +
+                            " | " +
+                            product.processor.generation +
+                            " | " +
+                            product.processor.details
+                        }
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Graphics:"
+                        value={
+                            product.graphics.name +
+                            " | " +
+                            product.graphics.memory
+                        }
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="RAM:"
+                        value={
+                            product.ram.size +
+                            " | " +
+                            product.ram.type +
+                            " | " +
+                            product.ram.slots
+                        }
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Storage:"
+                        value={product.storage}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Screen:"
+                        value={
+                            product.display.size +
+                            " | " +
+                            product.display.resolution +
+                            " | " +
+                            product.display.refreshRate +
+                            " | " +
+                            product.display.type +
+                            " | " +
+                            product.display.brightness +
+                            " | " +
+                            product.display.colorGamut +
+                            " | " +
+                            product.display.features
+                        }
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Operating System:"
+                        value={product.os}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="keyboard:"
+                        value={product.keyboard}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Battery:"
+                        value={product.battery}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Webcam:"
+                        value={product.webcam}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Connections:"
+                        value={
+                            product.connections.usbA +
+                            " |" +
+                            product.connections.usbC +
+                            " |" +
+                            product.connections.hdmi +
+                            " |" +
+                            product.connections.ethernet +
+                            " |" +
+                            product.connections.power +
+                            " |" +
+                            product.connections.audio +
+                            " |" +
+                            product.connections.sdCard
+                        }
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Dimensions:"
+                        value={product.dimensions}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="Weight:"
+                        value={product.weight}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="color:"
+                        value={product.color}
+                    />
+                    <LaptopsDetailsLowInfo
+                        label="warranty:"
+                        value={product.warranty}
+                    />
+                </Grid>
+                <div className="selection-header">
+                    <p style={{ background: "white", padding: "0px 5px" }}>
+                        Related
+                        <span
+                            style={{
+                                color: "var(--main-color)",
+                            }}
+                        >
+                            {` Products`}
+                        </span>
+                    </p>
+                </div>
+                <Grid container spacing={1} sx={{ margin: "20px 0px" }}>
+                    {relatedProducts.map((ele, index) => (
+                        <Grid
+                            key={index}
+                            size={{ xs: 12, sm: 6, md: 3, lg: 3 }}
+                        >
+                            <Link
+                                to={`/laptops/${ele.productid}`}
+                                style={{
+                                    color: "inherit",
+                                    textDecoration: "none",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        border: "1px solid #b3b3b3",
+                                        padding: "10px",
+                                        borderRadius: "10px",
+                                        cursor: "pointer",
+                                        background: "#fff",
+                                        boxShadow:
+                                            "rgba(0, 0, 0, 0.1) 0px 0px 10px",
+                                    }}
+                                >
+                                    <div>
+                                        <div>
+                                            <img
+                                                src={ele.productImageOne}
+                                                alt="lapTop"
+                                                style={{
+                                                    width: "100%",
+                                                    borderRadius: "10px",
+                                                    boxShadow:
+                                                        "#0000001a 0px 0px 10px",
+                                                }}
+                                            />
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent:
+                                                        "space-between",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <h5
+                                                    style={{
+                                                        fontSize: "18px",
+                                                        marginTop: "10px",
+                                                    }}
+                                                >
+                                                    {ele.price}
+                                                </h5>
+                                                <img
+                                                    src={ele.brandImage}
+                                                    alt="brand"
+                                                    style={{
+                                                        height: "15px",
+                                                        background: "#f6f8fa",
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <p
+                                                style={{
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: "vertical",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    fontSize: "14px",
+                                                    transition: "0.2s",
+                                                }}
+                                            >
+                                                {ele.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        </Grid>
+                    ))}
                 </Grid>
             </div>
         </>

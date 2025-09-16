@@ -8,53 +8,60 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useLaptops } from "../Context/laptopsProducts";
 
 export default function LaptopsListView({
     currentProducts,
     setFavProducts,
     setCartProducts,
-    favIconClickdedIndex,
-    setFavIconClickedIndex,
-    cartIconClickdedIndex,
-    setCartIconClickedIndex,
+    favIconClickdedId,
+    setFavIconClickedId,
+    cartIconClickdedId,
+    setCartIconClickedId,
 }) {
     const [openToast, setOpenToast] = useState(false);
-    const [viewedProducts] = useState(currentProducts);
+    const { laptopsProductsList } = useLaptops();
+
     useEffect(() => {
         setFavProducts(
-            viewedProducts.filter((_, index) => favIconClickdedIndex[index])
+            laptopsProductsList.filter(
+                (ele) => favIconClickdedId[ele.productid]
+            )
         );
         setCartProducts(
-            viewedProducts.filter((_, index) => cartIconClickdedIndex[index])
+            laptopsProductsList.filter(
+                (ele) => cartIconClickdedId[ele.productid]
+            )
         );
     }, [
-        favIconClickdedIndex,
+        favIconClickdedId,
         setFavProducts,
-        viewedProducts,
-        cartIconClickdedIndex,
+        laptopsProductsList,
+        cartIconClickdedId,
         setCartProducts,
     ]);
-    function handleSavedFavProductsSatet(index, event) {
+    function handleSavedFavProductsSatet(prodcutId, event) {
         event.preventDefault();
         const savedFavIndexes = {
-            ...favIconClickdedIndex,
-            [index]: !favIconClickdedIndex[index],
+            ...favIconClickdedId,
+            [prodcutId]: !favIconClickdedId[prodcutId],
         };
-        setFavIconClickedIndex(savedFavIndexes);
+        setFavIconClickedId(savedFavIndexes);
         localStorage.setItem(
-            "favProductsIndexsStates",
+            "favProductsIdsStates",
             JSON.stringify(savedFavIndexes)
         );
     }
-    function handleSavedcartProductsSatet(index, event) {
+
+    function handleSavedcartProductsSatet(prodcutId, event) {
         event.preventDefault();
         const savedCartIndexes = {
-            ...cartIconClickdedIndex,
-            [index]: !cartIconClickdedIndex[index],
+            ...cartIconClickdedId,
+            [prodcutId]: !cartIconClickdedId[prodcutId],
         };
-        setCartIconClickedIndex(savedCartIndexes);
+        setCartIconClickedId(savedCartIndexes);
         localStorage.setItem(
-            "cartProductsIndexsStates",
+            "cartProductsIdsStates",
             JSON.stringify(savedCartIndexes)
         );
     }
@@ -303,17 +310,17 @@ export default function LaptopsListView({
                                         className="gategories d-md-flex d-lg-flex align-items-center justify-content-center d-none gap-2 "
                                         onClick={(event) =>
                                             handleSavedFavProductsSatet(
-                                                index,
+                                                ele.productid,
                                                 event
                                             )
                                         }
                                     >
-                                        {favIconClickdedIndex[index] ? (
+                                        {favIconClickdedId[ele.productid] ? (
                                             <FavoriteIcon />
                                         ) : (
                                             <FavoriteBorderOutlinedIcon />
                                         )}
-                                        {favIconClickdedIndex[index] ? (
+                                        {favIconClickdedId[ele.productid] ? (
                                             <p>Added</p>
                                         ) : (
                                             <p>Add To Wisthlist</p>
@@ -323,17 +330,17 @@ export default function LaptopsListView({
                                         className="gategories d-md-flex d-lg-flex align-items-center justify-content-center d-none gap-2"
                                         onClick={(event) =>
                                             handleSavedcartProductsSatet(
-                                                index,
+                                                ele.productid,
                                                 event
                                             )
                                         }
                                     >
-                                        {cartIconClickdedIndex[index] ? (
+                                        {cartIconClickdedId[ele.productid] ? (
                                             <ShoppingBagIcon />
                                         ) : (
                                             <ShoppingBagOutlinedIcon />
                                         )}
-                                        {cartIconClickdedIndex[index] ? (
+                                        {cartIconClickdedId[ele.productid] ? (
                                             <p>Added</p>
                                         ) : (
                                             <p>Add To Cart</p>

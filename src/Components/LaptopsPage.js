@@ -19,12 +19,11 @@ import { useLaptops } from "../Context/laptopsProducts";
 import { useSearchParams } from "react-router-dom";
 
 export default function LaptopsPage({
-    setViewedProducts,
     setFavProducts,
-    favIconClickdedIndex,
-    setFavIconClickedIndex,
-    cartIconClickdedIndex,
-    setCartIconClickedIndex,
+    favIconClickdedId,
+    setFavIconClickedId,
+    cartIconClickdedId,
+    setCartIconClickedId,
     setCartProducts,
     updateFavAndCartProducts,
     currentProducts,
@@ -50,7 +49,6 @@ export default function LaptopsPage({
         setSlectedFilters,
         setPrice,
     } = useFilter();
-    console.log(currentViewProducts);
     const filterKeys = useMemo(
         () => [
             "categories",
@@ -443,10 +441,10 @@ export default function LaptopsPage({
                         <LaptopsGridView
                             currentProducts={currentProducts}
                             setFavProducts={setFavProducts}
-                            favIconClickdedIndex={favIconClickdedIndex}
-                            setFavIconClickedIndex={setFavIconClickedIndex}
-                            cartIconClickdedIndex={cartIconClickdedIndex}
-                            setCartIconClickedIndex={setCartIconClickedIndex}
+                            favIconClickdedId={favIconClickdedId}
+                            setFavIconClickedId={setFavIconClickedId}
+                            cartIconClickdedId={cartIconClickdedId}
+                            setCartIconClickedId={setCartIconClickedId}
                             setCartProducts={setCartProducts}
                             updateFavAndCartProducts={updateFavAndCartProducts}
                         />
@@ -454,10 +452,10 @@ export default function LaptopsPage({
                         <LaptopsLinedView
                             currentProducts={currentProducts}
                             setFavProducts={setFavProducts}
-                            favIconClickdedIndex={favIconClickdedIndex}
-                            setFavIconClickedIndex={setFavIconClickedIndex}
-                            cartIconClickdedIndex={cartIconClickdedIndex}
-                            setCartIconClickedIndex={setCartIconClickedIndex}
+                            favIconClickdedId={favIconClickdedId}
+                            setFavIconClickedId={setFavIconClickedId}
+                            cartIconClickdedId={cartIconClickdedId}
+                            setCartIconClickedId={setCartIconClickedId}
                             setCartProducts={setCartProducts}
                             updateFavAndCartProducts={updateFavAndCartProducts}
                         />

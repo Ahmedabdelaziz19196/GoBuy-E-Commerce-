@@ -12,21 +12,19 @@ import LaptopsDetails from "./Components/LaptopsDetails";
 function App() {
     const [favProducts, setFavProducts] = useState([]);
     const [cartProducts, setCartProducts] = useState([]);
-    const [favIconClickdedIndex, setFavIconClickedIndex] = useState({});
-    const [cartIconClickdedIndex, setCartIconClickedIndex] = useState({});
+    const [favIconClickdedId, setFavIconClickedId] = useState({});
+    const [cartIconClickdedId, setCartIconClickedId] = useState({});
     const [currentProducts, setCurrentProducts] = useState([]);
     const [numberOfOrders, setNumberOfOrders] = useState({});
 
     useEffect(() => {
-        const savedFavIndexes = localStorage.getItem("favProductsIndexsStates");
+        const savedFavIndexes = localStorage.getItem("favProductsIdsStates");
         if (savedFavIndexes) {
-            setFavIconClickedIndex(JSON.parse(savedFavIndexes));
+            setFavIconClickedId(JSON.parse(savedFavIndexes));
         }
-        const savedCartIndexes = localStorage.getItem(
-            "cartProductsIndexsStates"
-        );
+        const savedCartIndexes = localStorage.getItem("cartProductsIdsStates");
         if (savedCartIndexes) {
-            setCartIconClickedIndex(JSON.parse(savedCartIndexes));
+            setCartIconClickedId(JSON.parse(savedCartIndexes));
         }
         const savedFavProducts = localStorage.getItem("favProducts");
         if (savedFavProducts) {
@@ -48,17 +46,17 @@ function App() {
 
     useEffect(() => {
         localStorage.setItem(
-            "favProductsIndexsStates",
-            JSON.stringify(favIconClickdedIndex)
+            "favProductsIdsStates",
+            JSON.stringify(favIconClickdedId)
         );
-    }, [favIconClickdedIndex]);
+    }, [favIconClickdedId]);
 
     useEffect(() => {
         localStorage.setItem(
-            "cartProductsIndexsStates",
-            JSON.stringify(cartIconClickdedIndex)
+            "cartProductsIdsStates",
+            JSON.stringify(cartIconClickdedId)
         );
-    }, [cartIconClickdedIndex]);
+    }, [cartIconClickdedId]);
 
     useEffect(() => {
         const savedOrders =
@@ -76,10 +74,10 @@ function App() {
                         <LaptopsPage
                             setFavProducts={setFavProducts}
                             setCartProducts={setCartProducts}
-                            favIconClickdedIndex={favIconClickdedIndex}
-                            setFavIconClickedIndex={setFavIconClickedIndex}
-                            cartIconClickdedIndex={cartIconClickdedIndex}
-                            setCartIconClickedIndex={setCartIconClickedIndex}
+                            favIconClickdedId={favIconClickdedId}
+                            setFavIconClickedId={setFavIconClickedId}
+                            cartIconClickdedId={cartIconClickdedId}
+                            setCartIconClickedId={setCartIconClickedId}
                             currentProducts={currentProducts}
                             setCurrentProducts={setCurrentProducts}
                         />
@@ -89,10 +87,10 @@ function App() {
                     path="/laptops/:productId"
                     element={
                         <LaptopsDetails
-                            favIconClickdedIndex={favIconClickdedIndex}
-                            setFavIconClickedIndex={setFavIconClickedIndex}
-                            cartIconClickdedIndex={cartIconClickdedIndex}
-                            setCartIconClickedIndex={setCartIconClickedIndex}
+                            favIconClickdedId={favIconClickdedId}
+                            setFavIconClickedId={setFavIconClickedId}
+                            cartIconClickdedId={cartIconClickdedId}
+                            setCartIconClickedId={setCartIconClickedId}
                             currentProducts={currentProducts}
                             favProducts={favProducts}
                             setFavProducts={setFavProducts}

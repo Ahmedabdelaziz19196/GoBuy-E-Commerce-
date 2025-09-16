@@ -7,6 +7,7 @@ import { FilterProvider } from "./Context/ProductFilters";
 import { ProductsProvider } from "./Context/TheProducts";
 import { SideCategoriesProvider } from "./Context/SideCategoriesContext";
 import LaptopsProvider from "./Context/laptopsProducts";
+import ScrollToTop from "./Components/ScrollToTop";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -16,6 +17,7 @@ root.render(
                 <FilterProvider>
                     <React.StrictMode>
                         <BrowserRouter>
+                            <ScrollToTop />
                             <App />
                         </BrowserRouter>
                     </React.StrictMode>

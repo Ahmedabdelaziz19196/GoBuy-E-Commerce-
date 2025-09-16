@@ -6,20 +6,21 @@ import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Grid";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useLaptops } from "../Context/laptopsProducts";
 
 export default function LaptopsGridView({
     currentProducts,
     setFavProducts,
     setCartProducts,
-    favIconClickdedIndex,
-    setFavIconClickedIndex,
-    cartIconClickdedIndex,
-    setCartIconClickedIndex,
+    favIconClickdedId,
+    setFavIconClickedId,
+    cartIconClickdedId,
+    setCartIconClickedId,
 }) {
     const [viweProduct, setViewProduct] = useState(null);
     const [favIconHoverdIndex, setFavIconHoverdIndex] = useState(null);
     const [cartIconHoverdIndex, setCartIconHoverdIndex] = useState(null);
-    const [viewedProducts] = useState(currentProducts);
+    const { laptopsProductsList } = useLaptops();
 
     useEffect(() => {
         if (viweProduct === null) {
@@ -29,41 +30,46 @@ export default function LaptopsGridView({
     }, [viweProduct]);
 
     useEffect(() => {
+        console.log(laptopsProductsList);
         setFavProducts(
-            viewedProducts.filter((_, index) => favIconClickdedIndex[index])
+            laptopsProductsList.filter(
+                (ele) => favIconClickdedId[ele.productid]
+            )
         );
         setCartProducts(
-            viewedProducts.filter((_, index) => cartIconClickdedIndex[index])
+            laptopsProductsList.filter(
+                (ele) => cartIconClickdedId[ele.productid]
+            )
         );
     }, [
-        favIconClickdedIndex,
+        favIconClickdedId,
         setFavProducts,
-        viewedProducts,
-        cartIconClickdedIndex,
+        cartIconClickdedId,
         setCartProducts,
+        laptopsProductsList,
     ]);
 
-    function handleSavedFavProductsSatet(index, e) {
+    function handleSavedFavProductsSatet(productId, e) {
         e.preventDefault();
         const savedFavIndexes = {
-            ...favIconClickdedIndex,
-            [index]: !favIconClickdedIndex[index],
+            ...favIconClickdedId,
+            [productId]: !favIconClickdedId[productId],
         };
-        setFavIconClickedIndex(savedFavIndexes);
+        setFavIconClickedId(savedFavIndexes);
         localStorage.setItem(
-            "favProductsIndexsStates",
+            "favProductsIdsStates",
             JSON.stringify(savedFavIndexes)
         );
     }
-    function handleSavedcartProductsSatet(index, e) {
+    function handleSavedcartProductsSatet(productId, e) {
         e.preventDefault();
         const savedCartIndexes = {
-            ...cartIconClickdedIndex,
-            [index]: !cartIconClickdedIndex[index],
+            ...cartIconClickdedId,
+            [productId]: !cartIconClickdedId[productId],
         };
-        setCartIconClickedIndex(savedCartIndexes);
+        setCartIconClickedId(savedCartIndexes);
         localStorage.setItem(
-            "cartProductsIndexsStates",
+            "cartProductsIdsStates",
             JSON.stringify(savedCartIndexes)
         );
     }
@@ -177,7 +183,7 @@ export default function LaptopsGridView({
                                 </div>
                                 <Tooltip
                                     title={
-                                        favIconClickdedIndex[index]
+                                        favIconClickdedId[index]
                                             ? ""
                                             : "Add To Wisthlist"
                                     }
@@ -203,13 +209,13 @@ export default function LaptopsGridView({
                                         }
                                         onClick={(e) =>
                                             handleSavedFavProductsSatet(
-                                                index,
+                                                ele.productid,
                                                 e
                                             )
                                         }
                                     >
                                         {favIconHoverdIndex === index ||
-                                        favIconClickdedIndex[index] ? (
+                                        favIconClickdedId[ele.productid] ? (
                                             <FavoriteIcon
                                                 sx={{
                                                     color: "var(--main-color)",
@@ -229,7 +235,7 @@ export default function LaptopsGridView({
 
                                 <Tooltip
                                     title={
-                                        cartIconClickdedIndex[index]
+                                        cartIconClickdedId[index]
                                             ? ""
                                             : "Add To Cart"
                                     }
@@ -255,13 +261,13 @@ export default function LaptopsGridView({
                                         }
                                         onClick={(e) =>
                                             handleSavedcartProductsSatet(
-                                                index,
+                                                ele.productid,
                                                 e
                                             )
                                         }
                                     >
                                         {cartIconHoverdIndex === index ||
-                                        cartIconClickdedIndex[index] ? (
+                                        cartIconClickdedId[ele.productid] ? (
                                             <ShoppingBagIcon
                                                 sx={{
                                                     color: "var(--main-color)",
