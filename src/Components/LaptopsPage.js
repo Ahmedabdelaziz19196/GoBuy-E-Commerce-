@@ -50,7 +50,7 @@ export default function LaptopsPage({
         setSlectedFilters,
         setPrice,
     } = useFilter();
-
+    console.log(currentViewProducts);
     const filterKeys = useMemo(
         () => [
             "categories",
@@ -167,7 +167,7 @@ export default function LaptopsPage({
     ]);
     useEffect(() => {
         const pageView = localStorage.getItem("pageView");
-        setCurrentViewProducts(pageView);
+        setCurrentViewProducts(pageView || "grid");
     }, []);
     //Sorting Data
     const productsToSort = [
