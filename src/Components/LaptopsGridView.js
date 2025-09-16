@@ -30,7 +30,6 @@ export default function LaptopsGridView({
     }, [viweProduct]);
 
     useEffect(() => {
-        console.log(laptopsProductsList);
         setFavProducts(
             laptopsProductsList.filter(
                 (ele) => favIconClickdedId[ele.productid]

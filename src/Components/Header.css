@@ -52,7 +52,6 @@
     cursor: pointer;
     border-radius: 50%;
     position: relative;
-    /* overflow: hidden; */
     height: 35px;
     width: 35px;
     display: flex;
@@ -62,7 +61,7 @@
 }
 
 .header-icon:hover {
-    background-color: #e7e7e7;
+    background-color: #e7e7e7 !important;
 }
 
 .header-icon::after {

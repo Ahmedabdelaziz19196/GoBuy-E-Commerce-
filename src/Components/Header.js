@@ -10,11 +10,13 @@ import SortIcon from "@mui/icons-material/Sort";
 import { ReactTyped } from "react-typed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AllGategories from "./AllGategories";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import LanguagesSelection from "./LanguagesSelection";
 import SearchForMobile from "./SearchForMobile";
 import { Link } from "react-router-dom";
 import { SideCategoriesContext } from "../Context/SideCategoriesContext";
+import FavProducts from "./FavProducts";
+import CartProducts from "./CardProducts";
 
 export default function Header({ favProducts, cartProducts }) {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
@@ -24,18 +26,45 @@ export default function Header({ favProducts, cartProducts }) {
     const [iconAccountClick, setIconAccountClick] = useState(false);
     const [iconSearchClick, setIconSearchClick] = useState(false);
     const [showSerachBarForMobile, setShowSerachBarForMobile] = useState(false);
+    const [favProductsShowed, setFavProductsShowed] = useState(false);
+    const [cartProductsShowed, setCartProductsShowed] = useState(false);
+
     function handleShowCategories() {
         setSideCategoriesShow(true);
     }
 
-    function handleFavIcon() {
+    function handleFavIcon(e) {
         setIconFavClick(true);
         setTimeout(() => setIconFavClick(false), 250);
+        e.stopPropagation();
+        setFavProductsShowed(!favProductsShowed);
+        setCartProductsShowed(false);
     }
-    function handleShopIcon() {
+
+    // Close Fav Products when clicking outside
+    function handleFavProductsCloes() {
+        setFavProductsShowed(false);
+    }
+    if (favProductsShowed) {
+        window.addEventListener("click", handleFavProductsCloes);
+    }
+
+    function handleShopIcon(e) {
         setIconShopClick(true);
         setTimeout(() => setIconShopClick(false), 250);
+        e.stopPropagation();
+        setCartProductsShowed(!cartProductsShowed);
+        setFavProductsShowed(false);
     }
+
+    // Close shop Products when clicking outside
+    function handleCartProductsCloes() {
+        setCartProductsShowed(false);
+    }
+    if (cartProductsShowed) {
+        window.addEventListener("click", handleCartProductsCloes);
+    }
+
     function handleAccountIcon() {
         setIconAccountClick(true);
         setTimeout(() => setIconAccountClick(false), 250);
@@ -47,17 +76,12 @@ export default function Header({ favProducts, cartProducts }) {
     }
 
     // Close language selection when clicking outside
-    useEffect(() => {
-        function handleWindowClick() {
-            setLangClick(false);
-        }
-        if (langClick) {
-            window.addEventListener("click", handleWindowClick);
-        }
-        return () => {
-            window.removeEventListener("click", handleWindowClick);
-        };
-    }, [langClick]);
+    function handleWindowClick() {
+        setLangClick(false);
+    }
+    if (langClick) {
+        window.addEventListener("click", handleWindowClick);
+    }
 
     return (
         <div className="bg-white w-100 sticky-top header">
@@ -106,15 +130,7 @@ export default function Header({ favProducts, cartProducts }) {
                     style={{ flex: "1", position: "relative" }}
                     className="d-none d-lg-block d-md-block"
                 >
-                    <input
-                        type="text"
-                        className="sreach-bar"
-                        // className={`sreach-input ${mobileSreach ? "clicked" : ""}`}
-                        // placeholder="Search..."
-                        // value={searchInput}
-                        // onChange={(e) => setSearchInput(e.target.value)}
-                        // onKeyDown={handleEnterFormSearch}
-                    />
+                    <input type="text" className="sreach-bar" />
                     <div
                         style={{
                             position: "absolute",
@@ -144,11 +160,12 @@ export default function Header({ favProducts, cartProducts }) {
                         <SearchIcon />
                     </div>
 
-                    <div
+                    <button
                         className={`header-icon ${
                             iconFavClick ? "icon-clicked" : ""
                         }`}
                         onClick={handleFavIcon}
+                        style={{ background: "none" }}
                     >
                         {favProducts.length > 0 ? (
                             <>
@@ -181,12 +198,13 @@ export default function Header({ favProducts, cartProducts }) {
                         ) : (
                             <FavoriteBorderOutlinedIcon />
                         )}
-                    </div>
-                    <div
+                    </button>
+                    <button
                         className={`header-icon ${
                             iconShopClick ? "icon-clicked" : ""
                         }`}
                         onClick={handleShopIcon}
+                        style={{ background: "none" }}
                     >
                         {cartProducts.length > 0 ? (
                             <>
@@ -219,7 +237,8 @@ export default function Header({ favProducts, cartProducts }) {
                         ) : (
                             <ShoppingCartOutlinedIcon />
                         )}
-                    </div>
+                    </button>
+
                     <div
                         className={`header-icon ${
                             iconAccountClick ? "icon-clicked" : ""
@@ -252,6 +271,14 @@ export default function Header({ favProducts, cartProducts }) {
                     </div>
                 </div>
                 <LanguagesSelection langClick={langClick} />
+                <FavProducts
+                    favProductsShowed={favProductsShowed}
+                    favProducts={favProducts}
+                />
+                <CartProducts
+                    cartProductsShowed={cartProductsShowed}
+                    cartProducts={cartProducts}
+                />
             </Container>
 
             <AllGategories />
@@ -259,5 +286,3 @@ export default function Header({ favProducts, cartProducts }) {
         </div>
     );
 }
-// <FavoriteIcon/>
-// <ShoppingBagIcon/>
