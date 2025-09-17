@@ -1,0 +1,4 @@
+.empty-btn:hover {
+    background-color: var(--main-color) !important;
+    color: white !important;
+}

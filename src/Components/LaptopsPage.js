@@ -33,7 +33,7 @@ export default function LaptopsPage({
     const [currentViewProducts, setCurrentViewProducts] = useState("grid");
     const [currentPage, setCurrentPage] = useState(1);
     const [perPageValue, setPerPageValue] = useState("25");
-    const [sortingMethod, setSortingMethod] = useState("None");
+    const [sortingMethod, setSortingMethod] = useState("Default");
     const [sortedPriceProducts, setSortedPriceProducts] = useState([]);
     const { FilteredLapstopsProductsList } = useFilter();
     const [sideFiltersShown, setSideFiltersShown] = useState(false);
@@ -88,16 +88,19 @@ export default function LaptopsPage({
         const maxPriceParam =
             selectedFilters.laptops.priceOptions[1] / 1000 || maxPrice / 1000;
 
-        setSearchParams({
-            filters: [
-                currentPage || 1,
-                perPageValue || 25,
-                ...params,
-                minPriceParam,
-                maxPriceParam,
-                inStockParam,
-            ].join("-"),
-        });
+        setSearchParams(
+            {
+                filters: [
+                    currentPage || 1,
+                    perPageValue || 25,
+                    ...params,
+                    minPriceParam,
+                    maxPriceParam,
+                    inStockParam,
+                ].join("-"),
+            },
+            { replace: true }
+        );
     }, [
         filters,
         setSearchParams,
@@ -163,13 +166,14 @@ export default function LaptopsPage({
         filterKeys,
         setPrice,
     ]);
+
     useEffect(() => {
         const pageView = localStorage.getItem("pageView");
         setCurrentViewProducts(pageView || "grid");
     }, []);
     //Sorting Data
     const productsToSort = [
-        { sorting: "None" },
+        { sorting: "Default" },
         { sorting: "Heigh to Low" },
         { sorting: "Low to Heigh" },
     ];
@@ -203,7 +207,7 @@ export default function LaptopsPage({
                     return priceB - priceA;
                 }
             );
-        } else if (sortingMethod === "None") {
+        } else if (sortingMethod === "Default") {
             sortingPrice = [...FilteredLapstopsProductsList];
         }
         setSortedPriceProducts(sortingPrice);
@@ -275,7 +279,6 @@ export default function LaptopsPage({
     useEffect(() => {
         setSideCategoriesShow(false);
     }, [setSideCategoriesShow]);
-
     return (
         <>
             {laptopsProductsList.length === 0 ? (

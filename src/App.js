@@ -8,6 +8,9 @@ import MonitorsPage from "./Components/MonitorsPage";
 import ServiceFeatures from "./Components/ServiceFeatures";
 import { useEffect, useState } from "react";
 import LaptopsDetails from "./Components/LaptopsDetails";
+import Cart from "./Components/Cart";
+import WishList from "./Components/WishList";
+import CartCheckOut from "./Components/CartCheckOut";
 
 function App() {
     const [favProducts, setFavProducts] = useState([]);
@@ -16,6 +19,7 @@ function App() {
     const [cartIconClickdedId, setCartIconClickedId] = useState({});
     const [currentProducts, setCurrentProducts] = useState([]);
     const [numberOfOrders, setNumberOfOrders] = useState({});
+    const [totalPrice, setToatalPrice] = useState(0);
 
     useEffect(() => {
         const savedFavIndexes = localStorage.getItem("favProductsIdsStates");
@@ -63,9 +67,27 @@ function App() {
             JSON.parse(localStorage.getItem("numberForOrder")) || {};
         setNumberOfOrders(savedOrders);
     }, []);
+    //handle total price
+    useEffect(() => {
+        if (cartProducts) {
+            let price = cartProducts
+                .map(
+                    (ele) =>
+                        parseInt(ele.price.replace(/[^0-9]/g, ""), 10) *
+                        (numberOfOrders[ele.productid] || 1)
+                )
+                .reduce((acc, ele) => acc + ele, 0);
+            setToatalPrice(price);
+        }
+    }, [cartProducts, numberOfOrders]);
     return (
         <>
-            <Header favProducts={favProducts} cartProducts={cartProducts} />
+            <Header
+                favProducts={favProducts}
+                cartProducts={cartProducts}
+                numberOfOrders={numberOfOrders}
+                setFavProducts={setFavProducts}
+            />
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route
@@ -101,8 +123,43 @@ function App() {
                         />
                     }
                 />
-
                 <Route path="/monitors" element={<MonitorsPage />} />
+
+                <Route
+                    path="/wishlist"
+                    element={
+                        <WishList
+                            favProducts={favProducts}
+                            setFavProducts={setFavProducts}
+                            setFavIconClickedId={setFavIconClickedId}
+                        />
+                    }
+                />
+                <Route
+                    path="/cart"
+                    element={
+                        <Cart
+                            cartProducts={cartProducts}
+                            numberOfOrders={numberOfOrders}
+                            setCartProducts={setCartProducts}
+                            setCartIconClickedId={setCartIconClickedId}
+                            totalPrice={totalPrice}
+                        />
+                    }
+                />
+                <Route
+                    path="/checkout"
+                    element={
+                        <CartCheckOut
+                            cartProducts={cartProducts}
+                            numberOfOrders={numberOfOrders}
+                            setCartProducts={setCartProducts}
+                            setCartIconClickedId={setCartIconClickedId}
+                            totalPrice={totalPrice}
+                            cartIconClickdedId={cartIconClickdedId}
+                        />
+                    }
+                />
             </Routes>
             <ServiceFeatures />
             <Footer />

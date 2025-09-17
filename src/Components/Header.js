@@ -2,7 +2,7 @@ import "./Header.css";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+// import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Container from "@mui/material/Container";
@@ -10,24 +10,32 @@ import SortIcon from "@mui/icons-material/Sort";
 import { ReactTyped } from "react-typed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AllGategories from "./AllGategories";
-import { useState, useContext } from "react";
+import { useState, useContext, useMemo, useEffect } from "react";
 import LanguagesSelection from "./LanguagesSelection";
 import SearchForMobile from "./SearchForMobile";
 import { Link } from "react-router-dom";
 import { SideCategoriesContext } from "../Context/SideCategoriesContext";
 import FavProducts from "./FavProducts";
 import CartProducts from "./CardProducts";
+import { useLaptops } from "../Context/laptopsProducts";
+import { monitorsProductsList } from "../monitorsProductsList";
+import { debounce } from "lodash";
+import SearchResult from "./SearchResult";
 
-export default function Header({ favProducts, cartProducts }) {
+export default function Header({ favProducts, cartProducts, numberOfOrders }) {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [langClick, setLangClick] = useState(false);
     const [iconFavClick, setIconFavClick] = useState(false);
     const [iconShopClick, setIconShopClick] = useState(false);
-    const [iconAccountClick, setIconAccountClick] = useState(false);
+    // const [iconAccountClick, setIconAccountClick] = useState(false);
     const [iconSearchClick, setIconSearchClick] = useState(false);
     const [showSerachBarForMobile, setShowSerachBarForMobile] = useState(false);
     const [favProductsShowed, setFavProductsShowed] = useState(false);
     const [cartProductsShowed, setCartProductsShowed] = useState(false);
+    const { laptopsProductsList } = useLaptops();
+    const [querySearch, setQuerySearch] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [showSearchResults, setShowSearchResults] = useState(false);
 
     function handleShowCategories() {
         setSideCategoriesShow(true);
@@ -65,10 +73,10 @@ export default function Header({ favProducts, cartProducts }) {
         window.addEventListener("click", handleCartProductsCloes);
     }
 
-    function handleAccountIcon() {
-        setIconAccountClick(true);
-        setTimeout(() => setIconAccountClick(false), 250);
-    }
+    // function handleAccountIcon() {
+    //     setIconAccountClick(true);
+    //     setTimeout(() => setIconAccountClick(false), 250);
+    // }
     function handleSerachtIcon() {
         setIconSearchClick(true);
         setTimeout(() => setIconSearchClick(false), 250);
@@ -81,6 +89,46 @@ export default function Header({ favProducts, cartProducts }) {
     }
     if (langClick) {
         window.addEventListener("click", handleWindowClick);
+    }
+
+    //Full Text Search
+    //merge laptops and monitors and add type
+    const products = useMemo(() => {
+        const fullList = [
+            ...laptopsProductsList.map((ele) => ({ ...ele, type: "laptop" })),
+            ...monitorsProductsList.map((ele) => ({ ...ele, type: "monitor" })),
+        ];
+        return fullList;
+    }, [laptopsProductsList]);
+
+    const debouncedSearch = useMemo(
+        () =>
+            debounce((query) => {
+                if (query !== "") {
+                    const words = query.toLowerCase().split(" ");
+                    const results = products.filter((product) =>
+                        words.every((word) =>
+                            JSON.stringify(product).toLowerCase().includes(word)
+                        )
+                    );
+                    setSearchResults(results);
+                } else {
+                    setSearchResults([]);
+                }
+            }, 500),
+        [products]
+    );
+    useEffect(() => {
+        debouncedSearch(querySearch);
+    }, [querySearch, debouncedSearch]);
+    //-----------------------------
+
+    //close results dropList
+    function handleCloseResultsDropList() {
+        setShowSearchResults(false);
+    }
+    if (showSearchResults) {
+        window.addEventListener("click", handleCloseResultsDropList);
     }
 
     return (
@@ -130,7 +178,16 @@ export default function Header({ favProducts, cartProducts }) {
                     style={{ flex: "1", position: "relative" }}
                     className="d-none d-lg-block d-md-block"
                 >
-                    <input type="text" className="sreach-bar" />
+                    <input
+                        type="text"
+                        className="sreach-bar"
+                        value={querySearch}
+                        onChange={(e) => setQuerySearch(e.target.value)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowSearchResults(true);
+                        }}
+                    />
                     <div
                         style={{
                             position: "absolute",
@@ -139,16 +196,43 @@ export default function Header({ favProducts, cartProducts }) {
                             transform: "translateY(-50%)",
                         }}
                     >
-                        <ReactTyped
-                            style={{ color: "var(--main-color)" }}
-                            strings={["Search Here..."]}
-                            typeSpeed={50}
-                            backSpeed={30}
-                            backDelay={1000}
-                            startDelay={500}
-                            loop
-                        />
+                        {!querySearch && (
+                            <ReactTyped
+                                style={{ color: "var(--main-color)" }}
+                                strings={["Search Here..."]}
+                                typeSpeed={50}
+                                backSpeed={30}
+                                backDelay={1000}
+                                startDelay={500}
+                                loop
+                            />
+                        )}
                     </div>
+                    {searchResults.length > 0 && showSearchResults ? (
+                        <div
+                            style={{
+                                position: "absolute",
+                                top: "43px",
+                                left: "0px",
+                                height: "fit-content",
+                                width: "100%",
+                                background: "white",
+                                borderRadius: "10px",
+                                boxShadow:
+                                    "0 4px 16px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(0, 0, 0, 0.05), 0 0 24px 0 rgba(0, 0, 0, 0.07)",
+                                padding: "5px",
+                            }}
+                        >
+                            <SearchResult
+                                searchResults={searchResults}
+                                setShowSerachBarForMobile={
+                                    setShowSerachBarForMobile
+                                }
+                            />
+                        </div>
+                    ) : (
+                        ""
+                    )}
                 </div>
                 <div className="d-flex align-items-center justify-content-center gap-2">
                     <div
@@ -239,16 +323,16 @@ export default function Header({ favProducts, cartProducts }) {
                         )}
                     </button>
 
-                    <div
+                    {/* <div
                         className={`header-icon ${
                             iconAccountClick ? "icon-clicked" : ""
                         }`}
                         onClick={handleAccountIcon}
                     >
                         <AccountCircleOutlinedIcon />
-                    </div>
+                    </div> */}
 
-                    <div
+                    {/* <div
                         className="d-flex align-items-center justify-content-center gap-1 lang"
                         style={{ cursor: "pointer" }}
                         onClick={(e) => {
@@ -268,7 +352,7 @@ export default function Header({ favProducts, cartProducts }) {
                                 langClick ? "lang-clicked" : ""
                             }`}
                         >{`>`}</span>
-                    </div>
+                    </div> */}
                 </div>
                 <LanguagesSelection langClick={langClick} />
                 <FavProducts
@@ -278,11 +362,15 @@ export default function Header({ favProducts, cartProducts }) {
                 <CartProducts
                     cartProductsShowed={cartProductsShowed}
                     cartProducts={cartProducts}
+                    numberOfOrders={numberOfOrders}
                 />
             </Container>
 
             <AllGategories />
-            <SearchForMobile showSerachBarForMobile={showSerachBarForMobile} />
+            <SearchForMobile
+                showSerachBarForMobile={showSerachBarForMobile}
+                products={products}
+            />
         </div>
     );
 }

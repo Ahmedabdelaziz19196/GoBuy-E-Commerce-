@@ -2,6 +2,7 @@ import "./LaptopsSwiper.css";
 import Container from "@mui/material/Container";
 import ResponsiveSliderMonitors from "./ResponsiveSliderMonitors";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function MonitorsSwiper() {
     const [viewAllClick, setViewAllClick] = useState(false);
@@ -25,18 +26,23 @@ export default function MonitorsSwiper() {
             </div>
             <Container maxWidth="xl">
                 <ResponsiveSliderMonitors />
-                <div
-                    className="d-flex align-items-center justify-content-center  fit-content mt-2 mb-2"
-                    onClick={handleViewAllClickUI}
+                <Link
+                    to="/monitors"
+                    style={{ color: "inherit", textDecoration: "none" }}
                 >
-                    <p
-                        className={`view-all ${
-                            viewAllClick ? "icon-clicked" : ""
-                        }`}
+                    <div
+                        className="d-flex align-items-center justify-content-center  fit-content mt-2 mb-2"
+                        onClick={handleViewAllClickUI}
                     >
-                        View All
-                    </p>
-                </div>
+                        <p
+                            className={`view-all ${
+                                viewAllClick ? "icon-clicked" : ""
+                            }`}
+                        >
+                            View All
+                        </p>
+                    </div>
+                </Link>
             </Container>
         </div>
     );

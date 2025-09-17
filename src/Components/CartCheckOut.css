@@ -1,0 +1,7 @@
+.css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root:hover {
+    background-color: #f6f8fa;
+}
+.css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root.Mui-selected {
+    background-color: var(--main-color) !important;
+    color: white;
+}

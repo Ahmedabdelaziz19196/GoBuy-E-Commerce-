@@ -2,9 +2,11 @@ import "./LaptopsSwiper.css";
 import Container from "@mui/material/Container";
 import ResponsiveSliderLaptops from "./ResponsiveSliderLaptops";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function LaptopsSwiper() {
     const [viewAllClick, setViewAllClick] = useState(false);
+
     function handleViewAllClickUI() {
         setViewAllClick(true);
         setTimeout(() => setViewAllClick(false), 250);
@@ -25,18 +27,23 @@ export default function LaptopsSwiper() {
             </div>
             <Container maxWidth="xl">
                 <ResponsiveSliderLaptops />
-                <div
-                    className="d-flex align-items-center justify-content-center  fit-content mt-2 mb-2"
-                    onClick={handleViewAllClickUI}
+                <Link
+                    to="/laptops"
+                    style={{ color: "inherit", textDecoration: "none" }}
                 >
-                    <p
-                        className={`view-all ${
-                            viewAllClick ? "icon-clicked" : ""
-                        }`}
+                    <div
+                        className="d-flex align-items-center justify-content-center  fit-content mt-2 mb-2"
+                        onClick={handleViewAllClickUI}
                     >
-                        View All
-                    </p>
-                </div>
+                        <p
+                            className={`view-all ${
+                                viewAllClick ? "icon-clicked" : ""
+                            }`}
+                        >
+                            View All
+                        </p>
+                    </div>
+                </Link>
             </Container>
         </div>
     );

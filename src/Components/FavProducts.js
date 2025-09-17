@@ -19,12 +19,13 @@ export default function FavProducts({ favProductsShowed, favProducts }) {
                         favProductsShowed && "fav-clicked"
                     )}
                 >
-                    {slicedFavProducts.map((ele, index) => (
+                    {slicedFavProducts.map((ele) => (
                         <Link
                             to={`/laptops/${ele.productid}`}
                             style={{ color: "inherit", textDecoration: "none" }}
+                            key={ele.productid}
                         >
-                            <div key={ele.productid}>
+                            <div>
                                 <div
                                     style={{
                                         display: "flex",
@@ -74,18 +75,17 @@ export default function FavProducts({ favProductsShowed, favProducts }) {
                             </div>
                         </Link>
                     ))}
-                    <button
-                        className="gategories pt-1 pb-1"
-                        // onClick={(event) =>
-                        //     handleSavedFavProductsSatet(
-                        //         ele.productid,
-                        //         event
-                        //     )
-                        // }
-                        style={{ width: "50%" }}
+                    <Link
+                        to="/wishlist"
+                        style={{ color: "inherit", textDecoration: "none" }}
                     >
-                        View Wishlist
-                    </button>
+                        <button
+                            className="gategories pt-1 pb-1"
+                            style={{ width: "50%" }}
+                        >
+                            View Wishlist
+                        </button>
+                    </Link>
                 </div>
             )}
         </>
