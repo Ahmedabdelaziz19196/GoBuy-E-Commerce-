@@ -2,7 +2,8 @@ import "./Header.css";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-// import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import Container from "@mui/material/Container";
@@ -11,7 +12,7 @@ import { ReactTyped } from "react-typed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AllGategories from "./AllGategories";
 import { useState, useContext, useMemo, useEffect } from "react";
-import LanguagesSelection from "./LanguagesSelection";
+// import LanguagesSelection from "./LanguagesSelection";
 import SearchForMobile from "./SearchForMobile";
 import { Link } from "react-router-dom";
 import { SideCategoriesContext } from "../Context/SideCategoriesContext";
@@ -21,13 +22,21 @@ import { useLaptops } from "../Context/laptopsProducts";
 import { monitorsProductsList } from "../monitorsProductsList";
 import { debounce } from "lodash";
 import SearchResult from "./SearchResult";
+import ProfileState from "./ProfileState";
+// import LanguageContext from "../Context/LanguageContext";
+import { useAuth } from "../Context/AuthContext";
 
-export default function Header({ favProducts, cartProducts, numberOfOrders }) {
+export default function Header({
+    favProducts,
+    cartProducts,
+    numberOfOrders,
+    userDate,
+}) {
     const { setSideCategoriesShow } = useContext(SideCategoriesContext);
     const [langClick, setLangClick] = useState(false);
     const [iconFavClick, setIconFavClick] = useState(false);
     const [iconShopClick, setIconShopClick] = useState(false);
-    // const [iconAccountClick, setIconAccountClick] = useState(false);
+    const [iconAccountClick, setIconAccountClick] = useState(false);
     const [iconSearchClick, setIconSearchClick] = useState(false);
     const [showSerachBarForMobile, setShowSerachBarForMobile] = useState(false);
     const [favProductsShowed, setFavProductsShowed] = useState(false);
@@ -36,6 +45,9 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
     const [querySearch, setQuerySearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [showSearchResults, setShowSearchResults] = useState(false);
+    const [profileStateShow, setProfileStateShow] = useState(false);
+    // const { language } = useContext(LanguageContext);
+    const { currentUser } = useAuth();
 
     function handleShowCategories() {
         setSideCategoriesShow(true);
@@ -47,6 +59,7 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
         e.stopPropagation();
         setFavProductsShowed(!favProductsShowed);
         setCartProductsShowed(false);
+        setProfileStateShow(false);
     }
 
     // Close Fav Products when clicking outside
@@ -63,6 +76,7 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
         e.stopPropagation();
         setCartProductsShowed(!cartProductsShowed);
         setFavProductsShowed(false);
+        setProfileStateShow(false);
     }
 
     // Close shop Products when clicking outside
@@ -73,10 +87,14 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
         window.addEventListener("click", handleCartProductsCloes);
     }
 
-    // function handleAccountIcon() {
-    //     setIconAccountClick(true);
-    //     setTimeout(() => setIconAccountClick(false), 250);
-    // }
+    function handleAccountIcon(e) {
+        setIconAccountClick(true);
+        setTimeout(() => setIconAccountClick(false), 250);
+        e.stopPropagation();
+        setProfileStateShow(!profileStateShow);
+        setCartProductsShowed(false);
+        setFavProductsShowed(false);
+    }
     function handleSerachtIcon() {
         setIconSearchClick(true);
         setTimeout(() => setIconSearchClick(false), 250);
@@ -89,6 +107,14 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
     }
     if (langClick) {
         window.addEventListener("click", handleWindowClick);
+    }
+
+    //close profile state
+    function handleCloseProfileState() {
+        setProfileStateShow(false);
+    }
+    if (profileStateShow) {
+        window.addEventListener("click", handleCloseProfileState);
     }
 
     //Full Text Search
@@ -323,14 +349,20 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
                         )}
                     </button>
 
-                    {/* <div
+                    <div
                         className={`header-icon ${
                             iconAccountClick ? "icon-clicked" : ""
                         }`}
                         onClick={handleAccountIcon}
                     >
-                        <AccountCircleOutlinedIcon />
-                    </div> */}
+                        {currentUser ? (
+                            <div style={{ color: "var(--main-color)" }}>
+                                <AccountCircleIcon />
+                            </div>
+                        ) : (
+                            <AccountCircleOutlinedIcon />
+                        )}
+                    </div>
 
                     {/* <div
                         className="d-flex align-items-center justify-content-center gap-1 lang"
@@ -341,12 +373,16 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
                         }}
                     >
                         <img
-                            src="/imgs/usa-flag.webp"
+                            src={
+                                language === "EN"
+                                    ? "/imgs/usa-flag.webp"
+                                    : "/imgs/egypt-flag.png"
+                            }
                             alt="usa-flag"
                             style={{ width: "20px" }}
                             className="d-none d-md-flex"
                         />
-                        <p style={{ fontWeight: "bold" }}>EN</p>
+                        <p style={{ fontWeight: "bold" }}>{language}</p>
                         <span
                             className={`lan-arrow ${
                                 langClick ? "lang-clicked" : ""
@@ -354,7 +390,7 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
                         >{`>`}</span>
                     </div> */}
                 </div>
-                <LanguagesSelection langClick={langClick} />
+                {/* <LanguagesSelection langClick={langClick} /> */}
                 <FavProducts
                     favProductsShowed={favProductsShowed}
                     favProducts={favProducts}
@@ -363,6 +399,10 @@ export default function Header({ favProducts, cartProducts, numberOfOrders }) {
                     cartProductsShowed={cartProductsShowed}
                     cartProducts={cartProducts}
                     numberOfOrders={numberOfOrders}
+                />
+                <ProfileState
+                    profileStateShow={profileStateShow}
+                    userDate={userDate}
                 />
             </Container>
 

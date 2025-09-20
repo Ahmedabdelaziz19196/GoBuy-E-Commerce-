@@ -1,17 +1,46 @@
 import { Link } from "react-router-dom";
 import { Grid } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useAuth } from "../Context/AuthContext";
+import { db } from "../FireBase";
+import { doc, setDoc } from "firebase/firestore";
+
 export default function Cart({
     cartProducts,
     numberOfOrders,
     setCartProducts,
     setCartIconClickedId,
     totalPrice,
+    setNumberOfOrders,
 }) {
-    function handleEmptyCart() {
+    const { currentUser } = useAuth();
+
+    async function handleEmptyCart() {
         setCartProducts([]);
         setCartIconClickedId({});
+        setNumberOfOrders({});
+
+        localStorage.setItem("cartProducts", JSON.stringify([]));
+        localStorage.setItem("cartProductsIdsStates", JSON.stringify({}));
+        localStorage.setItem("numberForOrder", JSON.stringify({}));
+
+        if (currentUser) {
+            try {
+                await setDoc(
+                    doc(db, "users", currentUser.uid),
+                    {
+                        cart: [],
+                        cartProductsId: {},
+                        numberOfOrders: {},
+                    },
+                    { merge: true }
+                );
+            } catch (error) {
+                console.error("Error updating Firestore:", error);
+            }
+        }
     }
+
     return (
         <>
             <div
@@ -37,8 +66,7 @@ export default function Cart({
                         </p>
                     </Link>
                     <p>/</p>
-
-                    <p>WhishList</p>
+                    <p>Cart</p>
                 </div>
             </div>
             <div style={{ margin: "0px 10px 10px 10px" }}>
@@ -195,27 +223,32 @@ export default function Cart({
                         borderRadius: "10px",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        justifyContent:
+                            cartProducts.length === 0
+                                ? "flex-end"
+                                : "space-between",
                         padding: "10px",
                     }}
                 >
-                    <button
-                        className="gategories empty-btn"
-                        onClick={handleEmptyCart}
-                        style={{
-                            width: "174px",
-                            border: "1px solid var(--main-color)",
-                            background: "transparent",
-                            color: "var(--main-color)",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
-                        }}
-                    >
-                        <DeleteIcon />
-                        Empty Cart
-                    </button>
+                    {cartProducts.length > 0 && (
+                        <button
+                            className="gategories empty-btn"
+                            onClick={handleEmptyCart}
+                            style={{
+                                width: "174px",
+                                border: "1px solid var(--main-color)",
+                                background: "transparent",
+                                color: "var(--main-color)",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                gap: "10px",
+                            }}
+                        >
+                            <DeleteIcon />
+                            Empty Cart
+                        </button>
+                    )}
                     <Link
                         to="/laptops"
                         style={{ textDecoration: "none", color: "inherit" }}

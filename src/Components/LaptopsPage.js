@@ -330,7 +330,6 @@ export default function LaptopsPage({
                                             setPerPageValue(
                                                 e.currentTarget.value
                                             );
-                                            setCurrentPage(1);
                                         }}
                                         style={{
                                             paddingTop: "1px",

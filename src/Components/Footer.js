@@ -1,6 +1,18 @@
 import Container from "@mui/material/Container";
 import "./Footer.css";
+import { Link } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext";
 export default function Footer() {
+    const { currentUser, logOut } = useAuth();
+    function handleLogOut() {
+        logOut();
+        localStorage.removeItem("favProducts");
+        localStorage.removeItem("cartProducts");
+        localStorage.removeItem("favProductsIdsStates");
+        localStorage.removeItem("cartProductsIdsStates");
+        localStorage.removeItem("numberForOrder");
+        window.location.reload();
+    }
     return (
         <div
             style={{
@@ -16,16 +28,50 @@ export default function Footer() {
                 <div className="border-sm-solid  mb-sm-3 w-sm-100">
                     <h4>My account</h4>
                     <ul>
-                        <li className="footer-list">Sign In</li>
-                        <li className="footer-list">Create Account</li>
+                        {!currentUser ? (
+                            <>
+                                <Link
+                                    to="/login"
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "inherit",
+                                    }}
+                                >
+                                    <li className="footer-list">Log In</li>
+                                </Link>
+                                <Link
+                                    to="/registerUser"
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "inherit",
+                                    }}
+                                >
+                                    <li className="footer-list">
+                                        Create Account
+                                    </li>
+                                </Link>
+                            </>
+                        ) : (
+                            <p className="footer-list" onClick={handleLogOut}>
+                                Log Out
+                            </p>
+                        )}
                     </ul>
                 </div>
                 <div className="border-sm-solid  mb-sm-3 w-sm-100">
                     <h4 style={{ fontFamily: "Righteous" }}>GoBuy</h4>
-                    <ul>
-                        <li className="footer-list">About Us</li>
-                        <li className="footer-list">Contact Us</li>
-                    </ul>
+                    <a
+                        href="/AhmedAbdelazizCv.pdf"
+                        download
+                        className="footer-list"
+                        style={{
+                            textDecoration: "none",
+                            color: "inherit",
+                            cursor: "pointer",
+                        }}
+                    >
+                        About Us
+                    </a>
                 </div>
                 <div>
                     <h4>Contact Us</h4>
@@ -38,16 +84,28 @@ export default function Footer() {
                         >
                             Egypt, Alexandrtia
                         </li>
-                        <li
-                            style={{
-                                textDecoration: "none",
-                                cursor: "text",
-                            }}
-                        >
-                            +201060054285
+
+                        <li className="footer-list">
+                            <a
+                                href="tel:+201060054285"
+                                style={{
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                }}
+                            >
+                                +201060054285
+                            </a>
                         </li>
                         <li className="footer-list">
-                            Ahemd.Abdelaziz19196@gmail.com
+                            <a
+                                href="mailto:Ahemd.Abdelaziz19196@gmail.com"
+                                style={{
+                                    color: "inherit",
+                                    textDecoration: "none",
+                                }}
+                            >
+                                Ahemd.Abdelaziz19196@gmail.com
+                            </a>
                         </li>
                     </ul>
                 </div>

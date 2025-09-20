@@ -1,14 +1,17 @@
 // import "./CartProducts.css";
 import "./CardProducts.css";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import LanguageContext from "../Context/LanguageContext";
 export default function CartProducts({
     cartProductsShowed,
     cartProducts,
     numberOfOrders,
 }) {
     const [slicedCartProducts, setSlicedCartProducts] = useState([]);
+    const { language } = useContext(LanguageContext);
+
     useEffect(() => {
         if (cartProducts) {
             const theList = cartProducts.slice(0, 2);
@@ -20,7 +23,7 @@ export default function CartProducts({
             {cartProducts.length > 0 && (
                 <div
                     className={clsx(
-                        "cart-selection",
+                        `cart-selection ${language}`,
                         cartProductsShowed && "cart-clicked"
                     )}
                 >

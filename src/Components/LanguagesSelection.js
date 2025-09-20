@@ -1,15 +1,22 @@
+import { useContext } from "react";
 import "./LanguagesSelection.css";
+import LanguageContext from "../Context/LanguageContext";
 export default function LanguagesSelection({ langClick }) {
+    const { language, setLanguage } = useContext(LanguageContext);
     return (
         <>
             <div
-                className={`lang-selection ${langClick ? "lang-clicked" : ""}`}
+                className={`lang-selection ${language} ${
+                    langClick ? "lang-clicked" : ""
+                }`}
             >
                 <div
                     className="d-flex align-items-center justify-content-around gap-1 lang"
                     style={{ cursor: "pointer" }}
-                    onClick={(e) => {
-                        console.log(e.target.textContent);
+                    onClick={() => {
+                        const language = "EN";
+                        setLanguage(language);
+                        localStorage.setItem("language", language);
                     }}
                 >
                     <img
@@ -22,8 +29,10 @@ export default function LanguagesSelection({ langClick }) {
                 <div
                     className="d-flex align-items-center justify-content-around gap-1 lang"
                     style={{ cursor: "pointer" }}
-                    onClick={(e) => {
-                        console.log(e.target.textContent);
+                    onClick={() => {
+                        const language = "AR";
+                        setLanguage(language);
+                        localStorage.setItem("language", language);
                     }}
                 >
                     <img

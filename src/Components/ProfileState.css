@@ -1,8 +1,8 @@
-.cart-selection {
+.profile-selection {
     background-color: white;
     position: absolute;
     top: -163px;
-    width: 300px;
+    width: 170px;
     display: none;
     transition: opacity 0.01s, top 0.2s;
     border-radius: 5px;
@@ -11,60 +11,65 @@
     z-index: 9999;
     padding: 10px;
 }
-.cart-selection.EN {
+.profile-selection.EN {
     right: 25px;
 }
-.cart-selection.AR {
+.profile-selection.AR {
     left: 25px;
 }
-.cart-selection.cart-clicked {
+.profile-selection.profile-clicked {
     top: 77px;
     opacity: 1;
     display: block;
     z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
-.cart-selection.cart-clicked::after {
+.profile-selection.profile-clicked::after {
     content: "";
     position: absolute;
     top: -19px;
+    left: 114px;
     z-index: 9999;
     border-width: 10px;
     border-style: solid;
     border-color: transparent transparent white transparent;
 }
+
 @media (max-width: 575.98px) {
-    .cart-selection.cart-clicked::after {
-        left: 192px;
+    .profile-selection.profile-clicked::after {
+        left: 100px;
     }
-    .cart-selection.cart-clicked::after {
-        left: 92px;
+    .profile-selection.profile-clicked::after {
+        left: 50px;
     }
 }
-
 @media (min-width: 576px) and (max-width: 765px) {
-    .cart-selection.cart-clicked::after {
-        left: 180px;
+    .profile-selection.profile-clicked::after {
+        left: 93px;
     }
-    .cart-selection.cart-clicked::after {
-        left: 100px;
+    .profile-selection.profile-clicked::after {
+        left: 56px;
     }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
-    .cart-selection.cart-clicked::after {
-        left: 156px;
+    .profile-selection.profile-clicked::after {
+        left: 70px;
     }
-    .cart-selection.cart-clicked::after {
-        left: 126px;
+    .profile-selection.profile-clicked::after {
+        left: 81px;
     }
 }
 
 @media (min-width: 992px) {
-    .cart-selection.EN.cart-clicked::after {
-        left: 157px; /* Desktop */
+    .profile-selection.profile-clicked::after {
+        left: 70px;
     }
-    .cart-selection.AR.cart-clicked::after {
-        left: 125px; /* Desktop */
+    .profile-selection.profile-clicked::after {
+        left: 81px;
     }
 }
 .theProduct:hover {

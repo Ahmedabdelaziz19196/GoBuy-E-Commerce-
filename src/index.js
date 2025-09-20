@@ -2,29 +2,33 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
+import "./i18n";
 import { BrowserRouter } from "react-router-dom";
 import { FilterProvider } from "./Context/ProductFilters";
 import { ProductsProvider } from "./Context/TheProducts";
 import { SideCategoriesProvider } from "./Context/SideCategoriesContext";
 import LaptopsProvider from "./Context/laptopsProducts";
 import ScrollToTop from "./Components/ScrollToTop";
+import AuthProvider from "./Context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <LaptopsProvider>
-        <SideCategoriesProvider>
-            <ProductsProvider>
-                <FilterProvider>
-                    <React.StrictMode>
-                        <BrowserRouter>
-                            <ScrollToTop />
-                            <App />
-                        </BrowserRouter>
-                    </React.StrictMode>
-                </FilterProvider>
-            </ProductsProvider>
-        </SideCategoriesProvider>
-    </LaptopsProvider>
+    <AuthProvider>
+        <LaptopsProvider>
+            <SideCategoriesProvider>
+                <ProductsProvider>
+                    <FilterProvider>
+                        <React.StrictMode>
+                            <BrowserRouter>
+                                <ScrollToTop />
+                                <App />
+                            </BrowserRouter>
+                        </React.StrictMode>
+                    </FilterProvider>
+                </ProductsProvider>
+            </SideCategoriesProvider>
+        </LaptopsProvider>
+    </AuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

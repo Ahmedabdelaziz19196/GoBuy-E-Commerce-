@@ -60,6 +60,7 @@ export default function LaptopsGridView({
             JSON.stringify(savedFavIndexes)
         );
     }
+
     function handleSavedcartProductsSatet(productId, e) {
         e.preventDefault();
         const savedCartIndexes = {

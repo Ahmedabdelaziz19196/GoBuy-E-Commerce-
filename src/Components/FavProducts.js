@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./FavProducts.css";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
+import LanguageContext from "../Context/LanguageContext";
 export default function FavProducts({ favProductsShowed, favProducts }) {
     const [slicedFavProducts, setSlicedFavProducts] = useState([]);
+    const { language } = useContext(LanguageContext);
+
     useEffect(() => {
         if (favProducts) {
             const theList = favProducts.slice(0, 2);
@@ -15,7 +18,7 @@ export default function FavProducts({ favProductsShowed, favProducts }) {
             {favProducts.length > 0 && (
                 <div
                     className={clsx(
-                        `fav-selection`,
+                        `fav-selection ${language}`,
                         favProductsShowed && "fav-clicked"
                     )}
                 >

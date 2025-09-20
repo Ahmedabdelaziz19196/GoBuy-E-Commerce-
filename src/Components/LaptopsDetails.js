@@ -22,6 +22,9 @@ import LaptopDetailsHeader from "./LaptopDetailsHeader";
 import { useEffect, useMemo, useState } from "react";
 import LaptopsDetailsLowInfo from "./LaptopsDetailsLowInfo";
 import { Link } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext";
+import { db } from "../FireBase";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function LaptopsDetails({
     favIconClickdedId,
@@ -32,16 +35,19 @@ export default function LaptopsDetails({
     setCartProducts,
     numberOfOrders,
     setNumberOfOrders,
+    favProducts,
+    cartProducts,
 }) {
     const [product, setProduct] = useState(null);
     const [viewedImgURL, setViewedImgURL] = useState(null);
     const [listImgToView, setListImgToView] = useState([]);
-    // const [relatedProducts, setRelatedProducts] = useState([]);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [openToast, setOpenToast] = useState(false);
     const [showMiniInfo, setShowMiniInfo] = useState(false);
     const { productId } = useParams();
     const { FilteredLapstopsProductsList } = useFilter();
+    const { currentUser } = useAuth();
+
     useEffect(() => {
         const theProduct = FilteredLapstopsProductsList.find(
             (ele) => ele.productid === productId
@@ -89,6 +95,7 @@ export default function LaptopsDetails({
             return theList;
         }
     }, [FilteredLapstopsProductsList, product]);
+
     useEffect(() => {
         function handleScroll() {
             if (window.scrollY >= 508) {
@@ -103,7 +110,7 @@ export default function LaptopsDetails({
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    function handleSavedFavProductsSatet() {
+    async function handleSavedFavProductsSatet() {
         const isCurrentlyAdded = favIconClickdedId[product.productid];
         const savedFavIds = {
             ...favIconClickdedId,
@@ -115,16 +122,32 @@ export default function LaptopsDetails({
             JSON.stringify(savedFavIds)
         );
 
+        let updatedFavProducts;
         if (!isCurrentlyAdded) {
-            setFavProducts((prev) => [...prev, product]);
+            updatedFavProducts = [...favProducts, product];
+            setFavProducts(updatedFavProducts);
         } else {
-            setFavProducts((prev) =>
-                prev.filter((p) => p.productid !== product.productid)
+            updatedFavProducts = favProducts.filter(
+                (p) => p.productid !== product.productid
+            );
+            setFavProducts(updatedFavProducts);
+        }
+
+        localStorage.setItem("favProducts", JSON.stringify(updatedFavProducts));
+
+        if (currentUser) {
+            await setDoc(
+                doc(db, "users", currentUser.uid),
+                {
+                    wishlist: updatedFavProducts,
+                    wishlistProductsId: savedFavIds,
+                },
+                { merge: true }
             );
         }
     }
 
-    function handleSavedcartProductsSatet() {
+    async function handleSavedcartProductsSatet() {
         const isCurrentlyAdded = cartIconClickdedId[product.productid];
         const savedCartIds = {
             ...cartIconClickdedId,
@@ -136,11 +159,64 @@ export default function LaptopsDetails({
             JSON.stringify(savedCartIds)
         );
 
+        let updatedCartProducts;
         if (!isCurrentlyAdded) {
-            setCartProducts((prev) => [...prev, { ...product }]);
+            updatedCartProducts = [...cartProducts, { ...product }];
+            setCartProducts(updatedCartProducts);
         } else {
-            setCartProducts((prev) =>
-                prev.filter((p) => p.productid !== product.productid)
+            updatedCartProducts = cartProducts.filter(
+                (p) => p.productid !== product.productid
+            );
+            setCartProducts(updatedCartProducts);
+        }
+
+        localStorage.setItem(
+            "cartProducts",
+            JSON.stringify(updatedCartProducts)
+        );
+
+        if (currentUser) {
+            await setDoc(
+                doc(db, "users", currentUser.uid),
+                {
+                    cart: updatedCartProducts,
+                    cartProductsId: savedCartIds,
+                },
+                { merge: true }
+            );
+        }
+    }
+
+    async function handleOrderChange(increment) {
+        const currentCount = numberOfOrders[product.productid] || 0;
+        let updatedOrders;
+
+        if (increment) {
+            updatedOrders = {
+                ...numberOfOrders,
+                [product.productid]: currentCount + 1,
+            };
+        } else if (currentCount > 1) {
+            updatedOrders = {
+                ...numberOfOrders,
+                [product.productid]: currentCount - 1,
+            };
+        } else {
+            updatedOrders = { ...numberOfOrders };
+            delete updatedOrders[product.productid];
+        }
+
+        setNumberOfOrders(updatedOrders);
+        localStorage.setItem("numberForOrder", JSON.stringify(updatedOrders));
+
+        // تحديث Firestore لو المستخدم مسجل دخول
+        if (currentUser) {
+            await setDoc(
+                doc(db, "users", currentUser.uid),
+                {
+                    numberOfOrders: updatedOrders,
+                },
+                { merge: true }
             );
         }
     }
@@ -520,30 +596,7 @@ export default function LaptopsDetails({
                                                 "rgba(0, 0, 0, 0.1) 0px 0px 10px",
                                         }}
                                         className="gategories"
-                                        onClick={() => {
-                                            if (
-                                                numberOfOrders[
-                                                    product.productid
-                                                ] > 1
-                                            ) {
-                                                const updatedOrders = {
-                                                    ...numberOfOrders,
-                                                    [product.productid]:
-                                                        (numberOfOrders[
-                                                            product.productid
-                                                        ] || 0) - 1,
-                                                };
-                                                setNumberOfOrders(
-                                                    updatedOrders
-                                                );
-                                                localStorage.setItem(
-                                                    "numberForOrder",
-                                                    JSON.stringify(
-                                                        updatedOrders
-                                                    )
-                                                );
-                                            }
-                                        }}
+                                        onClick={() => handleOrderChange(false)}
                                     >
                                         <RemoveIcon />
                                     </button>
@@ -560,20 +613,7 @@ export default function LaptopsDetails({
                                                 "rgba(0, 0, 0, 0.1) 0px 0px 10px",
                                         }}
                                         className="gategories"
-                                        onClick={() => {
-                                            const updatedOrders = {
-                                                ...numberOfOrders,
-                                                [product.productid]:
-                                                    (numberOfOrders[
-                                                        product.productid
-                                                    ] || 0) + 1,
-                                            };
-                                            setNumberOfOrders(updatedOrders);
-                                            localStorage.setItem(
-                                                "numberForOrder",
-                                                JSON.stringify(updatedOrders)
-                                            );
-                                        }}
+                                        onClick={() => handleOrderChange(true)}
                                     >
                                         <AddIcon />
                                     </button>
@@ -626,14 +666,6 @@ export default function LaptopsDetails({
                                                     color: "#0A66C2",
                                                 }}
                                             />
-                                            {/* <p
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
-                                                linkedin:
-                                            </p> */}
                                             <a
                                                 href="https://www.linkedin.com/in/ahmed-abdelaziz-6351a3346/"
                                                 target="_blank"
@@ -670,14 +702,6 @@ export default function LaptopsDetails({
                                                     color: "black",
                                                 }}
                                             />
-                                            {/* <p
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "bold",
-                                                }}
-                                            >
-                                                GitHub:
-                                            </p> */}
                                             <a
                                                 href="https://github.com/Ahmedabdelaziz19196"
                                                 target="_blank"

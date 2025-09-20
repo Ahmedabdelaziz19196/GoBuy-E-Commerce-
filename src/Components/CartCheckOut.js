@@ -2,25 +2,64 @@ import "./CartCheckOut.css";
 import { Link } from "react-router-dom";
 import { Grid } from "@mui/material";
 import { Select, MenuItem } from "@mui/material";
-
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useAuth } from "../Context/AuthContext";
+import { db } from "../FireBase";
+import { doc, setDoc } from "firebase/firestore";
+
 export default function CartCheckOut({
     cartProducts,
     numberOfOrders,
     totalPrice,
     setCartIconClickedId,
     setCartProducts,
+    setNumberOfOrders,
+    cartIconClickdedId,
 }) {
     const shipping = 70;
+    const { currentUser } = useAuth();
 
-    function handleRemoveProducts(productid) {
-        setCartIconClickedId((prev) => ({
-            ...prev,
+    async function handleRemoveProducts(productid) {
+        const updatedCartIds = {
+            ...cartIconClickdedId,
             [productid]: false,
-        }));
-        setCartProducts((prev) =>
-            prev.filter((item) => item.productid !== productid)
+        };
+        const updatedCartProducts = cartProducts.filter(
+            (item) => item.productid !== productid
         );
+        const updatedOrders = { ...numberOfOrders };
+        delete updatedOrders[productid];
+
+        setCartIconClickedId(updatedCartIds);
+        setCartProducts(updatedCartProducts);
+        setNumberOfOrders(updatedOrders);
+
+        // تحديث localStorage
+        localStorage.setItem(
+            "cartProductsIdsStates",
+            JSON.stringify(updatedCartIds)
+        );
+        localStorage.setItem(
+            "cartProducts",
+            JSON.stringify(updatedCartProducts)
+        );
+        localStorage.setItem("numberForOrder", JSON.stringify(updatedOrders));
+
+        if (currentUser) {
+            try {
+                await setDoc(
+                    doc(db, "users", currentUser.uid),
+                    {
+                        cart: updatedCartProducts,
+                        cartProductsId: updatedCartIds,
+                        numberOfOrders: updatedOrders,
+                    },
+                    { merge: true }
+                );
+            } catch (error) {
+                console.error("Error updating Firestore:", error);
+            }
+        }
     }
     return (
         <>

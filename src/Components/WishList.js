@@ -2,16 +2,41 @@ import "./WishList.css";
 import { Link } from "react-router-dom";
 import { Grid } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useAuth } from "../Context/AuthContext";
+import { db } from "../FireBase";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function WishList({
     favProducts,
     setFavProducts,
     setFavIconClickedId,
 }) {
-    function handleEmptyWishlis() {
+    const { currentUser } = useAuth();
+
+    async function handleEmptyWishlist() {
+        // إفراغ الحالة
         setFavProducts([]);
         setFavIconClickedId({});
+
+        localStorage.setItem("favProducts", JSON.stringify([]));
+        localStorage.setItem("favProductsIdsStates", JSON.stringify({}));
+
+        if (currentUser) {
+            try {
+                await setDoc(
+                    doc(db, "users", currentUser.uid),
+                    {
+                        wishlist: [],
+                        wishlistProductsId: {},
+                    },
+                    { merge: true }
+                );
+            } catch (error) {
+                console.error("Error updating Firestore:", error);
+            }
+        }
     }
+
     return (
         <>
             <div
@@ -37,8 +62,7 @@ export default function WishList({
                         </p>
                     </Link>
                     <p>/</p>
-
-                    <p>WhishList</p>
+                    <p>WishList</p>
                 </div>
             </div>
             <div style={{ margin: "0px 10px 10px 10px" }}>
@@ -123,7 +147,6 @@ export default function WishList({
                                                         }}
                                                     />
                                                 </div>
-
                                                 <p
                                                     style={{
                                                         display: "-webkit-box",
@@ -150,32 +173,36 @@ export default function WishList({
                 <div
                     style={{
                         background: "#f6f8fa",
-                        // height: "50px",
                         width: "100%",
                         borderRadius: "10px",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        justifyContent:
+                            favProducts.length === 0
+                                ? "flex-end"
+                                : "space-between",
                         padding: "10px",
                     }}
                 >
-                    <button
-                        className="gategories empty-btn"
-                        onClick={handleEmptyWishlis}
-                        style={{
-                            width: "174px",
-                            border: "1px solid var(--main-color)",
-                            background: "transparent",
-                            color: "var(--main-color)",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
-                        }}
-                    >
-                        <DeleteIcon />
-                        Empty Wishlish
-                    </button>
+                    {favProducts.length > 0 && (
+                        <button
+                            className="gategories empty-btn"
+                            onClick={handleEmptyWishlist}
+                            style={{
+                                width: "174px",
+                                border: "1px solid var(--main-color)",
+                                background: "transparent",
+                                color: "var(--main-color)",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                gap: "10px",
+                            }}
+                        >
+                            <DeleteIcon />
+                            Empty Wishlist
+                        </button>
+                    )}
                     <Link
                         to="/laptops"
                         style={{ textDecoration: "none", color: "inherit" }}
