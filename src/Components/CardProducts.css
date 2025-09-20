@@ -34,38 +34,27 @@
 }
 @media (max-width: 575.98px) {
     .cart-selection.cart-clicked::after {
-        left: 192px;
-    }
-    .cart-selection.cart-clicked::after {
-        left: 92px;
+        left: 235px;
     }
 }
 
 @media (min-width: 576px) and (max-width: 765px) {
     .cart-selection.cart-clicked::after {
-        left: 180px;
-    }
-    .cart-selection.cart-clicked::after {
-        left: 100px;
+        left: 236px;
     }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
     .cart-selection.cart-clicked::after {
-        left: 156px;
-    }
-    .cart-selection.cart-clicked::after {
-        left: 126px;
+        left: 227px;
     }
 }
 
 @media (min-width: 992px) {
-    .cart-selection.EN.cart-clicked::after {
-        left: 157px; /* Desktop */
+    .cart-selection.cart-clicked::after {
+        left: 230px;
     }
-    .cart-selection.AR.cart-clicked::after {
-        left: 125px; /* Desktop */
-    }
+}
 }
 .theProduct:hover {
     background-color: #e3e3e4ff;
