@@ -186,7 +186,7 @@ function App() {
         }
     }, [cartProducts, numberOfOrders]);
     return (
-        <div style={{ direction: language === "EN" ? "ltr" : "rtl" }}>
+        <div>
             <LanguageContext.Provider value={{ language, setLanguage }}>
                 <Header
                     favProducts={favProducts}
