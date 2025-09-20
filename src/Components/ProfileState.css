@@ -1,6 +1,7 @@
 .profile-selection {
     background-color: white;
     position: absolute;
+    right: 16px;
     top: -163px;
     width: 170px;
     display: none;
@@ -11,12 +12,7 @@
     z-index: 9999;
     padding: 10px;
 }
-.profile-selection.EN {
-    right: 25px;
-}
-.profile-selection.AR {
-    left: 25px;
-}
+
 .profile-selection.profile-clicked {
     top: 77px;
     opacity: 1;
@@ -40,36 +36,24 @@
 
 @media (max-width: 575.98px) {
     .profile-selection.profile-clicked::after {
-        left: 100px;
-    }
-    .profile-selection.profile-clicked::after {
-        left: 50px;
+        left: 140px;
     }
 }
 @media (min-width: 576px) and (max-width: 765px) {
     .profile-selection.profile-clicked::after {
-        left: 93px;
-    }
-    .profile-selection.profile-clicked::after {
-        left: 56px;
+        left: 140px;
     }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
     .profile-selection.profile-clicked::after {
-        left: 70px;
-    }
-    .profile-selection.profile-clicked::after {
-        left: 81px;
+        left: 132px;
     }
 }
 
 @media (min-width: 992px) {
     .profile-selection.profile-clicked::after {
-        left: 70px;
-    }
-    .profile-selection.profile-clicked::after {
-        left: 81px;
+        left: 135px;
     }
 }
 .theProduct:hover {
