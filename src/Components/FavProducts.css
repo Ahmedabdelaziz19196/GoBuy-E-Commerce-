@@ -2,6 +2,7 @@
     background-color: white;
     position: absolute;
     top: -163px;
+    right: 25px;
     width: 300px;
     display: none;
     transition: opacity 0.01s, top 0.2s;
@@ -11,12 +12,7 @@
     z-index: 9999;
     padding: 10px;
 }
-.fav-selection.EN {
-    right: 25px;
-}
-.fav-selection.AR {
-    left: 25px;
-}
+
 .fav-selection.fav-clicked {
     top: 77px;
     opacity: 1;
@@ -32,11 +28,6 @@
     border-width: 10px;
     border-style: solid;
     border-color: transparent transparent white transparent;
-}
-.fav-selection.EN.fav-clicked::after {
-    left: 114px;
-}
-.fav-selection.AR.fav-clicked::after {
     left: 114px;
 }
 
@@ -44,35 +35,27 @@
     .fav-selection.fav-clicked::after {
         left: 151px;
     }
-    .fav-selection.AR.fav-clicked::after {
-        left: 138px;
-    }
+
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
     .fav-selection.fav-clicked::after {
         left: 116px;
     }
-    .fav-selection.AR.fav-clicked::after {
-        left: 169px;
-    }
+
 }
 @media (min-width: 576px) and (max-width: 765px) {
     .fav-selection.fav-clicked::after {
         left: 139px;
     }
-    .fav-selection.AR.fav-clicked::after {
-        left: 156px;
-    }
+
 }
 
 @media (min-width: 992px) {
-    .fav-selection.EN.fav-clicked::after {
+    .fav-selection.fav-clicked::after {
         left: 114px;
     }
-    .fav-selection.AR.fav-clicked::after {
-        left: 169px;
-    }
+
 }
 .theProduct:hover {
     background-color: #e3e3e4ff;
