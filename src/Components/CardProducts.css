@@ -41,6 +41,7 @@
 @media (min-width: 576px) and (max-width: 765px) {
     .cart-selection.cart-clicked::after {
         left: 236px;
+        
     }
 }
 
