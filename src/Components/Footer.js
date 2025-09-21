@@ -61,7 +61,7 @@ export default function Footer() {
                 <div className="border-sm-solid  mb-sm-3 w-sm-100">
                     <h4 style={{ fontFamily: "Righteous" }}>GoBuy</h4>
                     <a
-                        href="/AhmedAbdelazizCv.pdf"
+                        href="https://drive.google.com/file/d/1Nff1DvH48Spbdm-_dfuidBqNuAfrmuQW/view"
                         download
                         className="footer-list"
                         style={{
